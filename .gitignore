@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.devdb/
+media/
+staticfiles/
+node_modules/
+.pytest_cache/

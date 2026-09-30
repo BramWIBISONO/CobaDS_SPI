@@ -1,0 +1,5 @@
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "spi_web.settings"
+python_files = ["test_*.py"]
+addopts = "-q -m 'not slow'"
+markers = ["slow: memakai workbook Excel asli di ..\\APP (beberapa menit)"]
