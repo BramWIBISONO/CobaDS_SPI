@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     "django_htmx",
     "core",
     "accounts",
+    "branches",
 ]
 
 MIDDLEWARE = [

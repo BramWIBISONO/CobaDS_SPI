@@ -8,6 +8,7 @@ connection); the IANA files of the tzdata package (installed with Django on Wind
 import ctypes
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 from urllib.parse import parse_qs, quote, urlparse
@@ -60,7 +61,10 @@ def write_env(url):
 
 def main(cmd):
     ensure_timezone_data()
-    srv = pgserver.get_server(short_path(PGDATA), cleanup_mode="stop" if cmd == "stop" else None)
+    try:
+        srv = pgserver.get_server(short_path(PGDATA), cleanup_mode="stop" if cmd == "stop" else None)
+    except subprocess.TimeoutExpired:
+        sys.exit("PostgreSQL masih memulihkan data (komputer mati tanpa 'devdb.py stop'). Tunggu +-1 menit, lalu jalankan lagi.")
     if cmd == "stop":
         srv.cleanup()
         print("PostgreSQL berhenti")
