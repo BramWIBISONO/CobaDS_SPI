@@ -13,6 +13,8 @@ NAV = (
 
 def nav_for(request):
     caps = getattr(request, "caps", frozenset())
+    if getattr(getattr(request, "user", None), "is_super_admin", False):
+        caps = caps | {Cap.MANAGE_ALL}                # menu semua cabang juga tampil tanpa cabang aktif
     groups = []
     for label, items in NAV:
         shown = []

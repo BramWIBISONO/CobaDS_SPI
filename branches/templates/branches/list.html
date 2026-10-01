@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Cabang{% endblock %}
+{% block content %}
+<h1 class="mb-6 text-2xl font-semibold text-slate-900">Cabang</h1>
+<div class="grid gap-6 lg:grid-cols-3">
+  <div class="card overflow-hidden lg:col-span-2">
+    <table class="min-w-full divide-y divide-slate-200 text-sm">
+      <thead class="bg-slate-50 text-left text-xs font-semibold uppercase text-slate-500">
+        <tr><th class="px-4 py-3">Branch ID</th><th class="px-4 py-3">Nama</th><th class="px-4 py-3">Kota</th><th class="px-4 py-3">Unit</th>
+          <th class="px-4 py-3">Status</th><th class="px-4 py-3 text-right">Pengguna</th></tr></thead>
+      <tbody class="divide-y divide-slate-100">
+        {% for b in branches %}
+          <tr><td class="px-4 py-3 font-mono text-xs">{{ b.code }}</td><td class="px-4 py-3 font-medium">{{ b.name }}</td>
+            <td class="px-4 py-3 text-slate-600">{{ b.city|default:"-" }}</td><td class="px-4 py-3 font-mono text-xs">{{ b.unit_id }}</td>
+            <td class="px-4 py-3"><span class="badge {% if b.status == 'ACTIVE' %}bg-emerald-50 text-emerald-700{% elif b.status == 'NEW_BRANCH' %}bg-brand-50 text-brand-700{% else %}bg-slate-100 text-slate-600{% endif %}">{{ b.status }}</span></td>
+            <td class="px-4 py-3 text-right tabular-nums">{{ b.n_users }}</td></tr>
+        {% empty %}<tr><td colspan="6" class="px-4 py-6 text-center text-slate-500">Belum ada cabang.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <form method="post" class="card form space-y-4 p-5">{% csrf_token %}
+    <h2 class="font-semibold">Buat cabang baru</h2>
+    <p class="text-xs text-slate-500">Konfigurasi SPI (program & level, kategori OFF, kunci tarif fee, parameter) disalin dari template cabang.
+      Tabel murid, kelas, dan keuangan kosong. Cabang yang sudah punya workbook v4 (Jakarta, Alam Sutera) dimigrasi dengan perintah
+      import_workbook --create (README) agar semua ID Excel, termasuk Log ID, tetap sama.</p>
+    {% for field in form %}<div>{{ field.label_tag }}{{ field }}{% if field.help_text %}<span class="helptext">{{ field.help_text }}</span>{% endif %}{{ field.errors }}</div>{% endfor %}
+    <button class="btn btn-primary w-full">Buat cabang</button>
+  </form>
+</div>
+{% endblock %}

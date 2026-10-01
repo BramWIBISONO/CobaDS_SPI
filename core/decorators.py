@@ -17,3 +17,14 @@ def require_cap(cap):
             return view(request, *args, **kwargs)
         return wrapped
     return decorator
+
+
+def require_super_admin(view):
+    """Halaman semua cabang (SUPER_ADMIN): tidak memerlukan cabang aktif, jadi cabang pertama pun bisa dibuat."""
+    @wraps(view)
+    @login_required
+    def wrapped(request, *args, **kwargs):
+        if not request.user.is_super_admin:
+            return render(request, "core/forbidden.html", status=403)
+        return view(request, *args, **kwargs)
+    return wrapped

@@ -4,4 +4,5 @@ urlpatterns = [
     path("", include("core.urls")),
     path("akun/", include("accounts.urls")),
     path("impor/", include("importer.urls")),
+    path("cabang/", include("branches.urls")),
 ]

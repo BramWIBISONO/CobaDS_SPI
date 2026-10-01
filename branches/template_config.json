@@ -1,0 +1,1278 @@
+{
+ "source": {
+  "workbook": "SPI_BRANCH_TEMPLATE_v4.xlsm",
+  "sha256": "6ff4b6bf2b207bc436f82253f456b82f8388330d9a466bae7b131af384f8ee00"
+ },
+ "unit_placeholder": "UNIT-XXX",
+ "tables": {
+  "OFF_REASON_MASTER": [
+   {
+    "row": 6,
+    "values": {
+     "rid": "RSN-009",
+     "text": "Aturan / SOP",
+     "murid": null,
+     "cat_final": null,
+     "source": "Kategori alasan standar SPI",
+     "val_status": null,
+     "val_by": null,
+     "val_date": null,
+     "val_note": null,
+     "cat": "Aturan / SOP",
+     "cells": null
+    }
+   },
+   {
+    "row": 7,
+    "values": {
+     "rid": "RSN-010",
+     "text": "Belajar mandiri",
+     "murid": null,
+     "cat_final": null,
+     "source": "Kategori alasan standar SPI",
+     "val_status": null,
+     "val_by": null,
+     "val_date": null,
+     "val_note": null,
+     "cat": "Belajar mandiri",
+     "cells": null
+    }
+   },
+   {
+    "row": 8,
+    "values": {
+     "rid": "RSN-004",
+     "text": "Biaya / tunggakan SPP",
+     "murid": null,
+     "cat_final": null,
+     "source": "Kategori alasan standar SPI",
+     "val_status": null,
+     "val_by": null,
+     "val_date": null,
+     "val_note": null,
+     "cat": "Biaya / tunggakan SPP",
+     "cells": null
+    }
+   },
+   {
+    "row": 9,
+    "values": {
+     "rid": "RSN-001",
+     "text": "Cuti lebih dari 2 bulan",
+     "murid": null,
+     "cat_final": null,
+     "source": "Kategori alasan standar SPI",
+     "val_status": null,
+     "val_by": null,
+     "val_date": null,
+     "val_note": null,
+     "cat": "Cuti lebih dari 2 bulan",
+     "cells": null
+    }
+   },
+   {
+    "row": 10,
+    "values": {
+     "rid": "RSN-012",
+     "text": "Fokus sekolah / kuliah",
+     "murid": null,
+     "cat_final": null,
+     "source": "Kategori alasan standar SPI",
+     "val_status": null,
+     "val_by": null,
+     "val_date": null,
+     "val_note": null,
+     "cat": "Fokus sekolah / kuliah",
+     "cells": null
+    }
+   },
+   {
+    "row": 11,
+    "values": {
+     "rid": "RSN-006",
+     "text": "Guru / cara mengajar",
+     "murid": null,
+     "cat_final": null,
+     "source": "Kategori alasan standar SPI",
+     "val_status": null,
+     "val_by": null,
+     "val_date": null,
+     "val_note": null,
+     "cat": "Guru / cara mengajar",
+     "cells": null
+    }
+   },
+   {
+    "row": 12,
+    "values": {
+     "rid": "RSN-013",
+     "text": "Jadwal padat / terlalu banyak kegiatan",
+     "murid": null,
+     "cat_final": null,
+     "source": "Kategori alasan standar SPI",
+     "val_status": null,
+     "val_by": null,
+     "val_date": null,
+     "val_note": null,
+     "cat": "Jadwal padat / terlalu banyak kegiatan",
+     "cells": null
+    }
+   },
+   {
+    "row": 13,
+    "values": {
+     "rid": "RSN-014",
+     "text": "Kelelahan",
+     "murid": null,
+     "cat_final": null,
+     "source": "Kategori alasan standar SPI",
+     "val_status": null,
+     "val_by": null,
+     "val_date": null,
+     "val_note": null,
+     "cat": "Kelelahan",
+     "cells": null
+    }
+   },
+   {
+    "row": 14,
+    "values": {
+     "rid": "RSN-005",
+     "text": "Kesehatan / kebutuhan khusus",
+     "murid": null,
+     "cat_final": null,
+     "source": "Kategori alasan standar SPI",
+     "val_status": null,
+     "val_by": null,
+     "val_date": null,
+     "val_note": null,
+     "cat": "Kesehatan / kebutuhan khusus",
+     "cells": null
+    }
+   },
+   {
+    "row": 15,
+    "values": {
+     "rid": "RSN-007",
+     "text": "Kurang puas dengan kemajuan",
+     "murid": null,
+     "cat_final": null,
+     "source": "Kategori alasan standar SPI",
+     "val_status": null,
+     "val_by": null,
+     "val_date": null,
+     "val_note": null,
+     "cat": "Kurang puas dengan kemajuan",
+     "cells": null
+    }
+   },
+   {
+    "row": 16,
+    "values": {
+     "rid": "RSN-015",
+     "text": "Les / kegiatan lain",
+     "murid": null,
+     "cat_final": null,
+     "source": "Kategori alasan standar SPI",
+     "val_status": null,
+     "val_by": null,
+     "val_date": null,
+     "val_note": null,
+     "cat": "Les / kegiatan lain",
+     "cells": null
+    }
+   },
+   {
+    "row": 17,
+    "values": {
+     "rid": "RSN-008",
+     "text": "Materi / bahasa coding tidak sesuai",
+     "murid": null,
+     "cat_final": null,
+     "source": "Kategori alasan standar SPI",
+     "val_status": null,
+     "val_by": null,
+     "val_date": null,
+     "val_note": null,
+     "cat": "Materi / bahasa coding tidak sesuai",
+     "cells": null
+    }
+   },
+   {
+    "row": 18,
+    "values": {
+     "rid": "RSN-002",
+     "text": "Paket / program selesai",
+     "murid": null,
+     "cat_final": null,
+     "source": "Kategori alasan standar SPI",
+     "val_status": null,
+     "val_by": null,
+     "val_date": null,
+     "val_note": null,
+     "cat": "Paket / program selesai",
+     "cells": null
+    }
+   },
+   {
+    "row": 19,
+    "values": {
+     "rid": "RSN-003",
+     "text": "Pindah domisili",
+     "murid": null,
+     "cat_final": null,
+     "source": "Kategori alasan standar SPI",
+     "val_status": null,
+     "val_by": null,
+     "val_date": null,
+     "val_note": null,
+     "cat": "Pindah domisili",
+     "cells": null
+    }
+   },
+   {
+    "row": 20,
+    "values": {
+     "rid": "RSN-016",
+     "text": "Tanpa keterangan",
+     "murid": null,
+     "cat_final": null,
+     "source": "Kategori alasan standar SPI",
+     "val_status": null,
+     "val_by": null,
+     "val_date": null,
+     "val_note": null,
+     "cat": "Tanpa keterangan",
+     "cells": null
+    }
+   },
+   {
+    "row": 21,
+    "values": {
+     "rid": "RSN-011",
+     "text": "Tidak berminat / bosan",
+     "murid": null,
+     "cat_final": null,
+     "source": "Kategori alasan standar SPI",
+     "val_status": null,
+     "val_by": null,
+     "val_date": null,
+     "val_note": null,
+     "cat": "Tidak berminat / bosan",
+     "cells": null
+    }
+   },
+   {
+    "row": 22,
+    "values": {
+     "rid": "RSN-017",
+     "text": "Lainnya (perlu kategori)",
+     "murid": null,
+     "cat_final": null,
+     "source": "Kategori alasan standar SPI",
+     "val_status": "PENDING",
+     "val_by": null,
+     "val_date": null,
+     "val_note": null,
+     "cat": "Lainnya (perlu kategori)",
+     "cells": null
+    }
+   }
+  ],
+  "PROGRAM_MASTER": [
+   {
+    "row": 6,
+    "values": {
+     "pid": "PRG-F10",
+     "bu": null,
+     "program": "Foundation",
+     "level": "Foundation 1.0",
+     "kode": "1.0",
+     "order": 1,
+     "variants": null,
+     "status": "ACTIVE",
+     "n_months": null,
+     "sources": "Definisi program SPI"
+    }
+   },
+   {
+    "row": 7,
+    "values": {
+     "pid": "PRG-F11",
+     "bu": null,
+     "program": "Foundation",
+     "level": "Foundation 1.1",
+     "kode": "1.1",
+     "order": 2,
+     "variants": null,
+     "status": "ACTIVE",
+     "n_months": null,
+     "sources": "Definisi program SPI"
+    }
+   },
+   {
+    "row": 8,
+    "values": {
+     "pid": "PRG-F12",
+     "bu": null,
+     "program": "Foundation",
+     "level": "Foundation 1.2",
+     "kode": "1.2",
+     "order": 3,
+     "variants": null,
+     "status": "ACTIVE",
+     "n_months": null,
+     "sources": "Definisi program SPI"
+    }
+   },
+   {
+    "row": 9,
+    "values": {
+     "pid": "PRG-D20",
+     "bu": null,
+     "program": "Development",
+     "level": "Development 2.0",
+     "kode": "2.0",
+     "order": 4,
+     "variants": null,
+     "status": "ACTIVE",
+     "n_months": null,
+     "sources": "Definisi program SPI"
+    }
+   },
+   {
+    "row": 10,
+    "values": {
+     "pid": "PRG-D21",
+     "bu": null,
+     "program": "Development",
+     "level": "Development 2.1",
+     "kode": "2.1",
+     "order": 5,
+     "variants": null,
+     "status": "ACTIVE",
+     "n_months": null,
+     "sources": "Definisi program SPI"
+    }
+   },
+   {
+    "row": 11,
+    "values": {
+     "pid": "PRG-D22",
+     "bu": null,
+     "program": "Development",
+     "level": "Development 2.2",
+     "kode": "2.2",
+     "order": 6,
+     "variants": null,
+     "status": "ACTIVE",
+     "n_months": null,
+     "sources": "Definisi program SPI"
+    }
+   },
+   {
+    "row": 12,
+    "values": {
+     "pid": "PRG-D23",
+     "bu": null,
+     "program": "Development",
+     "level": "Development 2.3",
+     "kode": "2.3",
+     "order": 7,
+     "variants": null,
+     "status": "ACTIVE",
+     "n_months": null,
+     "sources": "Definisi program SPI"
+    }
+   },
+   {
+    "row": 13,
+    "values": {
+     "pid": "PRG-D24",
+     "bu": null,
+     "program": "Development",
+     "level": "Development 2.4",
+     "kode": "2.4",
+     "order": 8,
+     "variants": null,
+     "status": "ACTIVE",
+     "n_months": null,
+     "sources": "Definisi program SPI"
+    }
+   },
+   {
+    "row": 14,
+    "values": {
+     "pid": "PRG-E30",
+     "bu": null,
+     "program": "Exploration",
+     "level": "Exploration 3.0",
+     "kode": "3.0",
+     "order": 9,
+     "variants": null,
+     "status": "ACTIVE",
+     "n_months": null,
+     "sources": "Definisi program SPI"
+    }
+   },
+   {
+    "row": 15,
+    "values": {
+     "pid": "PRG-E31",
+     "bu": null,
+     "program": "Exploration",
+     "level": "Exploration 3.1",
+     "kode": "3.1",
+     "order": 10,
+     "variants": null,
+     "status": "ACTIVE",
+     "n_months": null,
+     "sources": "Definisi program SPI"
+    }
+   },
+   {
+    "row": 16,
+    "values": {
+     "pid": "PRG-E32",
+     "bu": null,
+     "program": "Exploration",
+     "level": "Exploration 3.2",
+     "kode": "3.2",
+     "order": 11,
+     "variants": null,
+     "status": "ACTIVE",
+     "n_months": null,
+     "sources": "Definisi program SPI"
+    }
+   },
+   {
+    "row": 17,
+    "values": {
+     "pid": "PRG-R40",
+     "bu": null,
+     "program": "Research",
+     "level": "Research 4.0",
+     "kode": "4.0",
+     "order": 12,
+     "variants": null,
+     "status": "ACTIVE",
+     "n_months": null,
+     "sources": "Definisi program SPI"
+    }
+   },
+   {
+    "row": 18,
+    "values": {
+     "pid": "PRG-R41",
+     "bu": null,
+     "program": "Research",
+     "level": "Research 4.1",
+     "kode": "4.1",
+     "order": 13,
+     "variants": null,
+     "status": "ACTIVE",
+     "n_months": null,
+     "sources": "Definisi program SPI"
+    }
+   },
+   {
+    "row": 19,
+    "values": {
+     "pid": "PRG-R42",
+     "bu": null,
+     "program": "Research",
+     "level": "Research 4.2",
+     "kode": "4.2",
+     "order": 14,
+     "variants": null,
+     "status": "ACTIVE",
+     "n_months": null,
+     "sources": "Definisi program SPI"
+    }
+   },
+   {
+    "row": 20,
+    "values": {
+     "pid": "PRG-AI-REF",
+     "bu": null,
+     "program": "Algorithm Intelligence",
+     "level": null,
+     "kode": null,
+     "order": 15,
+     "variants": null,
+     "status": "ACTIVE",
+     "n_months": null,
+     "sources": "Definisi program SPI"
+    }
+   },
+   {
+    "row": 21,
+    "values": {
+     "pid": "PRG-A-REF",
+     "bu": null,
+     "program": "Amara",
+     "level": null,
+     "kode": null,
+     "order": 16,
+     "variants": null,
+     "status": "ACTIVE",
+     "n_months": null,
+     "sources": "Definisi program SPI"
+    }
+   }
+  ],
+  "UNIT_MASTER": [
+   {
+    "row": 6,
+    "values": {
+     "uid": "UNIT-XXX",
+     "name": "SPI (nama cabang)",
+     "type": "UNIT",
+     "parent": "UNIT-HQ",
+     "city": null,
+     "province": null,
+     "status": "NEW_BRANCH",
+     "notes": "Unit cabang ini (identitas di SETTINGS)."
+    }
+   },
+   {
+    "row": 7,
+    "values": {
+     "uid": "UNIT-HQ",
+     "name": "SPI Pusat",
+     "type": "HQ",
+     "parent": null,
+     "city": null,
+     "province": null,
+     "status": "REFERENCE",
+     "notes": "Kantor pusat SPI (referensi: tarif fee guru, sertifikat, starter kit)."
+    }
+   }
+  ],
+  "TARIF_FEE": [
+   {
+    "row": 6,
+    "values": {
+     "rid": "Focus|Semua program|Indonesia",
+     "tipe": "Focus",
+     "program": "Semua program",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 7,
+    "values": {
+     "rid": "Focus|Semua program|English",
+     "tipe": "Focus",
+     "program": "Semua program",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 8,
+    "values": {
+     "rid": "Focus|Foundation|Indonesia",
+     "tipe": "Focus",
+     "program": "Foundation",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 9,
+    "values": {
+     "rid": "Focus|Foundation|English",
+     "tipe": "Focus",
+     "program": "Foundation",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 10,
+    "values": {
+     "rid": "Focus|Development|Indonesia",
+     "tipe": "Focus",
+     "program": "Development",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 11,
+    "values": {
+     "rid": "Focus|Development|English",
+     "tipe": "Focus",
+     "program": "Development",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 12,
+    "values": {
+     "rid": "Focus|Exploration|Indonesia",
+     "tipe": "Focus",
+     "program": "Exploration",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 13,
+    "values": {
+     "rid": "Focus|Exploration|English",
+     "tipe": "Focus",
+     "program": "Exploration",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 14,
+    "values": {
+     "rid": "Focus|Research|Indonesia",
+     "tipe": "Focus",
+     "program": "Research",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 15,
+    "values": {
+     "rid": "Focus|Research|English",
+     "tipe": "Focus",
+     "program": "Research",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 16,
+    "values": {
+     "rid": "Partner|Semua program|Indonesia",
+     "tipe": "Partner",
+     "program": "Semua program",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 17,
+    "values": {
+     "rid": "Partner|Semua program|English",
+     "tipe": "Partner",
+     "program": "Semua program",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 18,
+    "values": {
+     "rid": "Partner|Foundation|Indonesia",
+     "tipe": "Partner",
+     "program": "Foundation",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 19,
+    "values": {
+     "rid": "Partner|Foundation|English",
+     "tipe": "Partner",
+     "program": "Foundation",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 20,
+    "values": {
+     "rid": "Partner|Development|Indonesia",
+     "tipe": "Partner",
+     "program": "Development",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 21,
+    "values": {
+     "rid": "Partner|Development|English",
+     "tipe": "Partner",
+     "program": "Development",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 22,
+    "values": {
+     "rid": "Partner|Exploration|Indonesia",
+     "tipe": "Partner",
+     "program": "Exploration",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 23,
+    "values": {
+     "rid": "Partner|Exploration|English",
+     "tipe": "Partner",
+     "program": "Exploration",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 24,
+    "values": {
+     "rid": "Partner|Research|Indonesia",
+     "tipe": "Partner",
+     "program": "Research",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 25,
+    "values": {
+     "rid": "Partner|Research|English",
+     "tipe": "Partner",
+     "program": "Research",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 26,
+    "values": {
+     "rid": "Group|Semua program|Indonesia",
+     "tipe": "Group",
+     "program": "Semua program",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 27,
+    "values": {
+     "rid": "Group|Semua program|English",
+     "tipe": "Group",
+     "program": "Semua program",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 28,
+    "values": {
+     "rid": "Group|Foundation|Indonesia",
+     "tipe": "Group",
+     "program": "Foundation",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 29,
+    "values": {
+     "rid": "Group|Foundation|English",
+     "tipe": "Group",
+     "program": "Foundation",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 30,
+    "values": {
+     "rid": "Group|Development|Indonesia",
+     "tipe": "Group",
+     "program": "Development",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 31,
+    "values": {
+     "rid": "Group|Development|English",
+     "tipe": "Group",
+     "program": "Development",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 32,
+    "values": {
+     "rid": "Group|Exploration|Indonesia",
+     "tipe": "Group",
+     "program": "Exploration",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 33,
+    "values": {
+     "rid": "Group|Exploration|English",
+     "tipe": "Group",
+     "program": "Exploration",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 34,
+    "values": {
+     "rid": "Group|Research|Indonesia",
+     "tipe": "Group",
+     "program": "Research",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 35,
+    "values": {
+     "rid": "Group|Research|English",
+     "tipe": "Group",
+     "program": "Research",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 36,
+    "values": {
+     "rid": "School|Semua program|Indonesia",
+     "tipe": "School",
+     "program": "Semua program",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 37,
+    "values": {
+     "rid": "School|Semua program|English",
+     "tipe": "School",
+     "program": "Semua program",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 38,
+    "values": {
+     "rid": "School|Foundation|Indonesia",
+     "tipe": "School",
+     "program": "Foundation",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 39,
+    "values": {
+     "rid": "School|Foundation|English",
+     "tipe": "School",
+     "program": "Foundation",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 40,
+    "values": {
+     "rid": "School|Development|Indonesia",
+     "tipe": "School",
+     "program": "Development",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 41,
+    "values": {
+     "rid": "School|Development|English",
+     "tipe": "School",
+     "program": "Development",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 42,
+    "values": {
+     "rid": "School|Exploration|Indonesia",
+     "tipe": "School",
+     "program": "Exploration",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 43,
+    "values": {
+     "rid": "School|Exploration|English",
+     "tipe": "School",
+     "program": "Exploration",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 44,
+    "values": {
+     "rid": "School|Research|Indonesia",
+     "tipe": "School",
+     "program": "Research",
+     "bahasa": "Indonesia",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   },
+   {
+    "row": 45,
+    "values": {
+     "rid": "School|Research|English",
+     "tipe": "School",
+     "program": "Research",
+     "bahasa": "English",
+     "tarif": null,
+     "dasar": null,
+     "mulai": null,
+     "sumber": null,
+     "catatan": null
+    }
+   }
+  ]
+ },
+ "settings": [
+  {
+   "key": "snapshot",
+   "param": "Snapshot sumber",
+   "value": "-",
+   "note": "Cabang baru: belum ada file sumber yang diimpor.",
+   "row": 16
+  },
+  {
+   "key": "batch",
+   "param": "Import Batch build ini",
+   "value": "IMP-XXX-20260930-01",
+   "note": "Lihat IMPORT_LOG.",
+   "row": 17
+  },
+  {
+   "key": "versi",
+   "param": "Versi build",
+   "value": "v2.0-fase1",
+   "note": "Pipeline 00_SYSTEM\\APP_BUILD_V2\\_scripts.",
+   "row": 18
+  },
+  {
+   "key": "F",
+   "param": "Kapasitas Focus (F)",
+   "value": 1,
+   "note": "Aturan Anda. Dipakai CLASS_MASTER (boleh diubah).",
+   "row": 19
+  },
+  {
+   "key": "P",
+   "param": "Kapasitas Partner (P)",
+   "value": 4,
+   "note": "Aturan Anda.",
+   "row": 20
+  },
+  {
+   "key": "G",
+   "param": "Kapasitas Group (G)",
+   "value": 10,
+   "note": "Aturan Anda.",
+   "row": 21
+  },
+  {
+   "key": "S",
+   "param": "Kapasitas School (S)",
+   "value": 20,
+   "note": "Aturan Anda.",
+   "row": 22
+  },
+  {
+   "key": "capbasis",
+   "param": "Kapasitas dihitung atas",
+   "value": "Anggota Aktif (Aktif + Baru + Rejoin) bulan terbaru",
+   "note": "Keputusan H-05 (default). Cuti ditampilkan terpisah.",
+   "row": 23
+  },
+  {
+   "key": "ambang",
+   "param": "Ambang anomali SPP per sel (Rp)",
+   "value": 20000000,
+   "note": "Diubah di CEK_SPP sel B3 (v1).",
+   "row": 24
+  },
+  {
+   "key": "tahun",
+   "param": "Rentang tahun kode kelas yang dianggap valid",
+   "value": "2019 - 2027",
+   "note": "Fase 0 memakai 2021-2027; diperluas karena DB Murid mencatat join Januari 2019 untuk kode ...0119.",
+   "row": 25
+  },
+  {
+   "key": "val",
+   "param": "Status validasi",
+   "value": "PENDING / VALID / REJECTED / NEEDS_REVIEW / NOT_ENOUGH_DATA",
+   "note": "Sistem hanya mengisi PENDING - dan hanya bila ada yang perlu diputuskan manusia. VALID dan lainnya diisi manusia.",
+   "row": 26
+  },
+  {
+   "key": "iss",
+   "param": "Status issue",
+   "value": "OPEN / IN_PROGRESS / WAITING / RESOLVED / CLOSED / REQUIRES_REVIEW",
+   "note": "Sistem hanya mengisi OPEN; issue tidak pernah ditutup otomatis.",
+   "row": 27
+  },
+  {
+   "key": "sev",
+   "param": "Severity",
+   "value": "INFO / WARNING / ERROR / CRITICAL",
+   "note": "",
+   "row": 28
+  },
+  {
+   "key": "link",
+   "param": "Aturan tautan nama otomatis",
+   "value": "identik / beda huruf-spasi / singkatan + bukti pendukung",
+   "note": "Singkatan dianggap cocok hanya bila didukung kode kelas yang sama dan/atau murid tercatat aktif di bulan bukti. Nama satu kata tidak pernah cukup sendiri.",
+   "row": 29
+  },
+  {
+   "key": "jurnal_agu",
+   "param": "Jurnal Agustus 2026 yang dipakai",
+   "value": "Tidak berlaku (cabang baru)",
+   "note": "Buku kas Agustus 2026 punya dua jurnal penerimaan: 'Revisi Jurnal Penerimaan' (dipakai Arus Kas; nominal bergeser 2 baris mulai baris 36) dan ' Jurnal Penerimaan' (tersembunyi; nominal tidak bergeser). Selama BELUM DIPUTUSKAN: total Agustus = Arus Kas, SPP per murid Agustus ditampilkan 'perlu keputusan'.",
+   "row": 30
+  },
+  {
+   "key": "sumber_spp",
+   "param": "Sumber resmi SPP",
+   "value": "Jurnal Penerimaan buku kas bulanan (BUKU_KAS)",
+   "note": "Keputusan pemilik (29 Sep 2026). SPP Controling & SPP di DB Murid hanya pembanding (kontrol di halaman SPP), bukan sumber kedua.",
+   "row": 31
+  },
+  {
+   "key": "nota_instruksi",
+   "param": "Instruksi pembayaran di nota",
+   "value": null,
+   "note": "Isi sendiri (mis. bank dan nomor rekening resmi cabang). Kosong = nota meminta orang tua menghubungi admin. Aplikasi tidak mengarang nomor rekening.",
+   "row": 34
+  },
+  {
+   "key": "off_lama",
+   "param": "OFF dianggap lama setelah (bulan)",
+   "value": 3,
+   "note": "Dipakai Dashboard OFF (filter 'OFF lama') dan prioritas follow-up (MINGGU INI hanya untuk Off yang belum lama).",
+   "row": 35
+  },
+  {
+   "key": "jatuh_tempo",
+   "param": "Tanggal jatuh tempo SPP (tanggal dalam bulan)",
+   "value": 1,
+   "note": "Asumsi awal (belum ada aturan tertulis di sumber): 1 = awal periode layanan. Sebelum tanggal ini = Belum Jatuh Tempo; setelah akhir bulan tanpa pembayaran = Terlambat. Ubah bila SPI punya aturan lain.",
+   "row": 39
+  },
+  {
+   "key": "cuti_lama",
+   "param": "Cuti perlu ditinjau setelah (bulan)",
+   "value": 2,
+   "note": "Keputusan pemilik: ON LEAVE >= 2 bulan -> pengingat untuk CSO / Management (tidak ditagih, tidak ditutup otomatis).",
+   "row": 40
+  },
+  {
+   "key": "royalti",
+   "param": "Aturan royalti (% dari pendapatan)",
+   "value": null,
+   "note": "Belum ditetapkan (keputusan D-06). Kosong = FINANCE hanya menampilkan royalti yang benar-benar dibayar (TS208) dan setoran ke pusat (S01) dari buku kas - tidak dihitung sendiri.",
+   "row": 41
+  },
+  {
+   "key": "tarif_fee",
+   "param": "Tarif fee guru",
+   "value": "Belum tersedia",
+   "note": "SPI Pusat akan memberikan tarif resmi (29 Sep 2026). Isi di sheet TARIF_FEE; selama kosong, fee guru tidak dihitung dan tertulis 'Tarif belum tersedia'.",
+   "row": 42
+  },
+  {
+   "key": "kontak_csv",
+   "param": "Data kontak (HP / WhatsApp / email / tanggal lahir)",
+   "value": "Disimpan, tidak ikut CSV umum",
+   "note": "Keputusan pemilik 29 Sep 2026: kontak boleh disimpan di STUDENT_MASTER / PARENT_MASTER dan dipakai untuk follow-up, tetapi tidak ditulis ke CSV halaman mana pun.",
+   "row": 43
+  }
+ ]
+}

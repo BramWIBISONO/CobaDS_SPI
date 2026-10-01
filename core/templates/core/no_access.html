@@ -5,6 +5,10 @@
   {% if reason == "role" %}
     <h1 class="text-lg font-semibold">Belum ada halaman untuk peran Anda</h1>
     <p class="mt-2 text-sm text-slate-500">Peran Anda di {{ current_branch.name }} belum punya halaman di aplikasi ini.</p>
+  {% elif user.is_super_admin %}
+    <h1 class="text-lg font-semibold">Belum ada cabang</h1>
+    <p class="mt-2 text-sm text-slate-500">Buat cabang pertama dari template, atau migrasikan workbook v4 cabang dengan perintah import_workbook (README).</p>
+    <a href="{% url 'branches:list' %}" class="btn btn-primary mt-4">Buat cabang pertama</a>
   {% else %}
     <h1 class="text-lg font-semibold">Akun Anda belum punya akses cabang</h1>
     <p class="mt-2 text-sm text-slate-500">Minta Branch Admin cabang Anda memberi peran untuk email <strong>{{ user.email }}</strong>.</p>
