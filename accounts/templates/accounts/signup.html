@@ -1,0 +1,11 @@
+{% extends "base_auth.html" %}
+{% block title %}Daftar{% endblock %}
+{% block content %}
+<h1 class="text-xl font-semibold text-slate-900">Daftar akun</h1>
+<p class="mt-1 text-sm text-slate-500">Setelah email diverifikasi, Branch Admin cabang Anda memberi peran & akses.</p>
+<form method="post" class="form mt-6 space-y-4">{% csrf_token %}
+  {% for field in form %}<div>{{ field.label_tag }}{{ field }}{% if field.help_text %}<span class="helptext">{{ field.help_text }}</span>{% endif %}{{ field.errors }}</div>{% endfor %}
+  <button class="btn btn-primary w-full">Daftar</button>
+</form>
+<p class="mt-6 text-sm"><a href="{% url 'accounts:login' %}" class="font-semibold text-brand-600 hover:underline">Sudah punya akun? Masuk</a></p>
+{% endblock %}

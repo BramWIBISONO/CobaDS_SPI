@@ -1,0 +1,8 @@
+Halo {{ user.full_name }},
+
+Buka tautan berikut untuk memverifikasi email akun SPI Management Anda (berlaku 24 jam, sekali pakai):
+
+{{ url }}
+
+Setelah terverifikasi, Branch Admin cabang Anda akan memberi peran dan akses.
+Bila Anda tidak mendaftar, abaikan email ini.

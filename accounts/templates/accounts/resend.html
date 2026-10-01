@@ -1,0 +1,14 @@
+{% extends "base_auth.html" %}
+{% block title %}Kirim ulang verifikasi{% endblock %}
+{% block content %}
+<h1 class="text-xl font-semibold text-slate-900">Kirim ulang tautan verifikasi</h1>
+{% if sent %}
+  <p class="mt-2 text-sm text-slate-600">Bila email itu terdaftar dan belum diverifikasi, tautan baru sudah dikirim.</p>
+  <a href="{% url 'accounts:login' %}" class="btn btn-secondary mt-6">Kembali ke halaman masuk</a>
+{% else %}
+  <form method="post" class="form mt-6 space-y-4">{% csrf_token %}
+    {% for field in form %}<div>{{ field.label_tag }}{{ field }}{{ field.errors }}</div>{% endfor %}
+    <button class="btn btn-primary w-full">Kirim</button>
+  </form>
+{% endif %}
+{% endblock %}

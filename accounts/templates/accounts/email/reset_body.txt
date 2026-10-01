@@ -1,0 +1,7 @@
+Halo {{ user.full_name }},
+
+Buka tautan berikut untuk membuat password baru (sekali pakai):
+
+{{ protocol }}://{{ domain }}{% url 'accounts:password_reset_confirm' uidb64=uid token=token %}
+
+Bila Anda tidak memintanya, abaikan email ini; password lama tetap berlaku.

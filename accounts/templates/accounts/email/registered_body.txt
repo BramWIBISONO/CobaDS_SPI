@@ -1,0 +1,6 @@
+Halo {{ user.full_name }},
+
+Ada pendaftaran baru memakai email ini, tetapi akun dengan email ini sudah terdaftar - tidak ada akun kedua yang dibuat.
+
+Masuk: {{ login_url }}
+Lupa password: {{ reset_url }}
