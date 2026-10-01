@@ -1,0 +1,4 @@
+{% if run.status == "COMMITTED" %}<span class="badge bg-emerald-50 text-emerald-700">Tersimpan</span>
+{% elif run.status == "FAILED" %}<span class="badge bg-red-50 text-red-700">Gagal</span>
+{% elif run.report.ok %}<span class="badge bg-brand-50 text-brand-700">Pratinjau</span>
+{% else %}<span class="badge bg-red-50 text-red-700">Ada error</span>{% endif %}
