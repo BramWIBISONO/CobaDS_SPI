@@ -1,0 +1,32 @@
+@import "tailwindcss";
+@source "../templates";
+@source "../core/templates";
+@source "../accounts/templates";
+@source "../importer/templates";
+@source "../branches/templates";
+
+@theme {
+  --color-brand-50: #eef4ff;
+  --color-brand-100: #dce8ff;
+  --color-brand-500: #176df8;
+  --color-brand-600: #0f5fe0;
+  --color-brand-700: #0b4bb3;
+  --color-brand-900: #041a5a;
+}
+
+[x-cloak] { display: none !important; }
+
+@layer components {
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/50 disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-primary { @apply bg-brand-600 text-white shadow-sm hover:bg-brand-700; }
+  .btn-secondary { @apply border border-slate-300 bg-white text-slate-700 hover:bg-slate-50; }
+  .btn-danger { @apply bg-red-600 text-white hover:bg-red-700; }
+  .card { @apply rounded-xl border border-slate-200 bg-white shadow-sm; }
+  .badge { @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold; }
+  .form label { @apply mb-1 block text-sm font-medium text-slate-700; }
+  .form input:not([type=checkbox]):not([type=radio]), .form select, .form textarea {
+    @apply block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30;
+  }
+  .form .errorlist { @apply mt-1 text-sm text-red-600; }
+  .form .helptext { @apply mt-1 block text-xs text-slate-500; }
+}

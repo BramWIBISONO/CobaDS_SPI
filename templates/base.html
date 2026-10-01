@@ -1,0 +1,67 @@
+{% load static %}<!doctype html>
+<html lang="id" class="h-full bg-slate-50">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}SPI Management{% endblock %}{% if current_branch %} · {{ current_branch.name }}{% endif %}</title>
+  <link rel="icon" href="{% static 'img/spi-logo.png' %}">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
+  <script src="{% static 'vendor/alpine.min.js' %}" defer></script>
+</head>
+<body class="h-full text-slate-800" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+<div x-data="{ open: false }" class="min-h-full">
+  <div x-show="open" x-cloak class="fixed inset-0 z-20 bg-slate-900/40 lg:hidden" @click="open = false"></div>
+  <aside class="fixed inset-y-0 left-0 z-30 w-64 -translate-x-full bg-brand-900 text-white transition-transform lg:translate-x-0"
+         :class="open && 'translate-x-0'">
+    <div class="flex h-16 items-center gap-3 border-b border-white/10 px-5">
+      <img src="{% static 'img/spi-logo.png' %}" alt="SPI" class="h-8 w-8 rounded bg-white object-contain p-0.5">
+      <div class="leading-tight"><p class="text-sm font-semibold">SPI Management</p>
+        <p class="text-xs text-blue-200/80">{{ current_branch.name|default:"Pilih cabang" }}</p></div>
+    </div>
+    <nav class="space-y-6 px-3 py-4">
+      {% for group in nav %}
+        <div>
+          {% if group.label %}<p class="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-blue-200/60">{{ group.label }}</p>{% endif %}
+          <ul class="space-y-1">
+            {% for item in group.items %}
+              <li><a href="{{ item.href }}" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm {% if item.active %}bg-white/15 font-semibold text-white{% else %}text-blue-100 hover:bg-white/10{% endif %}">
+                {% include "core/_icon.html" with name=item.icon %}<span>{{ item.label }}</span></a></li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    </nav>
+  </aside>
+  <div class="lg:pl-64">
+    <header class="sticky top-0 z-10 flex h-16 items-center gap-3 border-b border-slate-200 bg-white/90 px-4 backdrop-blur lg:px-8">
+      <button type="button" class="rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden" @click="open = true" aria-label="Buka menu">
+        {% include "core/_icon.html" with name="menu" %}</button>
+      {% if allowed_branches|length > 1 %}
+        <form method="post" action="{% url 'core:switch_branch' %}">{% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <select name="branch" onchange="this.form.submit()" aria-label="Cabang aktif"
+                  class="rounded-lg border border-slate-300 bg-white py-1.5 pl-3 pr-8 text-sm font-semibold text-slate-800">
+            {% if not current_branch %}<option value="">Pilih cabang…</option>{% endif %}
+            {% for b in allowed_branches %}<option value="{{ b.pk }}" {% if current_branch and b.pk == current_branch.pk %}selected{% endif %}>{{ b.name }}</option>{% endfor %}
+          </select>
+        </form>
+      {% elif current_branch %}
+        <span class="text-sm font-semibold text-slate-800">{{ current_branch.name }}</span>
+      {% endif %}
+      <div class="ml-auto flex items-center gap-3">
+        <div class="hidden text-right text-sm leading-tight sm:block">
+          <p class="font-medium text-slate-800">{{ user.display_name }}</p>
+          {% if role_label %}<p class="text-xs text-slate-500">{{ role_label }}</p>{% endif %}
+        </div>
+        <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button class="btn btn-secondary">Keluar</button></form>
+      </div>
+    </header>
+    <main class="mx-auto max-w-7xl px-4 py-6 lg:px-8">
+      {% include "core/_messages.html" %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+</body>
+</html>

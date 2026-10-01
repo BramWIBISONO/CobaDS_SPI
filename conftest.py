@@ -6,6 +6,7 @@ def _fast_test_settings(settings):
     settings.CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
     settings.PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
     settings.EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
+    settings.WHITENOISE_AUTOREFRESH = True            # uji tidak menjalankan collectstatic (tanpa folder staticfiles/)
     from django.core.cache import cache
 
     cache.clear()

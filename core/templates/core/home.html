@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Beranda{% endblock %}
+{% block content %}
+<div class="mb-6">
+  <h1 class="text-2xl font-semibold text-slate-900">{{ current_branch.name }}</h1>
+  <p class="text-sm text-slate-500">{{ current_branch.code }} · {{ current_branch.unit_id }} · {{ current_branch.city|default:"kota belum diisi" }} · status {{ current_branch.status }}</p>
+</div>
+<div class="card p-5">
+  <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Isi data cabang</h2>
+  <dl class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+    {% for c in counts %}
+      <div class="rounded-lg bg-slate-50 p-3"><dt class="text-xs text-slate-500">{{ c.label }}</dt>
+        <dd class="mt-1 text-xl font-semibold text-slate-900">{{ c.count }}</dd></div>
+    {% endfor %}
+  </dl>
+</div>
+{% endblock %}

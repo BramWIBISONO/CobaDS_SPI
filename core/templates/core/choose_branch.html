@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Pilih cabang{% endblock %}
+{% block content %}
+<div class="mx-auto max-w-lg card p-6">
+  <h1 class="text-lg font-semibold">Pilih cabang</h1>
+  <p class="mt-1 text-sm text-slate-500">Anda punya akses ke beberapa cabang. Data setiap cabang terpisah.</p>
+  <ul class="mt-4 space-y-2">{% for b in branches %}
+    <li><form method="post" action="{% url 'core:switch_branch' %}">{% csrf_token %}<input type="hidden" name="branch" value="{{ b.pk }}">
+      <button class="w-full rounded-lg border border-slate-200 px-4 py-3 text-left hover:border-brand-500 hover:bg-brand-50">
+        <span class="font-semibold">{{ b.name }}</span> <span class="text-sm text-slate-500">{{ b.code }}</span></button></form></li>
+  {% endfor %}</ul>
+</div>
+{% endblock %}

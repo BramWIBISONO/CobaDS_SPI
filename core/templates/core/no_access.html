@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Belum ada akses{% endblock %}
+{% block content %}
+<div class="mx-auto max-w-lg card p-6 text-center">
+  {% if reason == "role" %}
+    <h1 class="text-lg font-semibold">Belum ada halaman untuk peran Anda</h1>
+    <p class="mt-2 text-sm text-slate-500">Peran Anda di {{ current_branch.name }} belum punya halaman di aplikasi ini.</p>
+  {% else %}
+    <h1 class="text-lg font-semibold">Akun Anda belum punya akses cabang</h1>
+    <p class="mt-2 text-sm text-slate-500">Minta Branch Admin cabang Anda memberi peran untuk email <strong>{{ user.email }}</strong>.</p>
+  {% endif %}
+</div>
+{% endblock %}
