@@ -7,3 +7,5 @@ media/
 staticfiles/
 node_modules/
 .pytest_cache/
+.claude/
+.verify/
