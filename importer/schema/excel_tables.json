@@ -1,0 +1,6933 @@
+{
+ "version": 1,
+ "source": {
+  "layout": "00_SYSTEM/APP_BUILD_V2/_scripts/v2_layout.py",
+  "workbook": "SPI_STUDENT-SPP_APP_2026_09_v4.xlsm"
+ },
+ "tables": [
+  {
+   "sheet": "STUDENT_MASTER",
+   "app": "students",
+   "model": "StudentMaster",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "std",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Student ID",
+     "name": "std",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "ID v1",
+     "name": "v1",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Murid",
+     "name": "nama",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Asli",
+     "name": "nama_asli",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Kelas",
+     "name": "kode_raw",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status Kode Kelas",
+     "name": "kode_status",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bahasa",
+     "name": "bahasa",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tipe (dari kode)",
+     "name": "tipe_kode",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tipe Kelas (DB Murid)",
+     "name": "tipe_asli",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Program",
+     "name": "program",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Level",
+     "name": "level",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Guru",
+     "name": "guru",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Mode",
+     "name": "mode",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sekolah",
+     "name": "sekolah",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Partner ID",
+     "name": "partner_id",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kota",
+     "name": "kota",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Unit ID",
+     "name": "unit",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Join",
+     "name": "join",
+     "avail": "SEBAGIAN",
+     "kind": "date",
+     "stored": true,
+     "text_field": "join_text",
+     "aliases": []
+    },
+    {
+     "header": "Harga SPP",
+     "name": "harga",
+     "avail": "ASLI",
+     "kind": "number",
+     "stored": true,
+     "text_field": "harga_text",
+     "aliases": []
+    },
+    {
+     "header": "Status Terakhir",
+     "name": "status_last",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bulan Status",
+     "name": "month_last",
+     "avail": "ASLI",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Issue Terbuka",
+     "name": "issues",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Pembayar",
+     "name": "payer",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status Sekarang",
+     "name": "st_now",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status Awal (Sep 2026)",
+     "name": "st_base",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Keterangan Status Awal",
+     "name": "st_base_src",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Mulai Cuti (awal)",
+     "name": "leave_start",
+     "avail": "TURUNAN",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Parent ID",
+     "name": "par",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Orang Tua",
+     "name": "par_nama",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "WhatsApp Orang Tua",
+     "name": "par_wa",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tanggal Lahir",
+     "name": "lahir",
+     "avail": "INPUT",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "No. HP Kontak",
+     "name": "hp",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Kelas (ubah)",
+     "name": "kode_in",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Kelas (dipakai)",
+     "name": "kode_use",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Program (ubah)",
+     "name": "prog_in",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Program (dipakai)",
+     "name": "prog_use",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Level (ubah)",
+     "name": "level_in",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Level (dipakai)",
+     "name": "level_use",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Guru (ubah)",
+     "name": "guru_in",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Guru (dipakai)",
+     "name": "guru_use",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Harga SPP (ubah)",
+     "name": "harga_in",
+     "avail": "INPUT",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Harga SPP (dipakai)",
+     "name": "harga_use",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sekolah (ubah)",
+     "name": "sekolah_in",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sekolah (dipakai)",
+     "name": "sekolah_use",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Kelas (terbaca)",
+     "name": "kode_read",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student Report (sumber)",
+     "name": "sr_src",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student Report",
+     "name": "sr",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Link Student Report",
+     "name": "sr_link",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sertifikat (sumber)",
+     "name": "cert_src",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sertifikat",
+     "name": "cert",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Link Sertifikat",
+     "name": "cert_link",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sertifikat Terakhir",
+     "name": "cert_level",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Progres (%)",
+     "name": "prog_pct",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Progres Belajar",
+     "name": "progres",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan Akademik",
+     "name": "cat_akad",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Rekomendasi Berikutnya",
+     "name": "rekom",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kelengkapan Data",
+     "name": "lengkap",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Data Belum Lengkap",
+     "name": "kurang",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validation Status",
+     "name": "val_status",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validator",
+     "name": "val_by",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validation Date",
+     "name": "val_date",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan Validator",
+     "name": "val_note",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Detail Student Report (sumber)",
+     "name": "sr_detail",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Detail Sertifikat (sumber)",
+     "name": "cert_detail",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source File",
+     "name": "prov_file",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Sheet",
+     "name": "prov_sheet",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Row",
+     "name": "prov_row",
+     "avail": "SISTEM",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Type",
+     "name": "prov_type",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Batch",
+     "name": "prov_batch",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Date",
+     "name": "prov_date",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "STUDENT_ID_MAPPING",
+   "app": "students",
+   "model": "StudentIdMapping",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "map",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Student ID",
+     "name": "std",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Murid (DB Murid)",
+     "name": "nama_db",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Kelas",
+     "name": "code",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Hasil",
+     "name": "hasil",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Keterangan",
+     "name": "ket",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validation Status",
+     "name": "val_status",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validator",
+     "name": "val_by",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validation Date",
+     "name": "val_date",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan Validator",
+     "name": "val_note",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Mapping ID",
+     "name": "map",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID (usulan)",
+     "name": "std_usulan",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source System",
+     "name": "system",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Original Name",
+     "name": "name",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Normalized Name",
+     "name": "norm",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Match Status",
+     "name": "status",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Matching Confidence",
+     "name": "conf",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Matching Evidence",
+     "name": "evidence",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Baris CEK_NAMA",
+     "name": "ceknama_row",
+     "avail": "SISTEM",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source File",
+     "name": "prov_file",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Sheet",
+     "name": "prov_sheet",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Row",
+     "name": "prov_row",
+     "avail": "SISTEM",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Type",
+     "name": "prov_type",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Batch",
+     "name": "prov_batch",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Date",
+     "name": "prov_date",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "STUDENT_OFF",
+   "app": "students",
+   "model": "StudentOff",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "off_id",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Nama Murid",
+     "name": "nama",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID",
+     "name": "std",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bulan Off",
+     "name": "month",
+     "avail": "ASLI",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tanggal Off",
+     "name": "tgl",
+     "avail": "SEBAGIAN",
+     "kind": "date",
+     "stored": true,
+     "text_field": "tgl_text",
+     "aliases": []
+    },
+    {
+     "header": "Alasan Off",
+     "name": "alasan",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kategori Alasan",
+     "name": "kategori",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status",
+     "name": "status",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Kelas Terakhir",
+     "name": "kode",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Program",
+     "name": "program",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Level",
+     "name": "level",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Guru Terakhir",
+     "name": "guru",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Mode",
+     "name": "mode",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sekolah",
+     "name": "sekolah",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kota",
+     "name": "kota",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bulan Aktif Terakhir",
+     "name": "last_active",
+     "avail": "TURUNAN",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Lama Aktif Sebelum Off (bln)",
+     "name": "n_active",
+     "avail": "TURUNAN",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tanggal Join",
+     "name": "join",
+     "avail": "SEBAGIAN",
+     "kind": "date",
+     "stored": true,
+     "text_field": "join_text",
+     "aliases": []
+    },
+    {
+     "header": "Status Murid (bulan terbaru)",
+     "name": "status_now",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Lama OFF (bln)",
+     "name": "lama_off",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Follow-up di Sumber",
+     "name": "fu_src",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tindak Lanjut",
+     "name": "fu_aksi",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tgl Follow-up Terakhir",
+     "name": "fu_tgl",
+     "avail": "FORMULA",
+     "kind": "date",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tgl Follow-up Berikutnya",
+     "name": "fu_next",
+     "avail": "FORMULA",
+     "kind": "date",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "PIC Follow-up",
+     "name": "fu_pic",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan Follow-up",
+     "name": "fu_note",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Prioritas",
+     "name": "prioritas",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tindakan Berikutnya",
+     "name": "next",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validation Status",
+     "name": "val_status",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validator",
+     "name": "val_by",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validation Date",
+     "name": "val_date",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan",
+     "name": "val_note",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Off Record ID",
+     "name": "off_id",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "ID v1",
+     "name": "v1",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode di Sheet Lain",
+     "name": "kode_lain",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sumber Tanggal Off",
+     "name": "tgl_src",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Reason ID",
+     "name": "reason_ids",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sumber Alasan",
+     "name": "sumber",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "SPP Terakhir",
+     "name": "spp",
+     "avail": "KOSONG",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status (riwayat DB Murid)",
+     "name": "status_src",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kategori (INPUT CENTER)",
+     "name": "kat_in",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source File",
+     "name": "prov_file",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Sheet",
+     "name": "prov_sheet",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Row",
+     "name": "prov_row",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Type",
+     "name": "prov_type",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Batch",
+     "name": "prov_batch",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Date",
+     "name": "prov_date",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "S360",
+     "name": "s360",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "OFF_REASON_MASTER",
+   "app": "masterdata",
+   "model": "OffReasonMaster",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "rid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Reason ID",
+     "name": "rid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Alasan Asli",
+     "name": "text",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Murid yang Off (bulan Off)",
+     "name": "murid",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Jumlah Off",
+     "name": "n",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kategori",
+     "name": "cat_use",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Ganti Kategori (bila salah)",
+     "name": "cat_final",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sumber",
+     "name": "source",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validation Status",
+     "name": "val_status",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validator",
+     "name": "val_by",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validation Date",
+     "name": "val_date",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan Validator",
+     "name": "val_note",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kategori Usulan Sistem",
+     "name": "cat",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sel Sumber (contoh)",
+     "name": "cells",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "CLASS_MASTER",
+   "app": "classes",
+   "model": "ClassMaster",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "class_id",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Class ID",
+     "name": "class_id",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Kelas",
+     "name": "code",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Unit",
+     "name": "unit",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bahasa",
+     "name": "bahasa",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tipe Kelas",
+     "name": "tipe",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Program",
+     "name": "program",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Level",
+     "name": "level",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Guru",
+     "name": "guru",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Mode",
+     "name": "mode",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sekolah",
+     "name": "sekolah",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Capacity",
+     "name": "cap",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Jumlah Siswa (Aktif)",
+     "name": "n_aktif",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Anggota Cuti",
+     "name": "n_cuti",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Anggota Tidak Aktif",
+     "name": "n_off",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Utilization",
+     "name": "util",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status Kapasitas",
+     "name": "cap_status",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status Kelas",
+     "name": "cls_status",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tanggal Mulai (bulan kode)",
+     "name": "start",
+     "avail": "TURUNAN",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tanggal Selesai (aktif terakhir)",
+     "name": "end",
+     "avail": "TURUNAN",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Issue Terbuka",
+     "name": "issues",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Anggota Aktif (nama)",
+     "name": "anggota",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Anggota Cuti (nama)",
+     "name": "anggota_cuti",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Format Kode",
+     "name": "fmt",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status Kode",
+     "name": "status_kode",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Pembacaan",
+     "name": "verdict",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tahun Kode",
+     "name": "year",
+     "avail": "TURUNAN",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bulan Kode",
+     "name": "month",
+     "avail": "TURUNAN",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Urutan",
+     "name": "seq",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kandidat Pembacaan",
+     "name": "cands",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Murid dalam Riwayat",
+     "name": "n_hist",
+     "avail": "TURUNAN",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Ditemukan di Sheet",
+     "name": "sheets",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Jumlah Kemunculan",
+     "name": "n_occ",
+     "avail": "SISTEM",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validation Status",
+     "name": "val_status",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validator",
+     "name": "val_by",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validation Date",
+     "name": "val_date",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan Validator",
+     "name": "val_note",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "CLASS_MEMBERS",
+   "app": "classes",
+   "model": "ClassMembers",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "mbr",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Kode Kelas",
+     "name": "code",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID",
+     "name": "std",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Murid",
+     "name": "nama",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status Keanggotaan",
+     "name": "status_plain",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status Murid (bulan terbaru)",
+     "name": "status_now",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Periode Terlihat",
+     "name": "months_all",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Join Date",
+     "name": "join",
+     "avail": "SEBAGIAN",
+     "kind": "date",
+     "stored": true,
+     "text_field": "join_text",
+     "aliases": []
+    },
+    {
+     "header": "Program",
+     "name": "program",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Level",
+     "name": "level",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Guru",
+     "name": "guru",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Mode",
+     "name": "mode",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sekolah",
+     "name": "sekolah",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sumber",
+     "name": "sources_plain",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kepastian",
+     "name": "kepastian",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validation Status",
+     "name": "val_status",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validator",
+     "name": "val_by",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validation Date",
+     "name": "val_date",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan Validator",
+     "name": "val_note",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Membership ID",
+     "name": "mbr",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Class ID",
+     "name": "class_id",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID (usulan)",
+     "name": "std_usulan",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama di Sumber",
+     "name": "nama_sumber",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "ID v1",
+     "name": "v1",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Saat Ini (DB Murid)",
+     "name": "kode_saat_ini",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status Membership",
+     "name": "status",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kelompok (bulan terbaru)",
+     "name": "kelompok",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Start Date (bukti)",
+     "name": "start",
+     "avail": "TURUNAN",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "End Date (bukti)",
+     "name": "end",
+     "avail": "TURUNAN",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bukti",
+     "name": "bukti",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Match Status",
+     "name": "match",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Matching Confidence",
+     "name": "conf",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Dasar Pencocokan",
+     "name": "method",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source File",
+     "name": "prov_file",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Sheet",
+     "name": "prov_sheet",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Row",
+     "name": "prov_row",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Type",
+     "name": "prov_type",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Batch",
+     "name": "prov_batch",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Date",
+     "name": "prov_date",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "S360",
+     "name": "s360",
+     "avail": "SISTEM",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "CLASS_SCHEDULE",
+   "app": "classes",
+   "model": "ClassSchedule",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "sid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Schedule ID",
+     "name": "sid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Class Code",
+     "name": "code",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Class ID",
+     "name": "class_id",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Day",
+     "name": "day",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sesi",
+     "name": "session",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Start Time",
+     "name": "start",
+     "avail": "ASLI",
+     "kind": "time",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "End Time",
+     "name": "end",
+     "avail": "ASLI",
+     "kind": "time",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Jam di Teks",
+     "name": "time_in_text",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Room",
+     "name": "room",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Room ID",
+     "name": "room_id",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Mode",
+     "name": "mode",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Teacher",
+     "name": "teacher",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Teacher ID",
+     "name": "teacher_id",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Effective From",
+     "name": "eff_from",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Effective Until",
+     "name": "eff_until",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Teks Kelas Asli",
+     "name": "text",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Level di Teks",
+     "name": "level_text",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bahasa di Teks",
+     "name": "lang_text",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Murid di Teks (usulan)",
+     "name": "murid_usulan",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan",
+     "name": "flag",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source File",
+     "name": "prov_file",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Sheet",
+     "name": "prov_sheet",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Row",
+     "name": "prov_row",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Type",
+     "name": "prov_type",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Batch",
+     "name": "prov_batch",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Date",
+     "name": "prov_date",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "TEACHER_MASTER",
+   "app": "masterdata",
+   "model": "TeacherMaster",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "tid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Teacher ID",
+     "name": "tid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Employee ID",
+     "name": "emp",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Name",
+     "name": "name",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Phone",
+     "name": "phone",
+     "avail": "KOSONG",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Email",
+     "name": "email",
+     "avail": "KOSONG",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Specialization",
+     "name": "spec",
+     "avail": "KOSONG",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Employment Type",
+     "name": "emp_type",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Unit ID",
+     "name": "unit",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status",
+     "name": "status",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Dasar Status",
+     "name": "basis",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Join Date",
+     "name": "join",
+     "avail": "KOSONG",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source",
+     "name": "sources",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Varian Nama di Sumber",
+     "name": "variants",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bulan Pertama Terlihat",
+     "name": "first",
+     "avail": "TURUNAN",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bulan Terakhir Terlihat",
+     "name": "last",
+     "avail": "TURUNAN",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Lengkap (payroll)",
+     "name": "emp_name",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sel Payroll",
+     "name": "emp_cell",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Mungkin Orang yang Sama",
+     "name": "usulan",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Murid Aktif (bulan terbaru)",
+     "name": "n_aktif",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Slot Jadwal",
+     "name": "n_slot",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validation Status",
+     "name": "val_status",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validator",
+     "name": "val_by",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validation Date",
+     "name": "val_date",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan Validator",
+     "name": "val_note",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "PROGRAM_MASTER",
+   "app": "masterdata",
+   "model": "ProgramMaster",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "pid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Program ID",
+     "name": "pid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Business Unit",
+     "name": "bu",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Program",
+     "name": "program",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Level",
+     "name": "level",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Level",
+     "name": "kode",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Urutan",
+     "name": "order",
+     "avail": "TURUNAN",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Varian di Sumber",
+     "name": "variants",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status",
+     "name": "status",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Murid Aktif (bulan terbaru)",
+     "name": "n_aktif",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Murid-Bulan Tercatat",
+     "name": "n_months",
+     "avail": "TURUNAN",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source",
+     "name": "sources",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "PARTNER_MASTER",
+   "app": "masterdata",
+   "model": "PartnerMaster",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "pid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Partner ID",
+     "name": "pid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Name",
+     "name": "name",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Type",
+     "name": "type",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Contact Person",
+     "name": "contact",
+     "avail": "KOSONG",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Phone",
+     "name": "phone",
+     "avail": "KOSONG",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Email",
+     "name": "email",
+     "avail": "KOSONG",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Address",
+     "name": "address",
+     "avail": "KOSONG",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "City",
+     "name": "city",
+     "avail": "KOSONG",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status",
+     "name": "status",
+     "avail": "KOSONG",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source",
+     "name": "sources",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Varian Nama",
+     "name": "variants",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Mungkin Sekolah yang Sama",
+     "name": "usulan",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Keputusan Varian",
+     "name": "keputusan",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Jumlah Murid",
+     "name": "n_students",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validation Status",
+     "name": "val_status",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validator",
+     "name": "val_by",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Validation Date",
+     "name": "val_date",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan Validator",
+     "name": "val_note",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "ROOM_MASTER",
+   "app": "masterdata",
+   "model": "RoomMaster",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "rid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Room ID",
+     "name": "rid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Room Name",
+     "name": "name",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Type",
+     "name": "type",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Capacity",
+     "name": "cap",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Unit ID",
+     "name": "unit",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status",
+     "name": "status",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source",
+     "name": "source",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Varian Nama",
+     "name": "variants",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Slot Jadwal",
+     "name": "n_slot",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "UNIT_MASTER",
+   "app": "masterdata",
+   "model": "UnitMaster",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "uid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Unit ID",
+     "name": "uid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Unit Name",
+     "name": "name",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Unit Type",
+     "name": "type",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Parent Unit",
+     "name": "parent",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "City",
+     "name": "city",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Province",
+     "name": "province",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status",
+     "name": "status",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Notes",
+     "name": "notes",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Murid",
+     "name": "n_students",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "ISSUE_UNIT",
+   "app": "quality",
+   "model": "IssueUnit",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "iid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Issue ID",
+     "name": "iid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Unit",
+     "name": "unit",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Issue Type",
+     "name": "type",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID",
+     "name": "std",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Murid",
+     "name": "nama",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Kelas",
+     "name": "code",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Month",
+     "name": "month",
+     "avail": "SEBAGIAN",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source",
+     "name": "source",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Issue Description",
+     "name": "desc",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Expected Value",
+     "name": "expected",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Actual Value",
+     "name": "actual",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Severity",
+     "name": "sev",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status",
+     "name": "status",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Assigned To",
+     "name": "assigned",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Reviewer",
+     "name": "reviewer",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Created Date",
+     "name": "created",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Resolved Date",
+     "name": "resolved",
+     "avail": "INPUT",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Resolution",
+     "name": "resolution",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Evidence",
+     "name": "evidence",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kondisi Masih Ada",
+     "name": "still",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kategori",
+     "name": "kat",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "S360",
+     "name": "s360",
+     "avail": "SISTEM",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "BUKU_KAS",
+   "app": "finance",
+   "model": "BukuKas",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "lid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Bulan",
+     "name": "bulan",
+     "avail": "ASLI",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tanggal",
+     "name": "tgl",
+     "avail": "ASLI",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Keterangan",
+     "name": "ket",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Akun",
+     "name": "kode",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Jenis",
+     "name": "jenis",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nominal (Rp)",
+     "name": "nominal",
+     "avail": "ASLI",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Murid (hasil sistem)",
+     "name": "murid_sys",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Keyakinan",
+     "name": "yakin",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Murid (koreksi)",
+     "name": "kor1",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Murid kedua (koreksi)",
+     "name": "kor2",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan",
+     "name": "catatan",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Murid (dipakai)",
+     "name": "murid_use",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Dihitung",
+     "name": "dihitung",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Periode Tagihan (sistem)",
+     "name": "per_sys",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Periode Tagihan (koreksi)",
+     "name": "per_in",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Periode Tagihan",
+     "name": "per",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan Periode",
+     "name": "per_note",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID 1",
+     "name": "s1",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID 2",
+     "name": "s2",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID 3",
+     "name": "s3",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID 4",
+     "name": "s4",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bagian 1 (Rp)",
+     "name": "b1",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bagian 2 (Rp)",
+     "name": "b2",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bagian 3 (Rp)",
+     "name": "b3",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bagian 4 (Rp)",
+     "name": "b4",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "ID Baris",
+     "name": "lid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Versi Jurnal",
+     "name": "versi",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Siswa (kolom jurnal)",
+     "name": "nama_siswa",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bukti Transfer",
+     "name": "bukti",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Keterangan Bank",
+     "name": "ket_bank",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Entitas / Kanal",
+     "name": "entitas",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Dasar Tautan",
+     "name": "linked_by",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan Pencocokan",
+     "name": "note",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kandidat Lain",
+     "name": "cands",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bulan di Keterangan",
+     "name": "bln_teks",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID sistem 1",
+     "name": "ss1",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID sistem 2",
+     "name": "ss2",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID sistem 3",
+     "name": "ss3",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID sistem 4",
+     "name": "ss4",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bagian sistem 1 (Rp)",
+     "name": "sb1",
+     "avail": "TURUNAN",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bagian sistem 2 (Rp)",
+     "name": "sb2",
+     "avail": "TURUNAN",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bagian sistem 3 (Rp)",
+     "name": "sb3",
+     "avail": "TURUNAN",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bagian sistem 4 (Rp)",
+     "name": "sb4",
+     "avail": "TURUNAN",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source File",
+     "name": "prov_file",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Sheet",
+     "name": "prov_sheet",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Row",
+     "name": "prov_row",
+     "avail": "SISTEM",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Type",
+     "name": "prov_type",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Batch",
+     "name": "prov_batch",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Date",
+     "name": "prov_date",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "PEMBAYAR",
+   "app": "finance",
+   "model": "Pembayar",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "pid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Nama Pembayar",
+     "name": "payer",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Murid (sumber)",
+     "name": "murid_src",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Murid (hasil sistem)",
+     "name": "murid_sys",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Keyakinan",
+     "name": "yakin",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Murid (koreksi)",
+     "name": "kor",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Murid (dipakai)",
+     "name": "murid_use",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID (dipakai)",
+     "name": "std_use",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Payer ID",
+     "name": "pid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID (sistem)",
+     "name": "std_sys",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kandidat",
+     "name": "cands",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source File",
+     "name": "prov_file",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Sheet",
+     "name": "prov_sheet",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Row",
+     "name": "prov_row",
+     "avail": "SISTEM",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Type",
+     "name": "prov_type",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Batch",
+     "name": "prov_batch",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Date",
+     "name": "prov_date",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "NOTA_LOG",
+   "app": "finance",
+   "model": "NotaLog",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "no",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Nomor Nota",
+     "name": "no",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tanggal Dibuat",
+     "name": "tgl",
+     "avail": "SISTEM",
+     "kind": "datetime",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID",
+     "name": "std",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Murid",
+     "name": "nama",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Periode",
+     "name": "periode",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kepada",
+     "name": "kepada",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tagihan (Rp)",
+     "name": "tagihan",
+     "avail": "SISTEM",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Terbayar di Buku Kas (Rp)",
+     "name": "bayar",
+     "avail": "SISTEM",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status",
+     "name": "status",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "File PDF",
+     "name": "file",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Dibuat Oleh",
+     "name": "user",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan",
+     "name": "catatan",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "SIMULASI_JADWAL",
+   "app": "classes",
+   "model": "SimulasiJadwal",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "no",
+   "unique": true,
+   "skip_key_only": true,
+   "stop_at_blank": true,
+   "fields": [
+    {
+     "header": "No Simulasi",
+     "name": "no",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Murid",
+     "name": "murid",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Hari",
+     "name": "hari",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Jam Mulai",
+     "name": "mulai",
+     "avail": "INPUT",
+     "kind": "time",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Jam Selesai",
+     "name": "selesai",
+     "avail": "INPUT",
+     "kind": "time",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Guru",
+     "name": "guru",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Kelas",
+     "name": "kode",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Ruang",
+     "name": "ruang",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status Rencana",
+     "name": "status",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan",
+     "name": "catatan",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bentrok Guru",
+     "name": "bt_guru",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bentrok Ruang",
+     "name": "bt_ruang",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bentrok di Simulasi",
+     "name": "bt_sim",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kapasitas Kelas",
+     "name": "kap",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Hasil Cek",
+     "name": "hasil",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "PERIODE",
+   "app": "finance",
+   "model": "Periode",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "per",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Periode",
+     "name": "per",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Label",
+     "name": "label",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Mulai",
+     "name": "mulai",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Akhir",
+     "name": "akhir",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status",
+     "name": "status",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Dibuka Pada",
+     "name": "buka",
+     "avail": "SISTEM",
+     "kind": "datetime",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Dibuka Oleh",
+     "name": "buka_oleh",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Ditutup Pada",
+     "name": "tutup",
+     "avail": "SISTEM",
+     "kind": "datetime",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Ditutup Oleh",
+     "name": "tutup_oleh",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan Penutupan",
+     "name": "cat",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tagihan (murid)",
+     "name": "n_tag",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tagihan (Rp)",
+     "name": "tag",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Terbayar (Rp)",
+     "name": "bayar",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sesi Terealisasi",
+     "name": "sesi",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sesi Belum Dikonfirmasi",
+     "name": "sesi_unc",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "SPP di Buku Kas (Rp)",
+     "name": "kas",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "STATUS_EVENT",
+   "app": "students",
+   "model": "StatusEvent",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "eid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Event ID",
+     "name": "eid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tanggal Efektif",
+     "name": "tgl",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Periode",
+     "name": "per",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID",
+     "name": "std",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Murid",
+     "name": "nama",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status Baru",
+     "name": "status",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Jenis",
+     "name": "jenis",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Alasan",
+     "name": "alasan",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Perkiraan Kembali",
+     "name": "kembali",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Dikonfirmasi",
+     "name": "konfirm",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Diinput Oleh",
+     "name": "oleh",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Diinput Pada",
+     "name": "pada",
+     "avail": "SISTEM",
+     "kind": "datetime",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sumber",
+     "name": "sumber",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Urutan",
+     "name": "ord",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "PARENT_MASTER",
+   "app": "students",
+   "model": "ParentMaster",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "pid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Parent ID",
+     "name": "pid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Orang Tua",
+     "name": "nama",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Hubungan",
+     "name": "hub",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "WhatsApp",
+     "name": "wa",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Email",
+     "name": "email",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Alamat",
+     "name": "alamat",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Referensi Pembayaran / VA",
+     "name": "va",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Preferensi Komunikasi",
+     "name": "pref",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Anak (Student ID)",
+     "name": "anak",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Anak",
+     "name": "anak_nama",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Jumlah Anak",
+     "name": "n_anak",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Anak di Sumber",
+     "name": "anak_src",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sumber",
+     "name": "sumber",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan",
+     "name": "catatan",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bukti",
+     "name": "bukti",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source File",
+     "name": "prov_file",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Sheet",
+     "name": "prov_sheet",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Row",
+     "name": "prov_row",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Type",
+     "name": "prov_type",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Batch",
+     "name": "prov_batch",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Date",
+     "name": "prov_date",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "SPP_TAGIHAN",
+   "app": "finance",
+   "model": "SppTagihan",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "tid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Tagihan ID",
+     "name": "tid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Periode",
+     "name": "per",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID",
+     "name": "std",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Murid",
+     "name": "nama",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status Murid saat Ditagih",
+     "name": "st",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Harga SPP",
+     "name": "harga",
+     "avail": "SISTEM",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Diskon",
+     "name": "diskon",
+     "avail": "INPUT",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Penyesuaian",
+     "name": "adj",
+     "avail": "INPUT",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tagihan",
+     "name": "due",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Terbayar Buku Kas",
+     "name": "paid_kas",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Terverifikasi (belum di buku kas)",
+     "name": "paid_ver",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Menunggu Verifikasi",
+     "name": "wait",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Terbayar (dipakai)",
+     "name": "paid",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sisa",
+     "name": "sisa",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status Pembayaran",
+     "name": "status",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tanggal Bayar Terakhir",
+     "name": "tgl_bayar",
+     "avail": "FORMULA",
+     "kind": "date",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Keputusan",
+     "name": "keputusan",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan",
+     "name": "catatan",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Cek",
+     "name": "cek",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Dibuat Pada",
+     "name": "pada",
+     "avail": "SISTEM",
+     "kind": "datetime",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Dibuat Oleh",
+     "name": "oleh",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sumber",
+     "name": "sumber",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kunci",
+     "name": "key",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "BUKTI_BAYAR",
+   "app": "finance",
+   "model": "BuktiBayar",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "bid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Pembayaran ID",
+     "name": "bid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Diinput Pada",
+     "name": "pada",
+     "avail": "SISTEM",
+     "kind": "datetime",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID",
+     "name": "std",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Murid",
+     "name": "nama",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Periode Tagihan",
+     "name": "per",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nominal",
+     "name": "nominal",
+     "avail": "SISTEM",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tanggal Bayar",
+     "name": "tgl",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Metode",
+     "name": "metode",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bukti Transfer",
+     "name": "bukti",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Referensi",
+     "name": "ref",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status Verifikasi",
+     "name": "ver",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Saran Sistem",
+     "name": "saran",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Baris Buku Kas",
+     "name": "kas",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan",
+     "name": "catatan",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Diinput Oleh",
+     "name": "oleh",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Diverifikasi Oleh",
+     "name": "ver_oleh",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Diverifikasi Pada",
+     "name": "ver_pada",
+     "avail": "SISTEM",
+     "kind": "datetime",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "SESI",
+   "app": "classes",
+   "model": "Sesi",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "sid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Sesi ID",
+     "name": "sid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Periode",
+     "name": "per",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tanggal",
+     "name": "tgl",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Hari",
+     "name": "hari",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Mulai",
+     "name": "mulai",
+     "avail": "SISTEM",
+     "kind": "time",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Selesai",
+     "name": "selesai",
+     "avail": "SISTEM",
+     "kind": "time",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Guru",
+     "name": "guru",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Kelas",
+     "name": "kode",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kelas (teks)",
+     "name": "kelas",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Ruang",
+     "name": "ruang",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Slot Jadwal",
+     "name": "slot",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status Sesi",
+     "name": "status",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Murid Hadir",
+     "name": "hadir",
+     "avail": "INPUT",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Murid Tidak Hadir",
+     "name": "absen",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Dikonfirmasi Oleh",
+     "name": "konf_oleh",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Dikonfirmasi Pada",
+     "name": "konf_pada",
+     "avail": "SISTEM",
+     "kind": "datetime",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan",
+     "name": "catatan",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sumber",
+     "name": "sumber",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kunci Tarif",
+     "name": "tkey",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tarif per Sesi",
+     "name": "tarif",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Fee",
+     "name": "fee",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Perlu Dicek",
+     "name": "cek",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "TARIF_FEE",
+   "app": "masterdata",
+   "model": "TarifFee",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "rid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Tarif ID",
+     "name": "rid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tipe Kelas",
+     "name": "tipe",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Program",
+     "name": "program",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bahasa",
+     "name": "bahasa",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tarif per Sesi",
+     "name": "tarif",
+     "avail": "INPUT",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Dasar Tarif",
+     "name": "dasar",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Berlaku Mulai",
+     "name": "mulai",
+     "avail": "INPUT",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sumber Tarif",
+     "name": "sumber",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan",
+     "name": "catatan",
+     "avail": "INPUT",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status",
+     "name": "status",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tarif (dipakai)",
+     "name": "tarif_ok",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "FOLLOW_UP",
+   "app": "students",
+   "model": "FollowUp",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "fid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Follow Up ID",
+     "name": "fid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tanggal",
+     "name": "tgl",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Periode",
+     "name": "per",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Jenis",
+     "name": "jenis",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID",
+     "name": "std",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Lead ID",
+     "name": "lead",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama",
+     "name": "nama",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "PIC",
+     "name": "pic",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status",
+     "name": "status",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tindak Lanjut",
+     "name": "aksi",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan / Hasil",
+     "name": "catatan",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tgl Berikutnya",
+     "name": "next",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Diinput Oleh",
+     "name": "oleh",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Diinput Pada",
+     "name": "pada",
+     "avail": "SISTEM",
+     "kind": "datetime",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sumber",
+     "name": "sumber",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Terbaru",
+     "name": "latest",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "ACADEMIC_RECORD",
+   "app": "students",
+   "model": "AcademicRecord",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "aid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Record ID",
+     "name": "aid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tanggal",
+     "name": "tgl",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Periode",
+     "name": "per",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID",
+     "name": "std",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Murid",
+     "name": "nama",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Progres (%)",
+     "name": "pct",
+     "avail": "SISTEM",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kesimpulan",
+     "name": "kes",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student Report",
+     "name": "sr",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Link Student Report",
+     "name": "sr_link",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sertifikat",
+     "name": "cert",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Link Sertifikat",
+     "name": "cert_link",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan Akademik",
+     "name": "cat",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Rekomendasi",
+     "name": "rekom",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Diinput Oleh",
+     "name": "oleh",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Diinput Pada",
+     "name": "pada",
+     "avail": "SISTEM",
+     "kind": "datetime",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sumber",
+     "name": "sumber",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "LEAD",
+   "app": "students",
+   "model": "Lead",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "lid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Lead ID",
+     "name": "lid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tanggal Masuk",
+     "name": "tgl",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Periode",
+     "name": "per",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Anak",
+     "name": "anak",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Orang Tua",
+     "name": "ortu",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "WhatsApp",
+     "name": "wa",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Email",
+     "name": "email",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sekolah",
+     "name": "sekolah",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Minat Program",
+     "name": "minat",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sumber",
+     "name": "sumber",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status",
+     "name": "status",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tgl Trial",
+     "name": "trial",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Hasil Trial",
+     "name": "hasil",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Alasan Tidak Lanjut",
+     "name": "lost",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID (konversi)",
+     "name": "std",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status Murid",
+     "name": "st_std",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "PIC",
+     "name": "pic",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan",
+     "name": "catatan",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Terakhir Diubah",
+     "name": "ubah",
+     "avail": "SISTEM",
+     "kind": "datetime",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Diinput Oleh",
+     "name": "oleh",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "DOKUMEN",
+   "app": "students",
+   "model": "Dokumen",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "did",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Dokumen ID",
+     "name": "did",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tanggal",
+     "name": "tgl",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID",
+     "name": "std",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Murid",
+     "name": "nama",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Jenis Dokumen",
+     "name": "jenis",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status",
+     "name": "status",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Link / Lokasi File",
+     "name": "link",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Catatan",
+     "name": "catatan",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Diinput Oleh",
+     "name": "oleh",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Diinput Pada",
+     "name": "pada",
+     "avail": "SISTEM",
+     "kind": "datetime",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "BUKU_KAS_KELUAR",
+   "app": "finance",
+   "model": "BukuKasKeluar",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "lid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Bulan",
+     "name": "bulan",
+     "avail": "ASLI",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tanggal",
+     "name": "tgl",
+     "avail": "ASLI",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Keterangan",
+     "name": "ket",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Akun",
+     "name": "kode",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kelompok",
+     "name": "kel",
+     "avail": "TURUNAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nominal (Rp)",
+     "name": "nominal",
+     "avail": "ASLI",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Entitas / Kanal",
+     "name": "entitas",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "ID Baris",
+     "name": "lid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source File",
+     "name": "prov_file",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Sheet",
+     "name": "prov_sheet",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Row",
+     "name": "prov_row",
+     "avail": "SISTEM",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Type",
+     "name": "prov_type",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Batch",
+     "name": "prov_batch",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Date",
+     "name": "prov_date",
+     "avail": "SISTEM",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "IMPORT_LOG",
+   "app": "audit",
+   "model": "ImportLog",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "batch",
+   "unique": false,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Import Batch",
+     "name": "batch",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Date",
+     "name": "date",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source File",
+     "name": "file",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Path",
+     "name": "path",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "SHA-256",
+     "name": "sha",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Sheets",
+     "name": "sheets",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Rows Imported",
+     "name": "rows",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Rows Excluded",
+     "name": "excluded",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Script Version",
+     "name": "ver",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Notes",
+     "name": "notes",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "SOURCE_REFERENCE",
+   "app": "audit",
+   "model": "SourceReference",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "sid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Source ID",
+     "name": "sid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source File",
+     "name": "file",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Source Sheet",
+     "name": "sheet",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Peran",
+     "name": "role",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Periode",
+     "name": "period",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Dipakai di",
+     "name": "used",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Baris",
+     "name": "rows",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Dikecualikan",
+     "name": "excluded",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "AUDIT_LOG",
+   "app": "audit",
+   "model": "AuditLog",
+   "header_row": 5,
+   "data_row": 6,
+   "key": "lid",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Log ID",
+     "name": "lid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "User",
+     "name": "user",
+     "avail": "SEBAGIAN",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Action",
+     "name": "action",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Entity",
+     "name": "entity",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Entity ID",
+     "name": "eid",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Field",
+     "name": "field",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Old Value",
+     "name": "old",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "New Value",
+     "name": "new",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Timestamp",
+     "name": "ts",
+     "avail": "SISTEM",
+     "kind": "datetime",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Detected By",
+     "name": "by",
+     "avail": "SISTEM",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "D_BULAN",
+   "app": "students",
+   "model": "DBulan",
+   "header_row": 3,
+   "data_row": 4,
+   "key": "key",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "Kunci (ID|yyyymm)",
+     "name": "key",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "ID",
+     "name": "v1",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Murid",
+     "name": "nama",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bulan",
+     "name": "bulan",
+     "avail": "ASLI",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status",
+     "name": "status",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tanggal status",
+     "name": "tgl_status",
+     "avail": "ASLI",
+     "kind": "date",
+     "stored": true,
+     "text_field": "tgl_status_text",
+     "aliases": []
+    },
+    {
+     "header": "Keterangan",
+     "name": "ket",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Level (Grade)",
+     "name": "grade",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Program",
+     "name": "program",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Guru (asli)",
+     "name": "guru_asli",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Guru (rapi)",
+     "name": "guru",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tipe Kelas",
+     "name": "tipe",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Mode",
+     "name": "mode",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kelompok",
+     "name": "kelompok",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sumber (sel asli)",
+     "name": "sumber",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID",
+     "name": "std",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Kelas (bulan itu)",
+     "name": "kode_bulan",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Kelas (terakhir, DB Murid)",
+     "name": "kode_terakhir",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sumber Kode Kelas",
+     "name": "kode_sumber",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Sekolah",
+     "name": "sekolah",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Issue Terbuka (bulan ini)",
+     "name": "issues",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Import Batch",
+     "name": "batch",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  },
+  {
+   "sheet": "D_MURID",
+   "app": "students",
+   "model": "DMurid",
+   "header_row": 3,
+   "data_row": 4,
+   "key": "v1",
+   "unique": true,
+   "skip_key_only": false,
+   "stop_at_blank": false,
+   "fields": [
+    {
+     "header": "ID",
+     "name": "v1",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Murid",
+     "name": "nama",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama (persis seperti di sumber)",
+     "name": "nama_persis_seperti_di_sumber",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Baris di DB Murid JKT",
+     "name": "baris_di_db_murid_jkt",
+     "avail": "ASLI",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": [
+      "Baris di DB Murid cabang"
+     ]
+    },
+    {
+     "header": "Kode Kelas",
+     "name": "kode_kelas",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tipe Kelas (rapi)",
+     "name": "tipe_kelas_rapi",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Tipe Kelas (asli)",
+     "name": "tipe_kelas_asli",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kelompok Usia",
+     "name": "kelompok_usia",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Mode (rapi)",
+     "name": "mode_rapi",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Mode (asli)",
+     "name": "mode_asli",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kota",
+     "name": "kota",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Pembagian",
+     "name": "pembagian",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama Sekolah",
+     "name": "nama_sekolah",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Join (tanggal)",
+     "name": "join_tanggal",
+     "avail": "ASLI",
+     "kind": "date",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Join (teks asli, kolom L)",
+     "name": "join_teks_asli_kolom_l",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Join (kolom M bila bukan tanggal)",
+     "name": "join_kolom_m_bila_bukan_tanggal",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Harga SPP (angka)",
+     "name": "harga_spp_angka",
+     "avail": "ASLI",
+     "kind": "number",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Harga SPP (teks asli bila bukan angka)",
+     "name": "harga_spp_teks_asli_bila_bukan_angka",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Nama di SPP Controling",
+     "name": "nama_di_spp_controling",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Baris SPP Controling",
+     "name": "baris_spp_controling",
+     "avail": "FORMULA",
+     "kind": "number",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kecocokan dengan SPP Controling",
+     "name": "kecocokan_dengan_spp_controling",
+     "avail": "FORMULA",
+     "kind": "text",
+     "stored": false,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Student ID",
+     "name": "std",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Status Kode Kelas",
+     "name": "status_kode_kelas",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Kelas Terbaca",
+     "name": "kode_kelas_terbaca",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Kelas Bukti Lain",
+     "name": "kode_kelas_bukti_lain",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Unit ID",
+     "name": "unit_id",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Bahasa (dari kode)",
+     "name": "bahasa_dari_kode",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Kode Kelas (dipakai)",
+     "name": "kode_kelas_dipakai",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Arti Kode Kelas",
+     "name": "arti_kode_kelas",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    },
+    {
+     "header": "Keterangan Kode Kelas",
+     "name": "keterangan_kode_kelas",
+     "avail": "ASLI",
+     "kind": "text",
+     "stored": true,
+     "text_field": null,
+     "aliases": []
+    }
+   ]
+  }
+ ]
+}

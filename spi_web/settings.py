@@ -22,6 +22,13 @@ INSTALLED_APPS = [
     "core",
     "accounts",
     "branches",
+    "masterdata",
+    "students",
+    "classes",
+    "finance",
+    "quality",
+    "audit",
+    "importer",
 ]
 
 MIDDLEWARE = [
