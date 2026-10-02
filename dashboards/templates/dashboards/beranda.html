@@ -1,0 +1,60 @@
+{% extends "base.html" %}{% load spi %}
+{% block title %}Beranda{% endblock %}
+{% block content %}
+{% url 'dashboards:laporan' as laporan_url %}
+<section class="mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-brand-900 via-brand-700 to-brand-500 p-6 text-white shadow-sm">
+  <p class="text-sm font-medium text-blue-100">{{ current_branch.code }}{% if current_branch.city %} · {{ current_branch.city }}{% endif %}</p>
+  <h1 class="mt-1 text-2xl font-extrabold sm:text-3xl">{{ current_branch.name }}</h1>
+  <p class="mt-2 text-sm text-blue-100">{{ h.judul }}</p>
+</section>
+
+<h2 class="section-title"><i class="ti ti-activity" aria-hidden="true"></i>Situasi sekarang</h2>
+<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+  {% include "components/kpi_card.html" with tone="murid" icon="users" label="Murid aktif (sekarang)" value=h.aktif|angka sub=h.sub_aktif href=laporan_url link_text="Lihat laporan murid" %}
+  {% include "components/kpi_card.html" with tone="spp" icon="cash" label=spp_label value=h.spp|rp sub=h.sub_spp href=laporan_url link_text="Lihat SPP" %}
+  {% include "components/kpi_card.html" with tone="off" icon="user-off" label="Murid OFF" value=h.off|angka sub=h.sub_off %}
+  {% include "components/kpi_card.html" with tone="kelas" icon="school" label="Kelas aktif" value=h.kelas|angka sub=h.sub_kelas %}
+  {% include "components/kpi_card.html" with icon="list-check" label="Perlu tindakan" soon=True sub="mendesak · hari ini · minggu ini — dibangun bersama halaman Tindakan" %}
+  {% include "components/kpi_card.html" with tone="kritis" icon="alert-triangle" label="Masalah kritis" value=h.kritis|angka sub=h.sub_kritis %}
+  {% include "components/kpi_card.html" with icon="file-invoice" label="Tagihan belum dibayar (Rp)" soon=True sub="tagihan SPP v4 dibuat tombol BULAN BARU (tahap SPP)" %}
+  {% include "components/kpi_card.html" with tone="akad" icon="receipt" label="Menunggu verifikasi" value=h.bukti|angka sub=h.sub_bukti %}
+  {% include "components/kpi_card.html" with icon="calendar-pause" label="Cuti perlu review · sesi belum dikonfirmasi" soon=True sub="dibangun bersama Input Center & sesi" %}
+</div>
+
+<div class="mt-8 grid gap-4 lg:grid-cols-3">
+  <section class="card p-5 lg:col-span-2">
+    <h2 class="section-title"><i class="ti ti-calendar-event" aria-hidden="true"></i>Operasional bulan ini</h2>
+    <p class="text-sm text-slate-700">Periode berjalan (OPEN): <strong>{{ h.periode }}</strong></p>
+    <div class="mt-3 flex flex-wrap gap-2">
+      <span class="chip"><i class="ti ti-calendar-plus" aria-hidden="true"></i>BULAN BARU · tahap 2</span>
+      <span class="chip"><i class="ti ti-lock" aria-hidden="true"></i>TUTUP BULAN · tahap 2</span>
+    </div>
+  </section>
+  <section class="card p-5">
+    <h2 class="section-title"><i class="ti ti-clock" aria-hidden="true"></i>Terakhir diperbarui</h2>
+    {% if h.impor %}
+      <p class="text-sm font-semibold text-slate-800">{{ h.impor.date }}</p>
+      <p class="mt-1 break-words text-xs text-slate-500">{{ h.impor.batch }} · {{ h.impor.file }}</p>
+    {% else %}<p class="text-sm text-slate-500">Belum ada impor.</p>{% endif %}
+  </section>
+</div>
+
+<section class="card mt-8 p-5">
+  <h2 class="section-title"><i class="ti ti-search" aria-hidden="true"></i>Cari murid</h2>
+  <input type="search" name="q" placeholder="Ketik sebagian nama…" autocomplete="off" aria-label="Cari murid"
+         class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
+         hx-get="{% url 'dashboards:cari' %}" hx-trigger="input changed delay:300ms, search" hx-target="#cari-hasil">
+  <div id="cari-hasil" class="mt-3" aria-live="polite"><p class="text-sm text-slate-500">Ketik nama di kotak di atas.</p></div>
+</section>
+
+<section class="mt-8">
+  <h2 class="section-title"><i class="ti ti-layout-grid" aria-hidden="true"></i>Menu</h2>
+  <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    {% for group in nav %}{% for item in group.items %}{% if item.href != "/" %}
+      <a href="{{ item.href }}" class="card flex items-center gap-3 p-4 transition hover:border-brand-500 hover:shadow-md">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-brand-50 text-xl text-brand-700"><i class="ti ti-{{ item.icon }}" aria-hidden="true"></i></span>
+        <span class="font-semibold text-slate-800">{{ item.label }}</span></a>
+    {% endif %}{% endfor %}{% endfor %}
+  </div>
+</section>
+{% endblock %}

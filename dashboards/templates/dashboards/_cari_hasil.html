@@ -1,0 +1,16 @@
+{% if not q %}<p class="text-sm text-slate-500">Ketik nama di kotak di atas.</p>
+{% elif not rows %}<p class="text-sm text-slate-500">Tidak ada murid dengan nama “{{ q }}”.</p>
+{% else %}
+<div class="table-wrap">
+  <table class="data-table">
+    <thead><tr><th>Nama murid</th><th>Status sekarang</th><th>Kode kelas</th><th>Guru</th><th>Student ID</th></tr></thead>
+    <tbody>
+      {% for r in rows %}
+        <tr><td class="font-semibold text-slate-900">{{ r.nama }}</td><td>{% include "components/status_badge.html" with status=r.status %}</td>
+          <td>{{ r.kode|default:"—" }}</td><td>{{ r.guru|default:"—" }}</td><td class="tabular-nums">{{ r.std }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% if rows|length == 20 %}<p class="mt-2 text-xs text-slate-500">Menampilkan 20 nama pertama — ketik lebih lengkap untuk mempersempit.</p>{% endif %}
+{% endif %}

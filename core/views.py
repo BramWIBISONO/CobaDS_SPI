@@ -1,21 +1,13 @@
-from django.apps import apps
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
 from branches.models import Branch
+from dashboards.pages import beranda_context
 
 from .branch_context import SESSION_KEY, allowed_branches
 from .capabilities import Cap
-
-COUNT_TABLES = (
-    ("Murid", "students.StudentMaster"), ("Orang tua", "students.ParentMaster"), ("Riwayat bulanan", "students.DBulan"),
-    ("Kejadian Off", "students.StudentOff"), ("Kelas", "classes.ClassMaster"), ("Anggota kelas", "classes.ClassMembers"),
-    ("Slot jadwal", "classes.ClassSchedule"), ("Guru", "masterdata.TeacherMaster"), ("Program & level", "masterdata.ProgramMaster"),
-    ("Baris buku kas", "finance.BukuKas"), ("Pengeluaran", "finance.BukuKasKeluar"), ("Periode", "finance.Periode"),
-    ("Tagihan SPP", "finance.SppTagihan"), ("Issue data", "quality.IssueUnit"), ("Audit log", "audit.AuditLog"),
-)
 
 
 @login_required
@@ -27,8 +19,7 @@ def home(request):
         return render(request, "core/choose_branch.html", {"branches": branches})
     if Cap.VIEW not in request.caps:
         return render(request, "core/no_access.html", {"reason": "role"}, status=403)
-    counts = [{"label": label, "count": apps.get_model(model).objects.for_branch(request.branch).count()} for label, model in COUNT_TABLES]
-    return render(request, "core/home.html", {"counts": counts})
+    return render(request, "dashboards/beranda.html", beranda_context(request))
 
 
 @login_required
