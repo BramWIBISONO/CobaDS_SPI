@@ -4,17 +4,39 @@
 @source "../accounts/templates";
 @source "../importer/templates";
 @source "../branches/templates";
+@source "../dashboards/templates";
+@source "../static/js";
+
+@font-face { font-family: "Plus Jakarta Sans"; font-style: normal; font-weight: 400; font-display: swap; src: url("../vendor/fonts/plus-jakarta-sans-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Plus Jakarta Sans"; font-style: normal; font-weight: 500; font-display: swap; src: url("../vendor/fonts/plus-jakarta-sans-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Plus Jakarta Sans"; font-style: normal; font-weight: 600; font-display: swap; src: url("../vendor/fonts/plus-jakarta-sans-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Plus Jakarta Sans"; font-style: normal; font-weight: 700; font-display: swap; src: url("../vendor/fonts/plus-jakarta-sans-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Plus Jakarta Sans"; font-style: normal; font-weight: 800; font-display: swap; src: url("../vendor/fonts/plus-jakarta-sans-latin-800-normal.woff2") format("woff2"); }
 
 @theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --color-brand-50: #eef4ff;
   --color-brand-100: #dce8ff;
   --color-brand-500: #176df8;
   --color-brand-600: #0f5fe0;
   --color-brand-700: #0b4bb3;
   --color-brand-900: #041a5a;
+  --color-st-baik: #0ca30c;
+  --color-st-perhatian: #fab219;
+  --color-st-serius: #ec835a;
+  --color-st-kritis: #d03b3b;
 }
 
 [x-cloak] { display: none !important; }
+
+/* Warna topik gaya B: 50 latar, 100 garis/ikon, 600 aksen, 800 teks */
+.tone-murid  { --t50: #e6f1fb; --t100: #b5d4f4; --t600: #185fa5; --t800: #0c447c; }
+.tone-spp    { --t50: #eaf3de; --t100: #c0dd97; --t600: #3b6d11; --t800: #27500a; }
+.tone-off    { --t50: #faeeda; --t100: #fac775; --t600: #854f0b; --t800: #633806; }
+.tone-kelas  { --t50: #eeedfe; --t100: #cecbf6; --t600: #534ab7; --t800: #3c3489; }
+.tone-kritis { --t50: #fcebeb; --t100: #f7c1c1; --t600: #a32d2d; --t800: #791f1f; }
+.tone-akad   { --t50: #e1f5ee; --t100: #9fe1cb; --t600: #0f6e56; --t800: #085041; }
+.tone-soon   { --t50: #f8fafc; --t100: #cbd5e1; --t600: #64748b; --t800: #475569; }
 
 @layer components {
   .btn { @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/50 disabled:cursor-not-allowed disabled:opacity-50; }
@@ -29,4 +51,32 @@
   }
   .form .errorlist { @apply mt-1 text-sm text-red-600; }
   .form .helptext { @apply mt-1 block text-xs text-slate-500; }
+
+  .section-title { @apply mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-500; }
+  .kpi { @apply relative flex min-h-36 flex-col gap-1 rounded-2xl border p-4 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md; background: var(--t50); border-color: var(--t100); }
+  .kpi-head { @apply flex items-start justify-between gap-3; }
+  .kpi-label { @apply text-xs font-bold uppercase tracking-wide; color: var(--t800); }
+  .kpi-icon { @apply grid h-10 w-10 shrink-0 place-items-center rounded-xl text-xl; background: var(--t100); color: var(--t800); }
+  .kpi-value { @apply text-3xl font-extrabold leading-tight tabular-nums; color: var(--t800); }
+  .kpi-sub { @apply text-xs leading-snug text-slate-600; }
+  .kpi-link { @apply mt-auto inline-flex items-center gap-1 pt-2 text-sm font-semibold hover:underline; color: var(--t600); }
+  .kpi-soon { @apply border-dashed shadow-none hover:translate-y-0 hover:shadow-none; }
+  .kpi-soon .kpi-value { @apply text-xl font-bold; }
+  .chip { @apply inline-flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-50; }
+  .chip-active { @apply border-brand-600 bg-brand-50 text-brand-700; }
+  .status-badge { @apply inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold; }
+  .st-baik { @apply bg-green-50 text-green-800; }
+  .st-perhatian { @apply bg-amber-50 text-amber-800; }
+  .st-serius { @apply bg-orange-50 text-orange-800; }
+  .st-kritis { @apply bg-red-50 text-red-800; }
+  .st-netral { @apply bg-slate-100 text-slate-600; }
+  .table-wrap { @apply overflow-x-auto rounded-xl border border-slate-200 bg-white; }
+  .data-table { @apply min-w-full divide-y divide-slate-200 text-sm; }
+  .data-table th { @apply bg-slate-50 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide whitespace-nowrap text-slate-500; }
+  .data-table td { @apply px-3 py-2 whitespace-nowrap text-slate-700; }
+  .data-table td.num, .data-table th.num { @apply text-right tabular-nums; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kpi, .kpi:hover { transition: none; transform: none; }
 }

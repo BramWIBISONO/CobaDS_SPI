@@ -1,0 +1,16 @@
+{% comment %}Kartu KPI gaya B. tone: murid|spp|off|kelas|kritis|akad; soon=True -> "menyusul". hx (opsional) = URL HTMX untuk saringan daftar.{% endcomment %}
+<div class="kpi {% if soon %}tone-soon kpi-soon{% else %}tone-{{ tone }}{% endif %}">
+  <div class="kpi-head">
+    <p class="kpi-label">{{ label }}</p>
+    <span class="kpi-icon"><i class="ti ti-{{ icon }}" aria-hidden="true"></i></span>
+  </div>
+  {% if soon %}
+    <p class="kpi-value">menyusul</p>
+    <p class="kpi-sub">{{ sub|default:"dibangun di tahap berikutnya" }}</p>
+  {% else %}
+    <p class="kpi-value">{{ value }}</p>
+    {% if sub %}<p class="kpi-sub">{{ sub }}</p>{% endif %}
+    {% if hx %}<a href="{{ hx }}" hx-get="{{ hx }}" hx-target="#laporan-body" hx-push-url="true" class="kpi-link">{{ link_text|default:"Lihat daftar" }} <i class="ti ti-chevron-right" aria-hidden="true"></i></a>
+    {% elif href %}<a href="{{ href }}" class="kpi-link">{{ link_text|default:"Buka" }} <i class="ti ti-chevron-right" aria-hidden="true"></i></a>{% endif %}
+  {% endif %}
+</div>

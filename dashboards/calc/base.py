@@ -16,6 +16,7 @@ from students.models import AcademicRecord, DBulan, DMurid, FollowUp, Lead, Stat
 MON_ID = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
 PROG_ORDER = ["Foundation", "Development", "Exploration", "Research"]
 SEMUA = "Semua"
+CHART_COLORS = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6", "#e34948"]   # urutan tetap
 KAS_START = datetime.date(2024, 7, 1)
 AGU_2026 = datetime.date(2026, 8, 1)
 JURNAL_TERSEMBUNYI = "Jurnal Penerimaan (tersembunyi)"
@@ -258,3 +259,14 @@ class BranchData:
     @cached_property
     def last_import(self):
         return ImportLog.objects.for_branch(self.branch).order_by("-row_no").first()
+
+
+def chart(id, title, labels, series, *, type="bar", horizontal=False, stacked=False, money=False, links=None, note="", height=""):
+    """Kartu grafik: series = [(label, data)]; warna kategori diberikan berurutan (tidak pernah diulang)."""
+    if len(series) > len(CHART_COLORS):
+        raise ValueError("lebih dari 8 seri - gabungkan ke 'Lainnya' atau pecah grafiknya")
+    links = links or [None] * len(labels)
+    s = [{"label": lab, "data": data, "color": CHART_COLORS[i]} for i, (lab, data) in enumerate(series)]
+    return {"id": id, "title": title, "type": type, "labels": labels, "series": s, "horizontal": horizontal, "stacked": stacked,
+            "money": money, "links": links, "note": note, "height": height,
+            "rows": [{"label": lab, "link": links[i], "values": [x["data"][i] for x in s]} for i, lab in enumerate(labels)]}

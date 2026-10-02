@@ -4,7 +4,8 @@ from django.urls import NoReverseMatch, reverse
 from .capabilities import Cap
 
 NAV = (
-    (None, (("Beranda", "core:home", Cap.VIEW, "home"),)),
+    (None, (("Beranda", "core:home", Cap.VIEW, "home"),
+            ("Laporan Murid & SPP", "dashboards:laporan", Cap.VIEW, "chart-bar"))),
     ("Admin", (("Impor Data", "importer:upload", Cap.BRANCH_ADMIN, "upload"),
                ("Pengguna & Akses", "accounts:users", Cap.BRANCH_ADMIN, "users"),
                ("Cabang", "branches:list", Cap.MANAGE_ALL, "building"))),
