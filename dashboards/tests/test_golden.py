@@ -95,3 +95,34 @@ def test_laporan_murid(data, i):
     want = {k: gold[k] for k in ("murid", "status", "level", "tipe", "guru", "tren")}
     want["jumlah"] = [gold["jumlah"][0], gold["jumlah"][1], gold["jumlah"][3]]
     assert_same(web, want, f"laporan {gold['filter']}")
+
+
+def test_kas_rows(data):
+    from dashboards.calc.kas import kas_rows
+    web = {k.row.lid: [k.dihitung, *k.s, *k.b] for k in kas_rows(data) if k.row.lid}
+    assert_same(web, GOLDEN["kas_rows"], "BUKU_KAS Dihitung / Student ID / Bagian")
+
+
+def test_kas_bulanan(data):
+    from dashboards.calc.kas import bulanan
+    assert_same([[label(b), t, l, n] for b, t, l, n in bulanan(data)], GOLDEN["kas_bulanan"], "C_KAS per bulan")
+
+
+@pytest.mark.parametrize("i", range(len(GOLDEN["laporan"])))
+def test_laporan_spp(data, i):
+    from dashboards.calc.kas import ringkasan_spp
+    gold = GOLDEN["laporan"][i]
+    r = ringkasan_spp(data, scenario(gold["filter"]))
+    assert_same({"spp": r["spp"], "belum_bayar": len(r["belum_bayar"])}, {"spp": gold["spp"][:7], "belum_bayar": gold["jumlah"][2]},
+                f"SPP {gold['filter']}")
+
+
+@pytest.mark.parametrize("i", [i for i, s in enumerate(GOLDEN["laporan"]) if "baris" in s])
+def test_laporan_rows(data, i):
+    from dashboards.calc.kas import ringkasan_spp
+    from dashboards.calc.laporan import baris_laporan
+    gold = GOLDEN["laporan"][i]
+    f = scenario(gold["filter"])
+    per = ringkasan_spp(data, f)["per_baris"]
+    web = {b.v1: [b.status, b.kelompok, int(b.ikut), int(b.off_baru), *per[id(b.murid)]] for b in baris_laporan(data, f)}
+    assert_same(web, gold["baris"], f"baris {gold['filter']}")

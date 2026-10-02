@@ -80,6 +80,11 @@ def round_half_up(x):
     return int(Decimal(str(x)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 
+def fixed(x):
+    """FIXED(x, 0) Excel dengan pemisah ribuan Indonesia (titik)."""
+    return f"{round_half_up(x):,}".replace(",", ".")
+
+
 def num(v):
     """N() Excel: angka tetap angka, selain itu 0."""
     return v if isinstance(v, (int, float)) and not isinstance(v, bool) else 0
