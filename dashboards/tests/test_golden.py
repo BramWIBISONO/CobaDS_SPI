@@ -9,7 +9,7 @@ import pytest
 from django.conf import settings
 
 from branches.models import Branch
-from dashboards.calc.base import BranchData, fold, label
+from dashboards.calc.base import HIST_MONTHS, BranchData, fold, label
 from dashboards.calc.status import guru_dipakai, kode_dipakai, semua_status_sekarang
 from importer.commit import commit_workbook
 from importer.reader import read_workbook
@@ -77,3 +77,21 @@ def test_students_now(data):
     st = semua_status_sekarang(data)
     web = {s.std: [st[fold(s.std)], kode_dipakai(s), guru_dipakai(s)] for s in data.students if s.std}
     assert_same(web, GOLDEN["students"], "status sekarang / kode / guru")
+
+
+def scenario(f):
+    from dashboards.calc.laporan import Filter
+    bulan = {label(m): m for m in HIST_MONTHS}[f["bulan"]]
+    return Filter(bulan, f["program"], f["tipe"], f["mode"], f["guru"])
+
+
+@pytest.mark.parametrize("i", range(len(GOLDEN["laporan"])))
+def test_laporan_murid(data, i):
+    from dashboards.calc.laporan import ringkasan_murid
+    gold = GOLDEN["laporan"][i]
+    r = ringkasan_murid(data, scenario(gold["filter"]))
+    web = {"murid": r["murid"], "status": [n for _l, n in r["status"]], "level": r["level"], "tipe": r["tipe"], "guru": r["guru"],
+           "tren": r["tren"], "jumlah": [len(r["baru"]), len(r["off_baru"]), len(r["daftar"])]}
+    want = {k: gold[k] for k in ("murid", "status", "level", "tipe", "guru", "tren")}
+    want["jumlah"] = [gold["jumlah"][0], gold["jumlah"][1], gold["jumlah"][3]]
+    assert_same(web, want, f"laporan {gold['filter']}")
