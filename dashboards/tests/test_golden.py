@@ -9,7 +9,7 @@ import pytest
 from django.conf import settings
 
 from branches.models import Branch
-from dashboards.calc.base import HIST_MONTHS, BranchData, fold, label
+from dashboards.calc.base import HIST_MONTHS, PERIOD_MONTHS, BranchData, fold, label
 from dashboards.calc.status import guru_dipakai, kode_dipakai, semua_status_sekarang
 from importer.commit import commit_workbook
 from importer.reader import read_workbook
@@ -126,3 +126,32 @@ def test_laporan_rows(data, i):
     per = ringkasan_spp(data, f)["per_baris"]
     web = {b.v1: [b.status, b.kelompok, int(b.ikut), int(b.off_baru), *per[id(b.murid)]] for b in baris_laporan(data, f)}
     assert_same(web, gold["baris"], f"baris {gold['filter']}")
+
+
+def test_classes(data):
+    from dashboards.calc.kelas import daftar_kelas
+    web = {k.row.code: [k.kapasitas, k.aktif, k.cuti, k.status_kapasitas, k.status_kelas, k.kursi_kosong]
+           for k in daftar_kelas(data) if k.row.code}
+    assert_same(web, GOLDEN["classes"], "CLASS_MASTER / C_KELAS")
+
+
+def test_off(data):
+    from dashboards.calc.off import daftar_off
+    web = {o.row.off_id: [o.status, o.lama, o.aksi, o.fu_tgl, o.fu_next, o.prioritas] for o in daftar_off(data)}
+    assert_same(web, GOLDEN["off"], "STUDENT_OFF")
+
+
+def test_home(data):
+    from dashboards.calc.beranda import beranda
+    h = beranda(data)
+    keys = ["aktif", "spp", "off", "kelas", "kritis", "bukti", "sub_aktif", "sub_spp", "sub_off", "sub_kelas", "sub_kritis",
+            "sub_bukti", "judul", "off_raw", "kelas_raw"]
+    assert_same({k: h[k] for k in keys}, {k: GOLDEN["home"][k] for k in keys}, "HOME")
+
+
+@pytest.mark.parametrize("i", range(len(GOLDEN["v4"])))
+def test_periode_v4(data, i):
+    from dashboards.calc.operasional import periode_v4
+    gold = GOLDEN["v4"][i]
+    mulai = {label(m): m for m in PERIOD_MONTHS}[gold["periode"]]
+    assert_same(periode_v4(data, mulai), {k: gold[k] for k in ("status", "aktivitas", "baris")}, f"v4 {gold['periode']}")
