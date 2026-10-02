@@ -1,7 +1,7 @@
 {% if not q %}<p class="text-sm text-slate-500">Ketik nama di kotak di atas.</p>
 {% elif not rows %}<p class="text-sm text-slate-500">Tidak ada murid dengan nama “{{ q }}”.</p>
 {% else %}
-<div class="table-wrap">
+<div class="table-wrap overflow-x-auto">
   <table class="data-table">
     <thead><tr><th>Nama murid</th><th>Status sekarang</th><th>Kode kelas</th><th>Guru</th><th>Student ID</th></tr></thead>
     <tbody>

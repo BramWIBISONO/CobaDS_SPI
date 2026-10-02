@@ -41,7 +41,7 @@ def test_admin_tables_scroll_on_narrow_screens(client, branch, make_user):
         "ok": False, "fatal": "", "unit": "UNIT-AS", "counts": {"STUDENT_MASTER": 1}, "existing": {}, "errors": 1, "warnings": 0,
         "issues": [{"level": "error", "table": "SETTINGS", "row": None, "field": "Unit", "message": "bukan UNIT-JKT"}],
         "issues_hidden": 0})
-    pages = [reverse("accounts:users"), reverse("importer:upload"), reverse("importer:preview", args=[run.pk]), reverse("branches:list")]
+    pages = [reverse("accounts:users"), reverse("importer:upload"), reverse("importer:preview", args=[run.pk]), reverse("branches:list"), reverse("dashboards:laporan")]
     for url in pages:
         response = client.get(url)
         assert response.status_code == 200, url
