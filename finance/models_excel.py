@@ -22,6 +22,7 @@ class BukuKas(ExcelRow):
     kor1 = models.TextField('Murid (koreksi)', blank=True, default="")
     kor2 = models.TextField('Murid kedua (koreksi)', blank=True, default="")
     catatan = models.TextField('Catatan', blank=True, default="")
+    dihitung = models.TextField('Dihitung', blank=True, default="")
     per_sys = models.TextField('Periode Tagihan (sistem)', blank=True, default="")
     per_in = models.TextField('Periode Tagihan (koreksi)', blank=True, default="")
     per_note = models.TextField('Catatan Periode', blank=True, default="")

@@ -50,3 +50,8 @@ def test_simulation_sheet_is_a_fixed_block():
     sim = table("SIMULASI_JADWAL")
     assert sim.skip_key_only and sim.stop_at_blank
     assert not any(t.stop_at_blank for t in load_schema() if t.sheet != "SIMULASI_JADWAL")
+
+
+def test_cash_book_counted_flag_is_stored():
+    # Dihitung = nilai tetap di semua baris kecuali Agustus 2026 (rumus pilihan jurnal) -> harus ikut diimpor
+    assert table("BUKU_KAS").field_by_header["Dihitung"].stored is True

@@ -50,6 +50,7 @@ STAGING = {
 NON_UNIQUE = {"IMPORT_LOG"}                       # satu batch = beberapa baris (satu per file)
 SKIP_KEY_ONLY = {"SIMULASI_JADWAL"}               # baris bernomor tanpa isi
 STOP_AT_BLANK = {"SIMULASI_JADWAL"}               # blok 20 baris simulasi; di bawahnya tampilan JADWAL RESMI (bukan data)
+STORED_FORMULA = {("BUKU_KAS", "dihitung")}       # rumus hanya di baris Agustus 2026; baris lain nilai tetap -> disimpan
 KIND_OVERRIDES = {("SESI", "hadir"): "number"}    # tabel kosong di Jakarta: jenis tidak bisa dibaca dari data
 for _k in ("lid", "user", "action", "entity", "eid", "field", "old", "new", "by"):
     KIND_OVERRIDES[("AUDIT_LOG", _k)] = "text"
@@ -144,7 +145,7 @@ def layout_tables(wb):
             kind, mixed = decide(fmt, set(tags.get(i, {})) if i is not None else set())
             kind = KIND_OVERRIDES.get((sheet, key), kind)
             mixed = mixed and kind != "text"
-            stored = avail != "FORMULA"
+            stored = avail != "FORMULA" or (sheet, key) in STORED_FORMULA
             fields.append({"header": header, "name": name, "avail": avail, "kind": kind, "stored": stored,
                            "text_field": f"{name}_text" if (stored and mixed) else None, "aliases": []})
             if header == t["key"]:
