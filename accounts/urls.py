@@ -6,6 +6,7 @@ from . import views, views_admin
 app_name = "accounts"
 urlpatterns = [
     path("masuk/", views.login_view, name="login"),
+    path("masuk/demo/", views.demo_login_view, name="demo_login"),
     path("keluar/", auth_views.LogoutView.as_view(), name="logout"),
     path("daftar/", views.signup_view, name="signup"),
     path("daftar/terkirim/", views.signup_done_view, name="signup_done"),

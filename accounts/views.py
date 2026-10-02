@@ -1,11 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from django.http import Http404
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.encoding import force_str
 from django.utils.http import url_has_allowed_host_and_scheme, urlsafe_base64_decode
+from django.views.decorators.http import require_POST
 
-from . import ratelimit
+from . import demo, ratelimit
 from .emails import send_already_registered, send_verification
 from .forms import LoginForm, ResendForm, SignupForm
 from .models import User
@@ -40,7 +42,7 @@ def login_view(request):
                 if nxt and url_has_allowed_host_and_scheme(nxt, {request.get_host()}, request.is_secure()):
                     return redirect(nxt)
                 return redirect("core:home")
-    return render(request, "accounts/login.html", {"form": form})
+    return render(request, "accounts/login.html", {"form": form, "demo_users": demo.available() if demo.demo_enabled() else []})
 
 
 def signup_view(request):
@@ -84,3 +86,16 @@ def resend_view(request):
             send_verification(request, user)
         sent = True                                   # jawaban sama untuk email apa pun
     return render(request, "accounts/resend.html", {"form": form, "sent": sent})
+
+
+@require_POST
+def demo_login_view(request):
+    """Masuk satu klik untuk akun demo - hanya DEBUG & DEMO_ACCOUNTS, hanya email daftar demo."""
+    email = request.POST.get("email", "").strip().lower()
+    if not demo.demo_enabled() or email not in demo.DEMO_EMAILS:
+        raise Http404
+    user = User.objects.filter(email=email, is_active=True).first()
+    if user is None:
+        raise Http404
+    login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+    return redirect("core:home")

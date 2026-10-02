@@ -12,4 +12,19 @@
   <a href="{% url 'accounts:signup' %}" class="font-semibold text-brand-600 hover:underline">Daftar akun</a>
   <a href="{% url 'accounts:resend' %}" class="w-full text-slate-500 hover:underline">Kirim ulang tautan verifikasi email</a>
 </div>
+{% if demo_users %}
+<div class="mt-8 rounded-xl border border-dashed border-amber-300 bg-amber-50 p-4">
+  <p class="flex items-center gap-2 text-sm font-bold text-amber-900"><i class="ti ti-flask" aria-hidden="true"></i>Akun demo (laptop ini saja)</p>
+  <p class="mt-1 text-xs text-amber-800">Klik peran untuk langsung masuk. Daftar & kata sandi: docs/AKUN_DEMO.md dan DEMO_PASSWORD di .env.</p>
+  <div class="mt-3 grid gap-2 sm:grid-cols-2">
+    {% for u in demo_users %}
+      <form method="post" action="{% url 'accounts:demo_login' %}">{% csrf_token %}<input type="hidden" name="email" value="{{ u.email }}">
+        <button class="w-full rounded-lg border border-amber-200 bg-white px-3 py-2 text-left text-sm hover:border-amber-400">
+          <span class="block font-semibold text-slate-800">{{ u.role_text }}{% if u.branch %} · {{ u.branch }}{% endif %}</span>
+          <span class="block text-xs text-slate-500">{{ u.email }}</span></button>
+      </form>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
 {% endblock %}

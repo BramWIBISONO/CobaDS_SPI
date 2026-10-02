@@ -114,3 +114,6 @@ SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 
 SPI_EXCEL_DIR = Path(env("SPI_EXCEL_DIR", default=str(BASE_DIR.parent / "APP")))   # reference workbooks (read-only)
+ENV_FILE = BASE_DIR / ".env"
+DEMO_ACCOUNTS = env.bool("DEMO_ACCOUNTS", default=False)     # akun demo per peran - hanya untuk dicoba di laptop (DEBUG)
+DEMO_PASSWORD = env("DEMO_PASSWORD", default="")
