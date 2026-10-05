@@ -2,7 +2,7 @@
 import datetime
 
 from audit.models import AuditLog
-from classes.models import ClassMembers
+from classes.models import ClassMembers, Kehadiran, Sesi
 from dashboards.calc.base import BranchData, as_date, fold
 from dashboards.calc.kas import kas_rows
 from dashboards.calc.kelas import daftar_kelas
@@ -87,6 +87,11 @@ def profile(branch, student, today, can_see_contacts):
                 kas.append({"bulan": as_date(k.row.bulan), "tgl": as_date(k.row.tgl), "jenis": k.row.jenis, "nominal": amount,
                             "dihitung": k.dihitung, "ket": k.row.ket, "lid": k.row.lid})
     kas.sort(key=lambda r: (r["tgl"] or datetime.date.min), reverse=True)
+    hadir = list(Kehadiran.objects.filter(branch=branch, std=std))
+    sesi = {x.sid: x for x in Sesi.objects.for_branch(branch).filter(sid__in=[h.sid for h in hadir])}
+    attendance = sorted([{"h": h, "s": sesi.get(h.sid)} for h in hadir], key=lambda r: (as_date(r["s"].tgl) if r["s"] else datetime.date.min),
+                        reverse=True)
+    n_present = sum(1 for h in hadir if h.status in Kehadiran.PRESENT)
     ids = {std} | {e.eid for e in events} | {f.fid for f in followups} | {o.row.off_id for o in offs} | {a.aid for a in academics}
     ids |= {m.mbr for m in members} | {t.tid for t in tagihan} | {b.bid for b in bukti}
     timeline = AuditLog.objects.for_branch(branch).filter(eid__in=ids).order_by("-ts", "-row_no")[:200]
@@ -96,5 +101,6 @@ def profile(branch, student, today, can_see_contacts):
         "followups": followups, "open_followups": [f for f in followups if is_open_followup(f)], "notes": notes,
         "tagihan": tagihan, "bukti": bukti, "kas": kas[:60], "kas_total": sum(r["nominal"] for r in kas if r["dihitung"] == "YA"),
         "timeline": timeline, "contacts": can_see_contacts,
-        "last_academic": academics.first(),
+        "last_academic": academics.first(), "attendance": attendance[:60],
+        "attendance_rate": {"total": len(hadir), "hadir": n_present, "pct": round(n_present * 100 / len(hadir)) if hadir else None},
     }

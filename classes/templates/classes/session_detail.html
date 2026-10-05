@@ -1,0 +1,44 @@
+{% extends "base.html" %}{% load ui %}
+{% block title %}Sesi {{ ses.kode|default:ses.kelas }}{% endblock %}
+{% block content %}
+{% pageheader title=ses.kode|default:ses.kelas|default:"Sesi" subtitle=ses.hari|title|add:", "|add:ses.sid icon="calendar-event" %}{% endpageheader %}
+<div class="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+  <div class="card p-4"><p class="field-label">Tanggal & jam</p><p class="font-semibold">{{ ses.tgl|date:"d M Y" }}</p><p class="text-sm text-slate-500">{{ ses.mulai|time:"H:i" }}–{{ ses.selesai|time:"H:i" }}</p></div>
+  <div class="card p-4"><p class="field-label">Guru</p><p class="font-semibold">{{ ses.guru|default:"—" }}</p><p class="text-sm text-slate-500">{{ ses.ruang|default:"" }}</p></div>
+  <div class="card p-4"><p class="field-label">Status</p><p class="mt-1">{% include "components/status_badge.html" with status=ses.status %}</p></div>
+  <div class="card p-4"><p class="field-label">Dikonfirmasi</p><p class="text-sm">{{ ses.konf_oleh|default:"belum" }}</p><p class="text-xs text-slate-500">{{ ses.konf_pada|date:"d M Y H:i" }}</p></div>
+</div>
+{% if closed %}<div class="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600"><i class="ti ti-lock" aria-hidden="true"></i> Periode sesi ini sudah CLOSED - tidak bisa diubah.</div>{% endif %}
+<form method="post" class="space-y-4">{% csrf_token %}
+  <section class="card p-5">
+    <h2 class="section-title">Kehadiran murid ({{ members|length }})</h2>
+    {% if members %}
+      <ul class="divide-y divide-slate-100">
+        {% for m in members %}
+          <li class="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <p class="font-semibold text-slate-900">{{ m.nama }} <span class="text-xs font-normal text-slate-400">{{ m.std }}</span></p>
+            <fieldset class="flex flex-wrap gap-1.5" {% if not can_record or closed %}disabled{% endif %}>
+              <legend class="sr-only">Kehadiran {{ m.nama }}</legend>
+              {% for v, lab in choices %}
+                <label class="cursor-pointer"><input type="radio" class="peer sr-only" name="att_{{ m.std }}" value="{{ v }}" {% if m.status == v %}checked{% endif %}>
+                  <span class="chip peer-checked:border-brand-600 peer-checked:bg-brand-50 peer-checked:text-brand-700 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-500/40">{{ lab }}</span></label>
+              {% endfor %}
+            </fieldset>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}<p class="text-sm text-slate-500">{% if ses.kode %}Tidak ada murid aktif di kelas {{ ses.kode }} pada tanggal ini.{% else %}Slot jadwal ini belum terhubung ke kode kelas - kehadiran per murid tidak bisa dicatat.{% endif %}</p>{% endif %}
+  </section>
+  <section class="card grid gap-4 p-5 sm:grid-cols-2">
+    <div><label class="field-label" for="st">Status sesi</label>
+      <select id="st" name="status" class="field" {% if not can_record or closed %}disabled{% endif %}>
+        {% for s in statuses %}<option value="{{ s }}" {% if ses.status == s or ses.status == "SCHEDULED" and s == "REALIZED" %}selected{% endif %}>{{ s }}</option>{% endfor %}</select></div>
+    {% if staff_manage %}<div><label class="field-label" for="gp">Guru pengganti (bila ada)</label>
+      <select id="gp" name="guru_pengganti" class="field" {% if closed %}disabled{% endif %}><option value="">—</option>{% for v, lab in teachers %}<option value="{{ v }}">{{ lab }}</option>{% endfor %}</select></div>{% endif %}
+    <div class="sm:col-span-2"><label class="field-label" for="cat">Catatan pembelajaran</label>
+      <textarea id="cat" name="catatan" rows="3" class="field" placeholder="Materi, kemajuan, hal yang perlu diperhatikan" {% if not can_record or closed %}disabled{% endif %}></textarea>
+      {% if ses.catatan %}<p class="mt-2 whitespace-pre-line rounded-lg bg-slate-50 p-3 text-sm text-slate-700">{{ ses.catatan }}</p>{% endif %}</div>
+  </section>
+  {% if can_record and not closed %}<button class="btn btn-primary"><i class="ti ti-device-floppy" aria-hidden="true"></i>Simpan & konfirmasi sesi</button>{% endif %}
+</form>
+{% endblock %}

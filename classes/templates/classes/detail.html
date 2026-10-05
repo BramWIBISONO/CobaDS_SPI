@@ -1,0 +1,77 @@
+{% extends "base.html" %}{% load ui spi %}
+{% block title %}Kelas {{ c.code }}{% endblock %}
+{% block content %}
+{% pageheader title="Kelas "|add:c.code subtitle=c.tipe|add:" · "|add:c.mode|add:" · "|add:c.level icon="school" %}
+  {% if perm.class_manage %}<a href="{% url 'classes:edit' c.code %}" class="btn btn-secondary"><i class="ti ti-edit" aria-hidden="true"></i>Ubah</a>
+    {% if not ended %}<form method="post" action="{% url 'classes:close' c.code %}" data-confirm="Tutup kelas {{ c.code }} hari ini? Hanya bisa bila tidak ada murid aktif.">{% csrf_token %}
+      <button class="btn btn-secondary"><i class="ti ti-lock" aria-hidden="true"></i>Tutup kelas</button></form>{% endif %}{% endif %}
+{% endpageheader %}
+{% if ended %}<div class="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">Kelas ditutup {{ c.end|date:"d M Y" }}.</div>{% endif %}
+<div class="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+  <div class="kpi tone-kelas min-h-0"><p class="kpi-label">Aktif / kapasitas</p><p class="kpi-value">{{ k.aktif|default:0 }} / {{ k.kapasitas|angka|default:"—" }}</p><p class="kpi-sub">{{ k.status_kapasitas|default:"" }}</p></div>
+  <div class="kpi tone-off min-h-0"><p class="kpi-label">Cuti</p><p class="kpi-value">{{ k.cuti|default:0 }}</p></div>
+  <div class="kpi tone-spp min-h-0"><p class="kpi-label">Kursi kosong</p><p class="kpi-value">{{ k.kursi_kosong|angka|default:0 }}</p></div>
+  <div class="kpi tone-akad min-h-0"><p class="kpi-label">Kehadiran</p><p class="kpi-value">{% if rate.pct is not None %}{{ rate.pct }}%{% else %}—{% endif %}</p><p class="kpi-sub">{{ rate.total }} catatan kehadiran</p></div>
+</div>
+<div class="grid gap-4 lg:grid-cols-3">
+  <section class="card p-5 lg:col-span-2">
+    <h2 class="section-title">Murid ({{ members|length }})</h2>
+    {% if members %}<div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Nama</th><th>Status</th><th>Student ID</th></tr></thead><tbody>
+      {% for m in members %}<tr><td class="font-semibold">{% if perm.student_view %}<a href="{% url 'students:detail' m.s.std %}" class="text-brand-700 hover:underline">{{ m.s.nama }}</a>{% else %}{{ m.s.nama }}{% endif %}</td>
+        <td>{% include "components/status_badge.html" with status=m.status %}</td><td class="tabular-nums text-slate-500">{{ m.s.std }}</td></tr>{% endfor %}
+    </tbody></table></div>
+    {% else %}<p class="text-sm text-slate-500">Belum ada murid di kelas ini.</p>{% endif %}
+    {% if perm.class_manage and not ended %}
+    <form method="post" action="{% url 'classes:add_member' c.code %}" class="mt-4 grid gap-2 sm:grid-cols-[1fr_auto_auto] sm:items-end">{% csrf_token %}
+      <div><label class="field-label" for="am-std">Tambah murid (Student ID)</label><input id="am-std" name="std" class="field" placeholder="STD-000123" required></div>
+      <div><label class="field-label" for="am-tgl">Mulai</label><input id="am-tgl" type="date" name="tanggal" value="{{ today|date:'Y-m-d' }}" class="field" required></div>
+      {% if member_form.allow_over_capacity %}<label class="flex items-center gap-2 text-xs text-slate-600 sm:col-span-3">{{ member_form.allow_over_capacity }} izinkan melebihi kapasitas</label>{% endif %}
+      <button class="btn btn-secondary"><i class="ti ti-user-plus" aria-hidden="true"></i>Tambah</button>
+    </form>
+    {% endif %}
+  </section>
+  <section class="card p-5">
+    <h2 class="section-title">Guru kelas</h2>
+    <p class="text-lg font-bold text-slate-900">{{ c.guru|default:"Belum ada guru" }}</p>
+    {% if perm.class_manage and not ended %}
+    <form method="post" action="{% url 'classes:assign_teacher' c.code %}" class="mt-3 space-y-2">{% csrf_token %}
+      <label class="field-label" for="{{ teacher_form.guru.id_for_label }}">Ganti guru</label>{{ teacher_form.guru }}
+      <p class="text-xs text-slate-500">Murid aktif kelas ini ikut berganti guru (tercatat di riwayat).</p>
+      <button class="btn btn-secondary w-full">Simpan guru</button>
+    </form>
+    {% endif %}
+    <dl class="mt-4 space-y-2 text-sm"><div><dt class="field-label">Program</dt><dd>{{ c.program|default:"—" }} · {{ c.level|default:"—" }}</dd></div>
+      <div><dt class="field-label">Mulai</dt><dd>{{ c.start|date:"d M Y"|default:"—" }}</dd></div></dl>
+  </section>
+  <section class="card p-5 lg:col-span-2">
+    <h2 class="section-title">Jadwal resmi</h2>
+    {% if slots %}<div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Hari</th><th>Jam</th><th>Guru</th><th>Ruang</th><th>Berlaku</th><th></th></tr></thead><tbody>
+      {% for sl in slots %}<tr><td>{{ sl.day|title }}</td><td class="tabular-nums">{{ sl.start|time:"H:i" }}–{{ sl.end|time:"H:i" }}</td><td>{{ sl.teacher }}</td><td>{{ sl.room|default:"—" }}</td>
+        <td class="text-xs">{{ sl.eff_from|default:"—" }}{% if sl.eff_until %} s/d {{ sl.eff_until }}{% endif %}</td>
+        <td>{% if perm.class_manage and not sl.eff_until %}<form method="post" action="{% url 'classes:end_slot' sl.sid %}" class="flex gap-1" data-confirm="Akhiri slot ini? Sesi setelah tanggal itu tidak dibuat lagi.">{% csrf_token %}
+          <input type="date" name="until" value="{{ today|date:'Y-m-d' }}" class="field py-1 text-xs" aria-label="Berakhir"><button class="chip">Akhiri</button></form>{% endif %}</td></tr>{% endfor %}
+    </tbody></table></div>
+    {% else %}<p class="text-sm text-slate-500">Belum ada slot jadwal.</p>{% endif %}
+    {% if perm.class_manage and not ended %}
+    <form method="post" action="{% url 'classes:add_slot' c.code %}" class="mt-4 grid gap-2 sm:grid-cols-3 lg:grid-cols-6 lg:items-end">{% csrf_token %}
+      {% for field in slot_form %}<div><label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}</div>{% endfor %}
+      <button class="btn btn-secondary sm:col-span-3 lg:col-span-6"><i class="ti ti-calendar-plus" aria-hidden="true"></i>Tambah slot jadwal</button>
+    </form>
+    {% endif %}
+  </section>
+  <section class="card p-5">
+    <h2 class="section-title">Sesi berikutnya</h2>
+    {% include "classes/_session_items.html" with items=upcoming empty="Belum ada sesi terjadwal." %}
+    <h2 class="section-title mt-5">Sesi terakhir</h2>
+    {% include "classes/_session_items.html" with items=recent empty="Belum ada sesi." %}
+  </section>
+  {% if history %}
+  <section class="card p-5 lg:col-span-3">
+    <h2 class="section-title">Riwayat anggota</h2>
+    <div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Murid</th><th>Status</th><th>Mulai</th><th>Selesai</th></tr></thead><tbody>
+      {% for m in history %}<tr><td>{{ m.nama|default:m.std }}</td><td>{{ m.status_plain|default:m.status }}</td><td>{{ m.start|date:"M Y"|default:"—" }}</td><td>{{ m.end|date:"M Y"|default:"—" }}</td></tr>{% endfor %}
+    </tbody></table></div>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

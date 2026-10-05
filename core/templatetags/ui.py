@@ -100,3 +100,9 @@ def sections(form):
 def is_wide(bound_field):
     widget = bound_field.field.widget
     return widget.__class__.__name__ in ("Textarea", "CheckboxInput")
+
+
+@register.filter
+def pairs(value):
+    """'a|A,b|B' -> [('a', 'A'), ('b', 'B')] untuk pilihan tetap di template."""
+    return [tuple(item.split("|", 1)) for item in str(value).split(",") if "|" in item]

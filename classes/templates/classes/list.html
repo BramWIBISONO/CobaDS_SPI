@@ -1,0 +1,44 @@
+{% extends "base.html" %}{% load ui spi %}
+{% block title %}Kelas{% endblock %}
+{% block content %}
+{% pageheader title="Kelas" subtitle="Kapasitas, murid aktif dan kursi kosong per kelas" icon="school" %}
+  {% if perm.class_manage %}<a href="{% url 'classes:create' %}" class="btn btn-primary"><i class="ti ti-plus" aria-hidden="true"></i>Kelas baru</a>{% endif %}
+{% endpageheader %}
+<div class="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+  <div class="kpi tone-kelas min-h-0"><p class="kpi-label">Kelas aktif</p><p class="kpi-value">{{ summary.aktif|angka }}</p></div>
+  <div class="kpi tone-spp min-h-0"><p class="kpi-label">Kursi kosong</p><p class="kpi-value">{{ summary.kursi|angka }}</p><p class="kpi-sub">kelas Partner & Group aktif</p></div>
+  <div class="kpi tone-off min-h-0"><p class="kpi-label">Penuh</p><p class="kpi-value">{{ summary.penuh|angka }}</p></div>
+  <div class="kpi tone-kritis min-h-0"><p class="kpi-label">Melebihi kapasitas</p><p class="kpi-value">{{ summary.melebihi|angka }}</p></div>
+</div>
+<form method="get" class="filter-bar lg:grid-cols-5" role="search">
+  <div><label class="field-label" for="cq">Kode kelas</label><input id="cq" type="search" name="q" value="{{ f.q }}" class="field"></div>
+  <div><label class="field-label" for="cs">Status</label><select id="cs" name="status" class="field" onchange="this.form.submit()">
+    {% for v, lab in "aktif|Berjalan (aktif, cuti, baru),semua|Semua,ACTIVE|Aktif,CUTI|Semua murid cuti,INACTIVE|Tidak aktif,UNKNOWN|Belum ada murid"|pairs %}<option value="{{ v }}" {% if f.status == v %}selected{% endif %}>{{ lab }}</option>{% endfor %}</select></div>
+  <div><label class="field-label" for="ct">Tipe</label><select id="ct" name="tipe" class="field" onchange="this.form.submit()"><option value="">Semua</option>
+    {% for t in tipes %}<option {% if f.tipe == t %}selected{% endif %}>{{ t }}</option>{% endfor %}</select></div>
+  <div><label class="field-label" for="cg">Guru</label><select id="cg" name="guru" class="field" onchange="this.form.submit()"><option value="">Semua</option>
+    {% for g in gurus %}<option {% if f.guru == g %}selected{% endif %}>{{ g }}</option>{% endfor %}</select></div>
+  <div class="flex items-end gap-2"><button class="btn btn-primary">Cari</button><a href="{% url 'classes:list' %}" class="btn btn-secondary">Atur ulang</a></div>
+</form>
+{% if page.object_list %}
+<p class="mb-2 text-sm text-slate-600"><strong>{{ found }}</strong> kelas</p>
+<div class="table-wrap overflow-x-auto">
+  <table class="data-table">
+    <thead><tr>{% sort_th request "kode" "Kelas" %}<th>Tipe</th><th>Program / level</th>{% sort_th request "guru" "Guru" %}{% sort_th request "aktif" "Aktif / kapasitas" "num" %}<th class="num">Cuti</th>{% sort_th request "kursi" "Kursi kosong" "num" %}<th>Status</th></tr></thead>
+    <tbody>
+      {% for r in page.object_list %}{% with k=r.k %}
+        <tr>
+          <td class="font-semibold"><a href="{% url 'classes:detail' k.row.code %}" class="text-slate-900 hover:text-brand-700 hover:underline">{{ k.row.code }}</a></td>
+          <td>{{ k.row.tipe|default:"—" }}</td><td>{{ k.row.level|default:k.row.program|default:"—" }}</td><td>{{ k.row.guru|default:"—" }}</td>
+          <td class="num">{{ k.aktif }} / {{ k.kapasitas|angka|default:"—" }}</td><td class="num">{{ k.cuti }}</td><td class="num">{{ k.kursi_kosong|angka }}</td>
+          <td><span class="status-badge {% if k.status_kapasitas == 'OVER CAPACITY' %}st-kritis{% elif k.status_kapasitas == 'FULL' %}st-perhatian{% elif k.status_kelas == 'ACTIVE' %}st-baik{% else %}st-netral{% endif %}">{{ k.status_kelas }}{% if k.status_kelas == "ACTIVE" %} · {{ k.status_kapasitas }}{% endif %}</span></td>
+        </tr>
+      {% endwith %}{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% include "components/pagination.html" %}
+{% else %}
+  {% include "components/empty_state.html" with icon="school-off" title="Tidak ada kelas di saringan ini" text="Ubah saringan atau buat kelas baru." %}
+{% endif %}
+{% endblock %}

@@ -50,9 +50,10 @@ def test_tampered_session_branch_is_ignored(client, branch, other_branch, make_u
 
 
 @pytest.mark.django_db
-def test_teacher_has_no_branch_pages_yet(client, branch, make_user):
+def test_teacher_lands_on_own_schedule(client, branch, make_user):
     client.force_login(make_user("guru@spi.test", role="TEACHER", branch=branch, teacher_name="Mr. Uji"))
-    assert client.get("/").status_code == 403
+    response = client.get("/")
+    assert response.status_code == 302 and response.url == "/jadwal-saya/"
 
 
 @pytest.mark.django_db

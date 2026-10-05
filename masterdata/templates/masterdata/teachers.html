@@ -1,0 +1,27 @@
+{% extends "base.html" %}{% load ui %}
+{% block title %}Guru{% endblock %}
+{% block content %}
+{% pageheader title="Guru" subtitle="Beban mengajar: murid aktif, kelas, slot jadwal, sesi bulan ini" icon="user-star" %}
+  {% if perm.teacher_manage %}<a href="{% url 'masterdata:teacher_create' %}" class="btn btn-primary"><i class="ti ti-plus" aria-hidden="true"></i>Guru baru</a>{% endif %}
+{% endpageheader %}
+<div class="mb-3 flex gap-2">
+  <a href="?status=ACTIVE" class="chip {% if status == 'ACTIVE' %}chip-active{% endif %}">Aktif</a>
+  <a href="?status=INACTIVE" class="chip {% if status == 'INACTIVE' %}chip-active{% endif %}">Tidak aktif</a>
+  <a href="?status=" class="chip {% if not status %}chip-active{% endif %}">Semua</a>
+</div>
+{% if page.object_list %}
+<div class="table-wrap overflow-x-auto">
+  <table class="data-table">
+    <thead><tr><th>Guru</th><th>Teacher ID</th><th>Status</th><th class="num">Murid aktif</th><th class="num">Kelas</th><th class="num">Slot jadwal</th><th class="num">Sesi bulan ini</th></tr></thead>
+    <tbody>
+      {% for r in page.object_list %}
+        <tr><td class="font-semibold"><a href="{% url 'masterdata:teacher' r.t.tid %}" class="text-slate-900 hover:text-brand-700 hover:underline">{{ r.t.name }}</a></td>
+          <td class="tabular-nums text-slate-500">{{ r.t.tid }}</td><td>{% include "components/status_badge.html" with status=r.t.status %}</td>
+          <td class="num">{{ r.aktif }}</td><td class="num">{{ r.kelas }}</td><td class="num">{{ r.slot }}</td><td class="num">{{ r.sesi }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% include "components/pagination.html" %}
+{% else %}{% include "components/empty_state.html" with icon="user-star" title="Belum ada guru di saringan ini" text="Tambahkan guru baru atau ubah saringan." %}{% endif %}
+{% endblock %}

@@ -111,6 +111,17 @@
   </section>
 </div>
 
+{% elif tab == "kehadiran" %}
+<section class="card p-5">
+  <div class="flex flex-wrap items-center justify-between gap-2"><h2 class="section-title">Kehadiran</h2>
+    <p class="text-sm text-slate-600">Hadir (termasuk terlambat): <strong>{% if attendance_rate.pct is not None %}{{ attendance_rate.pct }}%{% else %}—{% endif %}</strong> dari {{ attendance_rate.total }} sesi tercatat</p></div>
+  {% if attendance %}<div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Tanggal</th><th>Kelas</th><th>Guru</th><th>Kehadiran</th></tr></thead><tbody>
+    {% for r in attendance %}<tr><td>{% if r.s %}<a class="text-brand-700 hover:underline" href="{% url 'classes:session' r.s.sid %}">{{ r.s.tgl|date:"d M Y" }}</a>{% else %}{{ r.h.sid }}{% endif %}</td>
+      <td>{{ r.s.kode|default:"—" }}</td><td>{{ r.s.guru|default:"—" }}</td><td>{% include "components/status_badge.html" with status=r.h.status %}</td></tr>{% endfor %}
+  </tbody></table></div>
+  {% else %}{% include "components/empty_state.html" with icon="calendar-check" title="Belum ada kehadiran tercatat" text="Kehadiran dicatat guru / staf saat mengonfirmasi sesi kelas." %}{% endif %}
+</section>
+
 {% elif tab == "akademik" %}
 <section class="card p-5">
   <h2 class="section-title">Catatan akademik</h2>

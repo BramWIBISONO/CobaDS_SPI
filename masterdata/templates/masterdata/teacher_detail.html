@@ -1,0 +1,40 @@
+{% extends "base.html" %}{% load ui %}
+{% block title %}{{ t.name }} · Guru{% endblock %}
+{% block content %}
+{% pageheader title=t.name subtitle=t.tid|add:" · "|add:t.status icon="user-star" %}
+  {% if perm.teacher_manage %}<a href="{% url 'masterdata:teacher_edit' t.tid %}" class="btn btn-secondary"><i class="ti ti-edit" aria-hidden="true"></i>Ubah</a>{% endif %}
+{% endpageheader %}
+<div class="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+  <div class="kpi tone-murid min-h-0"><p class="kpi-label">Murid aktif</p><p class="kpi-value">{{ students|length }}</p></div>
+  <div class="kpi tone-kelas min-h-0"><p class="kpi-label">Kelas</p><p class="kpi-value">{{ classes|length }}</p></div>
+  <div class="kpi tone-akad min-h-0"><p class="kpi-label">Sesi bulan ini</p><p class="kpi-value">{{ month_done }} / {{ month_total }}</p><p class="kpi-sub">terlaksana / terjadwal</p></div>
+  <div class="kpi tone-spp min-h-0"><p class="kpi-label">Kehadiran murid</p><p class="kpi-value">{% if rate.pct is not None %}{{ rate.pct }}%{% else %}—{% endif %}</p><p class="kpi-sub">dari {{ rate.total }} catatan</p></div>
+</div>
+<div class="grid gap-4 lg:grid-cols-3">
+  <section class="card p-5">
+    <h2 class="section-title">Kelas</h2>
+    {% if classes %}<ul class="divide-y divide-slate-100 text-sm">{% for c in classes %}<li class="py-2"><a href="{% url 'classes:detail' c.code %}" class="font-semibold text-brand-700 hover:underline">{{ c.code }}</a> <span class="text-slate-500">{{ c.tipe }} · {{ c.level|default:c.program }}</span>{% if c.end %} <span class="text-xs text-slate-400">(selesai {{ c.end|date:"M Y" }})</span>{% endif %}</li>{% endfor %}</ul>
+    {% else %}<p class="text-sm text-slate-500">Belum ada kelas.</p>{% endif %}
+  </section>
+  <section class="card p-5 lg:col-span-2">
+    <h2 class="section-title">Jadwal resmi</h2>
+    {% if slots %}<div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Hari</th><th>Jam</th><th>Kelas</th><th>Ruang</th></tr></thead><tbody>
+      {% for sl in slots %}<tr><td>{{ sl.day|title }}</td><td class="tabular-nums">{{ sl.start|time:"H:i" }}–{{ sl.end|time:"H:i" }}</td><td>{{ sl.code|default:sl.text|default:"—" }}</td><td>{{ sl.room|default:"—" }}</td></tr>{% endfor %}
+    </tbody></table></div>
+    {% else %}<p class="text-sm text-slate-500">Belum ada slot jadwal.</p>{% endif %}
+  </section>
+  <section class="card p-5 lg:col-span-2">
+    <h2 class="section-title">Murid aktif ({{ students|length }})</h2>
+    {% if students %}<div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Nama</th><th>Kelas</th><th>Level</th></tr></thead><tbody>
+      {% for r in students %}<tr><td><a href="{% url 'students:detail' r.s.std %}" class="text-brand-700 hover:underline">{{ r.s.nama }}</a></td><td>{{ r.d.kode|default:"—" }}</td><td>{{ r.d.level|default:"—" }}</td></tr>{% endfor %}
+    </tbody></table></div>
+    {% else %}<p class="text-sm text-slate-500">Tidak ada murid aktif.</p>{% endif %}
+  </section>
+  <section class="card p-5">
+    <h2 class="section-title">Sesi terakhir</h2>
+    {% include "classes/_session_items.html" with items=recent empty="Belum ada sesi." %}
+    <h2 class="section-title mt-5">Kontak</h2>
+    <p class="text-sm text-slate-700">{{ t.phone|default:"—" }}<br>{{ t.email|default:"" }}</p>
+  </section>
+</div>
+{% endblock %}

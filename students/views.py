@@ -20,7 +20,7 @@ from .forms import (ClassForm, FollowUpForm, FollowUpUpdateForm, NoteForm, Paren
 from .models import FollowUp, ParentMaster, StudentMaster
 
 TABS = [("ringkasan", "Ringkasan", "id-badge-2"), ("status", "Status & OFF", "activity"), ("kelas", "Kelas", "school"),
-        ("akademik", "Akademik", "book"), ("keuangan", "SPP & Pembayaran", "cash"), ("followup", "Follow-up", "phone-call"),
+        ("kehadiran", "Kehadiran", "calendar-check"), ("akademik", "Akademik", "book"), ("keuangan", "SPP & Pembayaran", "cash"), ("followup", "Follow-up", "phone-call"),
         ("catatan", "Catatan", "notes"), ("riwayat", "Riwayat", "history")]
 
 

@@ -1,0 +1,33 @@
+{% extends "base.html" %}{% load ui %}
+{% block title %}Jadwal Saya{% endblock %}
+{% block content %}
+{% pageheader title="Jadwal Saya" subtitle="Kelas hari ini, catat kehadiran & catatan belajar, lalu konfirmasi sesi" icon="calendar-user" %}{% endpageheader %}
+{% if not has_name %}
+  {% include "components/empty_state.html" with icon="user-question" title="Nama guru Anda belum diatur" text="Minta Branch Admin mengisi 'Nama guru' di Pengguna & Akses agar jadwal Anda tampil di sini." %}
+{% else %}
+<div class="grid gap-4 lg:grid-cols-3">
+  <section class="card p-5 lg:col-span-2">
+    <h2 class="section-title"><i class="ti ti-sun" aria-hidden="true"></i>Hari ini · {{ today|date:"l, d M Y" }}</h2>
+    {% if today_items %}<ul class="space-y-2">{% for s in today_items %}
+      <li><a href="{% url 'classes:session' s.sid %}" class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 p-3 hover:border-brand-500 hover:bg-brand-50/40">
+        <div><p class="text-lg font-bold tabular-nums text-slate-900">{{ s.mulai|time:"H:i" }}–{{ s.selesai|time:"H:i" }}</p>
+          <p class="text-sm text-slate-600">{{ s.kode|default:s.kelas }} · {{ s.ruang|default:"" }}</p></div>
+        <span class="flex items-center gap-2">{% include "components/status_badge.html" with status=s.status %}<i class="ti ti-chevron-right text-slate-400" aria-hidden="true"></i></span></a></li>
+    {% endfor %}</ul>
+    {% else %}<p class="text-sm text-slate-500">Tidak ada kelas hari ini.</p>{% endif %}
+  </section>
+  <section class="card p-5">
+    <h2 class="section-title"><i class="ti ti-alert-triangle" aria-hidden="true"></i>Belum dikonfirmasi</h2>
+    {% include "classes/_session_items.html" with items=pending empty="Semua sesi lampau sudah dikonfirmasi." %}
+  </section>
+  <section class="card p-5 lg:col-span-2">
+    <h2 class="section-title">14 hari ke depan</h2>
+    {% include "classes/_session_items.html" with items=upcoming empty="Belum ada sesi terjadwal." %}
+  </section>
+  <section class="card p-5">
+    <h2 class="section-title">Terakhir selesai</h2>
+    {% include "classes/_session_items.html" with items=done empty="Belum ada." %}
+  </section>
+</div>
+{% endif %}
+{% endblock %}

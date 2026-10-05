@@ -21,6 +21,8 @@ def home(request):
             return render(request, "core/no_access.html")
         return render(request, "core/choose_branch.html", {"branches": branches})
     if Cap.VIEW not in request.caps:
+        if Cap.SESSION_WRITE_OWN in request.caps:
+            return redirect("classes:my_sessions")                     # guru: halaman kerjanya = Jadwal Saya
         return render(request, "core/no_access.html", {"reason": "role"}, status=403)
     return render(request, "dashboards/beranda.html", beranda_context(request))
 

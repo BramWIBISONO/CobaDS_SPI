@@ -1,0 +1,12 @@
+{% if items %}
+<ul class="divide-y divide-slate-100 text-sm">
+  {% for s in items %}
+    <li class="flex items-center justify-between gap-2 py-2">
+      <a href="{% url 'classes:session' s.sid %}" class="min-w-0 hover:underline">
+        <span class="font-semibold text-slate-900">{{ s.tgl|date:"D, d M" }}</span>
+        <span class="text-slate-500">{{ s.mulai|time:"H:i" }}{% if s.kode %} · {{ s.kode }}{% elif s.kelas %} · {{ s.kelas }}{% endif %}{% if show_teacher %} · {{ s.guru }}{% endif %}</span></a>
+      {% include "components/status_badge.html" with status=s.status %}
+    </li>
+  {% endfor %}
+</ul>
+{% else %}<p class="text-sm text-slate-500">{{ empty }}</p>{% endif %}

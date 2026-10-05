@@ -11,6 +11,7 @@ from classes.models import ClassMaster, ClassMembers
 from core import audit
 from core.ids import next_id, next_row_no
 from core.notifications import notify
+from core.records import apply_changes
 from dashboards.calc.base import BranchData, fold, period_code
 from dashboards.calc.kelas import kapasitas
 from dashboards.calc.status import kode_dipakai, semua_status_sekarang, status_sekarang
@@ -116,19 +117,7 @@ def check_capacity(branch, kode, std, today, allow):
 
 
 def _update(branch, user, obj, entity, entity_id, changes):
-    """Ubah beberapa kolom; satu baris AUDIT_LOG per kolom yang benar-benar berubah."""
-    changed = []
-    for name, new in changes.items():
-        old = getattr(obj, name)
-        if old == new or (old in (None, "") and new in (None, "")):
-            continue
-        setattr(obj, name, new)
-        changed.append(name)
-        audit.log(branch=branch, user=user, action="UPDATE", entity=entity, entity_id=entity_id,
-                  field=str(obj._meta.get_field(name).verbose_name), old=old, new=new)
-    if changed:
-        obj.save(update_fields=changed)
-    return changed
+    return apply_changes(branch, user, obj, entity, entity_id, changes)
 
 
 def _move_membership(branch, user, student, cls, tanggal):
