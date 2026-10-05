@@ -14,10 +14,10 @@ from core.permissions import has_perm, require_perm
 from core.ui import paginate, sort_key
 from dashboards.calc.base import BranchData, fold
 
-from . import queries, services
-from .forms import (ClassForm, FollowUpForm, FollowUpUpdateForm, NoteForm, ProgramForm, StatusForm, StudentCreateForm,
+from . import parents, queries, services
+from .forms import (ClassForm, FollowUpForm, FollowUpUpdateForm, NoteForm, ParentForm, ProgramForm, StatusForm, StudentCreateForm,
                     StudentEditForm, TeacherForm, off_categories)
-from .models import FollowUp, StudentMaster
+from .models import FollowUp, ParentMaster, StudentMaster
 
 TABS = [("ringkasan", "Ringkasan", "id-badge-2"), ("status", "Status & OFF", "activity"), ("kelas", "Kelas", "school"),
         ("akademik", "Akademik", "book"), ("keuangan", "SPP & Pembayaran", "cash"), ("followup", "Follow-up", "phone-call"),
@@ -303,3 +303,95 @@ def followup_detail(request, fid):
         "fu": fu, "form": form, "student": student, "open": services.is_open_followup(fu),
         "bucket": services.due_bucket(fu.next, timezone.localdate()),
         "crumbs": [("Follow-up", reverse("students:followups")), (fu.fid, None)]})
+
+
+# ------------------------------------------------------------------ orang tua
+
+def _parent_or_404(request, pid):
+    p = ParentMaster.objects.for_branch(request.branch).filter(pid=pid).first()
+    if p is None:
+        raise Http404("Orang tua tidak ditemukan di cabang ini.")
+    return p
+
+
+@require_perm("parent.view")
+def parent_list(request):
+    q = request.GET.get("q", "")[:80]
+    rows = parents.parent_rows(request.branch, q, has_perm(request, "student.contacts"))
+    return render(request, "students/parent_list.html", {
+        "page": paginate(request, rows), "q": q, "found": len(rows),
+        "crumbs": [("Beranda", reverse("core:home")), ("Orang Tua", None)]})
+
+
+@require_perm("parent.view")
+def parent_detail(request, pid):
+    p = _parent_or_404(request, pid)
+    data = BranchData(request.branch, timezone.localdate())
+    rows = [r for r in queries.student_rows(data) if r["obj"].par == p.pid]
+    stds = [r["std"] for r in rows]
+    followups = FollowUp.objects.for_branch(request.branch).filter(std__in=stds).order_by("-tgl", "-row_no")[:20]
+    return render(request, "students/parent_detail.html", {
+        "p": p, "children": rows, "followups": followups, "contacts": has_perm(request, "student.contacts"),
+        "communications": [line for line in (p.catatan or "").splitlines() if line.strip()][::-1],
+        "crumbs": [("Orang Tua", reverse("students:parents")), (p.nama or p.pid, None)]})
+
+
+@require_perm("parent.edit")
+def parent_create(request):
+    form = ParentForm(request.POST or None, branch=request.branch)
+    if request.method == "POST" and form.is_valid():
+        try:
+            p = parents.create_parent(request.branch, request.user, **form.cleaned_data)
+        except ValidationError as exc:
+            _form_errors(form, exc)
+        else:
+            messages.success(request, f"Orang tua {p.pid} - {p.nama} tersimpan.")
+            return redirect("students:parent_detail", pid=p.pid)
+    return render(request, "students/form.html", {
+        "form": form, "title": "Tambah orang tua / wali", "icon": "user-plus", "submit": "Simpan",
+        "crumbs": [("Orang Tua", reverse("students:parents")), ("Tambah", None)]})
+
+
+@require_perm("parent.edit")
+def parent_edit(request, pid):
+    p = _parent_or_404(request, pid)
+    contacts = has_perm(request, "student.contacts")
+    initial = {name: getattr(p, name) for name in parents.EDITABLE}
+    form = ParentForm(request.POST or None, branch=request.branch, initial=initial, can_see_contacts=contacts)
+    if request.method == "POST" and form.is_valid():
+        try:
+            changed = parents.update_parent(request.branch, request.user, pid, **form.cleaned_data)
+        except ValidationError as exc:
+            _form_errors(form, exc)
+        else:
+            messages.success(request, f"{len(changed)} data orang tua diubah." if changed else "Tidak ada perubahan.")
+            return redirect("students:parent_detail", pid=pid)
+    return render(request, "students/form.html", {
+        "form": form, "title": f"Ubah {p.nama}", "icon": "edit", "submit": "Simpan perubahan",
+        "crumbs": [("Orang Tua", reverse("students:parents")), (p.nama, reverse("students:parent_detail", args=[pid])), ("Ubah", None)]})
+
+
+@require_POST
+@require_perm("parent.edit")
+def parent_link(request, pid):
+    _parent_or_404(request, pid)
+    try:
+        parents.link_child(request.branch, request.user, pid, request.POST.get("std", "").strip())
+    except ValidationError as exc:
+        messages.error(request, " ".join(exc.messages))
+    else:
+        messages.success(request, "Anak dihubungkan ke orang tua ini.")
+    return redirect("students:parent_detail", pid=pid)
+
+
+@require_POST
+@require_perm("parent.edit")
+def parent_note(request, pid):
+    _parent_or_404(request, pid)
+    try:
+        parents.add_communication(request.branch, request.user, pid, request.POST.get("teks", ""))
+    except ValidationError as exc:
+        messages.error(request, " ".join(exc.messages))
+    else:
+        messages.success(request, "Catatan komunikasi tersimpan.")
+    return redirect("students:parent_detail", pid=pid)

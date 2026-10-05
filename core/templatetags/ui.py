@@ -82,3 +82,21 @@ def get(mapping, key):
         return mapping.get(key, "")
     except AttributeError:
         return ""
+
+
+@register.filter
+def sections(form):
+    """[(judul, [nama kolom])] dari atribut `sections` form; bila tidak ada: satu bagian berisi semua kolom."""
+    spec = getattr(form, "sections", None)
+    if not spec:
+        return [("", list(form.fields))]
+    listed = {n for _t, names in spec for n in names}
+    rest = [n for n in form.fields if n not in listed]
+    out = [(title, [n for n in names if n in form.fields]) for title, names in spec] + [("", rest)]
+    return [(title, names) for title, names in out if names]
+
+
+@register.filter
+def is_wide(bound_field):
+    widget = bound_field.field.widget
+    return widget.__class__.__name__ in ("Textarea", "CheckboxInput")

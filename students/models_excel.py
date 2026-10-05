@@ -200,6 +200,9 @@ class ParentMaster(ExcelRow):
     prov_type = models.TextField('Source Type', blank=True, default="")
     prov_batch = models.TextField('Import Batch', blank=True, default="")
     prov_date = models.DateField('Import Date', null=True, blank=True)
+    # kolom aplikasi (tidak diimpor dari workbook)
+    kontak_darurat = models.CharField("Kontak darurat (nama)", max_length=150, blank=True, default="")
+    telp_darurat = models.CharField("Telepon darurat", max_length=40, blank=True, default="")
 
     class Meta(ExcelRow.Meta):
         db_table = "x_parent_master"

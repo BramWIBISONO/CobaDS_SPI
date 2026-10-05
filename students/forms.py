@@ -77,6 +77,11 @@ class StudentCreateForm(BranchForm):
     allow_duplicate = forms.BooleanField(label="Tetap simpan walau nama sama (murid berbeda)", required=False)
     allow_over_capacity = forms.BooleanField(label="Izinkan melebihi kapasitas kelas", required=False)
 
+    sections = [("Data murid", ["nama", "lahir", "hp", "sekolah"]),
+                ("Pendaftaran & kelas", ["mulai", "status", "program", "level", "kode", "guru", "harga", "catatan"]),
+                ("Orang tua / wali", ["ortu_pid", "ortu_nama", "ortu_hub", "ortu_wa", "ortu_email"]),
+                ("Konfirmasi", ["allow_duplicate", "allow_over_capacity"])]
+
     def __init__(self, *args, can_over_capacity=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["program"].choices = program_choices(self.branch)
@@ -101,6 +106,8 @@ class StudentEditForm(BranchForm):
     sekolah = forms.CharField(label="Sekolah (ubah)", required=False, max_length=150)
     harga = forms.DecimalField(label="Harga SPP per bulan (Rp)", required=False, min_value=0, max_digits=14, decimal_places=2)
     ortu_pid = forms.CharField(label="Parent ID orang tua", required=False, max_length=20)
+
+    sections = [("Data murid", ["nama", "lahir", "hp", "sekolah"]), ("SPP & orang tua", ["harga", "ortu_pid"])]
 
 
 class StatusForm(BranchForm):
@@ -190,3 +197,25 @@ class FollowUpUpdateForm(FollowUpForm):
         super().__init__(*args, **kwargs)
         for name in ("std", "jenis"):
             del self.fields[name]
+
+
+class ParentForm(BranchForm):
+    nama = forms.CharField(label="Nama orang tua / wali", max_length=150)
+    hub = forms.CharField(label="Hubungan", required=False, max_length=40, help_text="mis. Ayah, Ibu, Wali")
+    wa = forms.CharField(label="WhatsApp", required=False, max_length=40)
+    email = forms.EmailField(label="Email", required=False)
+    alamat = forms.CharField(label="Alamat", required=False, widget=forms.Textarea(attrs={"rows": 2}))
+    pref = forms.CharField(label="Preferensi komunikasi", required=False, max_length=80, help_text="mis. WhatsApp sore hari")
+    va = forms.CharField(label="Referensi pembayaran / VA", required=False, max_length=80)
+    kontak_darurat = forms.CharField(label="Kontak darurat (nama)", required=False, max_length=150)
+    telp_darurat = forms.CharField(label="Telepon darurat", required=False, max_length=40)
+
+    CONTACT_FIELDS = ("wa", "email", "alamat", "va", "kontak_darurat", "telp_darurat")
+    sections = [("Orang tua / wali", ["nama", "hub", "pref"]), ("Kontak", ["wa", "email", "alamat", "va"]),
+                ("Kontak darurat", ["kontak_darurat", "telp_darurat"])]
+
+    def __init__(self, *args, can_see_contacts=True, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not can_see_contacts:
+            for name in self.CONTACT_FIELDS:
+                del self.fields[name]

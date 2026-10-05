@@ -21,6 +21,10 @@ MONEY_FIELDS = {("SPP_TAGIHAN", "harga"), ("SPP_TAGIHAN", "diskon"), ("SPP_TAGIH
 MONEY = "models.DecimalField({v}, max_digits=14, decimal_places=2, null=True, blank=True{x})"
 # kolom milik aplikasi (tidak ada di workbook, tidak diimpor) - docs/ARCHITECTURE.md A3
 APP_FIELDS = {
+    "PARENT_MASTER": [
+        'kontak_darurat = models.CharField("Kontak darurat (nama)", max_length=150, blank=True, default="")',
+        'telp_darurat = models.CharField("Telepon darurat", max_length=40, blank=True, default="")',
+    ],
     "FOLLOW_UP": [
         'prioritas = models.CharField("Prioritas", max_length=12, blank=True, default="NORMAL")',
         'ditugaskan = models.ForeignKey("accounts.User", verbose_name="Ditugaskan ke", on_delete=models.SET_NULL, null=True, blank=True, related_name="+")',

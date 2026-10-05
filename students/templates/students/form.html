@@ -2,52 +2,5 @@
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
 {% pageheader title=title icon=icon %}{% endpageheader %}
-<form method="post" class="max-w-4xl space-y-4" novalidate>{% csrf_token %}
-  {% if form.non_field_errors %}<div class="form-error" role="alert">{% for e in form.non_field_errors %}<p>{{ e }}</p>{% endfor %}</div>{% endif %}
-  {% if form.nama %}
-    <section class="form-section">
-      <h2>Data murid</h2>
-      <div class="form-grid">
-        {% for name in "nama lahir hp sekolah"|split %}{% with field=form|getfield:name %}{% if field %}{% include "components/field.html" %}{% endif %}{% endwith %}{% endfor %}
-      </div>
-    </section>
-  {% endif %}
-  {% if form.mulai %}
-    <section class="form-section">
-      <h2>Pendaftaran & kelas</h2>
-      <div class="form-grid">
-        {% for name in "mulai status program level kode guru harga"|split %}{% with field=form|getfield:name %}{% include "components/field.html" %}{% endwith %}{% endfor %}
-        <div class="sm:col-span-2">{% with field=form.catatan %}{% include "components/field.html" %}{% endwith %}</div>
-      </div>
-    </section>
-  {% elif form.harga %}
-    <section class="form-section"><h2>SPP & orang tua</h2><div class="form-grid">
-      {% with field=form.harga %}{% include "components/field.html" %}{% endwith %}
-      {% with field=form.ortu_pid %}{% include "components/field.html" %}{% endwith %}
-    </div></section>
-  {% endif %}
-  {% if form.ortu_nama %}
-    <section class="form-section">
-      <h2>Orang tua / wali</h2>
-      <div class="form-grid">
-        <div class="sm:col-span-2">{% with field=form.ortu_pid %}{% include "components/field.html" %}{% endwith %}</div>
-        {% for name in "ortu_nama ortu_hub ortu_wa ortu_email"|split %}{% with field=form|getfield:name %}{% include "components/field.html" %}{% endwith %}{% endfor %}
-      </div>
-    </section>
-    <section class="form-section space-y-2">
-      {% with field=form.allow_duplicate %}{% include "components/field.html" %}{% endwith %}
-      {% if form.allow_over_capacity %}{% with field=form.allow_over_capacity %}{% include "components/field.html" %}{% endwith %}{% endif %}
-    </section>
-  {% endif %}
-  {% if not form.nama %}
-    <section class="form-section"><div class="form-grid">
-      {% for field in form %}{% if field.name != "catatan" %}{% include "components/field.html" %}{% endif %}{% endfor %}
-      {% if form.catatan %}<div class="sm:col-span-2">{% with field=form.catatan %}{% include "components/field.html" %}{% endwith %}</div>{% endif %}
-    </div></section>
-  {% endif %}
-  <div class="flex flex-wrap gap-2">
-    <button class="btn btn-primary"><i class="ti ti-device-floppy" aria-hidden="true"></i>{{ submit }}</button>
-    <a href="javascript:history.back()" class="btn btn-secondary">Batal</a>
-  </div>
-</form>
+{% include "components/form_body.html" %}
 {% endblock %}

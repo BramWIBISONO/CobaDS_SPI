@@ -1,0 +1,18 @@
+{% load ui %}
+<form method="post" class="max-w-4xl space-y-4" novalidate>{% csrf_token %}
+  {% if form.non_field_errors %}<div class="form-error" role="alert">{% for e in form.non_field_errors %}<p>{{ e }}</p>{% endfor %}</div>{% endif %}
+  {% for title, names in form|sections %}
+    <section class="form-section">
+      {% if title %}<h2>{{ title }}</h2>{% endif %}
+      <div class="form-grid">
+        {% for name in names %}{% with field=form|getfield:name %}{% if field %}
+          <div class="{% if field|is_wide %}sm:col-span-2{% endif %}">{% include "components/field.html" %}</div>
+        {% endif %}{% endwith %}{% endfor %}
+      </div>
+    </section>
+  {% endfor %}
+  <div class="flex flex-wrap gap-2">
+    <button class="btn btn-primary"><i class="ti ti-device-floppy" aria-hidden="true"></i>{{ submit }}</button>
+    <a href="{{ cancel_url|default:'javascript:history.back()' }}" class="btn btn-secondary">Batal</a>
+  </div>
+</form>

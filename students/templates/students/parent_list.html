@@ -1,0 +1,35 @@
+{% extends "base.html" %}{% load ui %}
+{% block title %}Orang Tua{% endblock %}
+{% block content %}
+{% pageheader title="Orang Tua" subtitle="Orang tua / wali murid, anak-anaknya, dan kontaknya" icon="users-group" %}
+  {% if perm.parent_edit %}<a href="{% url 'students:parent_create' %}" class="btn btn-primary"><i class="ti ti-user-plus" aria-hidden="true"></i>Tambah orang tua</a>{% endif %}
+{% endpageheader %}
+<form method="get" class="filter-bar lg:grid-cols-3" role="search">
+  <div class="sm:col-span-2"><label class="field-label" for="pq">Cari nama orang tua / anak / Parent ID{% if perm.student_contacts %} / nomor{% endif %}</label>
+    <input id="pq" type="search" name="q" value="{{ q }}" class="field" autocomplete="off"></div>
+  <div class="flex items-end gap-2"><button class="btn btn-primary">Cari</button><a href="{% url 'students:parents' %}" class="btn btn-secondary">Atur ulang</a></div>
+</form>
+{% if page.object_list %}
+<p class="mb-2 text-sm text-slate-600"><strong>{{ found }}</strong> orang tua</p>
+<div class="table-wrap overflow-x-auto">
+  <table class="data-table">
+    <thead><tr><th>Nama</th><th>Parent ID</th><th>Hubungan</th><th>Anak</th>{% if perm.student_contacts %}<th>WhatsApp</th><th>Email</th>{% endif %}</tr></thead>
+    <tbody>
+      {% for r in page.object_list %}
+        <tr>
+          <td class="font-semibold"><a href="{% url 'students:parent_detail' r.p.pid %}" class="text-slate-900 hover:text-brand-700 hover:underline">{{ r.p.nama|default:"(tanpa nama)" }}</a></td>
+          <td class="tabular-nums text-slate-500">{{ r.p.pid }}</td>
+          <td>{{ r.p.hub|default:"—" }}</td>
+          <td class="wrap">{% for c in r.children %}<a href="{% url 'students:detail' c.std %}" class="text-brand-700 hover:underline">{{ c.nama }}</a>{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</td>
+          {% if perm.student_contacts %}<td>{{ r.p.wa|default:"—" }}</td><td>{{ r.p.email|default:"—" }}</td>{% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% include "components/pagination.html" %}
+{% else %}
+  {% if perm.parent_edit %}{% url 'students:parent_create' as add_url %}{% endif %}
+  {% include "components/empty_state.html" with icon="users-group" title="Tidak ada orang tua yang cocok" text="Ubah kata kunci, atau tambahkan orang tua baru." action_url=add_url action_label="Tambah orang tua" action_icon="user-plus" %}
+{% endif %}
+{% endblock %}
