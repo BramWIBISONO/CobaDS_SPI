@@ -61,11 +61,22 @@ def seed(password):
         if branch is not None:
             teacher = ""
             if spec["role"] == "TEACHER":
-                first = TeacherMaster.objects.for_branch(branch).exclude(name="").order_by("row_no").first()
-                teacher = first.name if first else "Guru Demo"
+                teacher = demo_teacher_name(branch)
             Membership.objects.update_or_create(user=user, branch=branch, defaults={"role": spec["role"], "teacher_name": teacher})
         out.append({**spec, "status": "siap"})
     return out
+
+
+def demo_teacher_name(branch):
+    """Guru aktif yang punya jadwal resmi (agar Jadwal Saya demo berisi); bila tidak ada: guru pertama di daftar."""
+    from classes.models import ClassSchedule
+    from masterdata.services import teacher_key
+
+    teachers = list(TeacherMaster.objects.for_branch(branch).exclude(name="").order_by("row_no"))
+    scheduled = {teacher_key(t) for t in ClassSchedule.objects.for_branch(branch).values_list("teacher", flat=True)}
+    best = next((t for t in teachers if t.status.upper() == "ACTIVE" and teacher_key(t.name) in scheduled), None)
+    best = best or (teachers[0] if teachers else None)
+    return best.name if best else "Guru Demo"
 
 
 def available():
