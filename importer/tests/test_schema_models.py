@@ -1,6 +1,7 @@
 from django.db import models
 
 from importer.schema import load_schema, table
+from tools.generate_models import MONEY_FIELDS
 
 KIND_FIELD = {"text": models.TextField, "number": models.FloatField, "date": models.DateField,
               "datetime": models.DateTimeField, "time": models.TimeField, "bool": models.BooleanField}
@@ -27,6 +28,8 @@ def test_field_types_follow_the_schema():
         for f in t.stored_fields:
             field = M._meta.get_field(f.name)
             expected = models.CharField if (f.name == t.key and f.kind == "text") else KIND_FIELD[f.kind]
+            if (t.sheet, f.name) in MONEY_FIELDS:
+                expected = models.DecimalField                 # uang tabel transaksi (docs/ARCHITECTURE.md A3)
             assert isinstance(field, expected), (t.sheet, f.header, type(field))
 
 
@@ -55,3 +58,22 @@ def test_simulation_sheet_is_a_fixed_block():
 def test_cash_book_counted_flag_is_stored():
     # Dihitung = nilai tetap di semua baris kecuali Agustus 2026 (rumus pilihan jurnal) -> harus ikut diimpor
     assert table("BUKU_KAS").field_by_header["Dihitung"].stored is True
+
+
+def test_money_columns_of_transaction_tables_are_decimal():
+    from finance.models import BuktiBayar, SppTagihan
+    from students.models import StudentMaster
+
+    for model, name in ((SppTagihan, "harga"), (SppTagihan, "diskon"), (SppTagihan, "adj"), (BuktiBayar, "nominal"),
+                        (StudentMaster, "harga"), (StudentMaster, "harga_in")):
+        field = model._meta.get_field(name)
+        assert isinstance(field, models.DecimalField) and (field.max_digits, field.decimal_places) == (14, 2), (model, name)
+
+
+def test_follow_up_has_app_task_columns():
+    from students.models import FollowUp
+
+    names = {f.name for f in FollowUp._meta.get_fields()}
+    assert {"prioritas", "ditugaskan", "selesai_pada", "diubah_pada"} <= names
+    assert FollowUp._meta.get_field("ditugaskan").related_model.__name__ == "User"
+    assert "prioritas" not in {f.name for f in table("FOLLOW_UP").stored_fields}      # kolom aplikasi: tidak diimpor

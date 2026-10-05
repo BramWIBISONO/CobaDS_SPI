@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Notifikasi{% endblock %}
+{% block content %}
+{% include "components/page_header.html" with title="Notifikasi" subtitle="Pekerjaan dan peringatan untuk Anda di cabang ini" icon="bell" %}
+{% if items %}
+  <form method="post" action="{% url 'core:notifikasi_baca_semua' %}" class="mb-3">{% csrf_token %}
+    <button class="btn btn-secondary"><i class="ti ti-checks" aria-hidden="true"></i>Tandai semua sudah dibaca</button></form>
+  <ul class="card divide-y divide-slate-100">
+    {% for n in items %}
+      <li class="flex items-start gap-3 p-4 {% if not n.read_at %}bg-brand-50/60{% endif %}">
+        <i class="ti ti-{% if n.read_at %}bell{% else %}bell-ringing{% endif %} mt-0.5 text-lg text-brand-600" aria-hidden="true"></i>
+        <div class="min-w-0 flex-1">
+          <p class="font-semibold text-slate-900">{{ n.title }}</p>
+          {% if n.body %}<p class="text-sm text-slate-600">{{ n.body }}</p>{% endif %}
+          <p class="mt-1 text-xs text-slate-400">{{ n.created_at|date:"d M Y H:i" }}</p>
+        </div>
+        <form method="post" action="{% url 'core:notifikasi_baca' n.pk %}">{% csrf_token %}
+          <button class="chip">{% if n.url %}Buka{% else %}Tandai dibaca{% endif %}</button></form>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  {% include "components/empty_state.html" with icon="bell-off" title="Tidak ada notifikasi" text="Pekerjaan baru untuk Anda (follow-up, verifikasi, sesi) akan muncul di sini." %}
+{% endif %}
+{% endblock %}

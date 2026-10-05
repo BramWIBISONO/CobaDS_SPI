@@ -15,14 +15,28 @@ FIELD = {
     "bool": "models.BooleanField({v}, null=True, blank=True{x})",
 }
 INDEXED = {"Student ID", "Parent ID", "Class ID", "Teacher ID", "Kode Kelas", "Periode", "Student ID (konversi)", "Lead ID"}
+# uang pada tabel transaksi: Decimal (docs/ARCHITECTURE.md A3)
+MONEY_FIELDS = {("SPP_TAGIHAN", "harga"), ("SPP_TAGIHAN", "diskon"), ("SPP_TAGIHAN", "adj"), ("BUKTI_BAYAR", "nominal"),
+                ("STUDENT_MASTER", "harga"), ("STUDENT_MASTER", "harga_in")}
+MONEY = "models.DecimalField({v}, max_digits=14, decimal_places=2, null=True, blank=True{x})"
+# kolom milik aplikasi (tidak ada di workbook, tidak diimpor) - docs/ARCHITECTURE.md A3
+APP_FIELDS = {
+    "FOLLOW_UP": [
+        'prioritas = models.CharField("Prioritas", max_length=12, blank=True, default="NORMAL")',
+        'ditugaskan = models.ForeignKey("accounts.User", verbose_name="Ditugaskan ke", on_delete=models.SET_NULL, null=True, blank=True, related_name="+")',
+        'selesai_pada = models.DateTimeField("Selesai pada", null=True, blank=True)',
+        'diubah_pada = models.DateTimeField("Diubah pada", auto_now=True, null=True)',
+    ],
+}
 
 
-def field_line(f, is_key):
+def field_line(f, is_key, sheet):
     v = repr(f["header"])
     if is_key and f["kind"] == "text":
         return f'    {f["name"]} = models.CharField({v}, max_length=200, db_index=True)'
     x = ", db_index=True" if (is_key or f["header"] in INDEXED) else ""
-    return f'    {f["name"]} = ' + FIELD[f["kind"]].format(v=v, x=x)
+    kind = MONEY if (sheet, f["name"]) in MONEY_FIELDS else FIELD[f["kind"]]
+    return f'    {f["name"]} = ' + kind.format(v=v, x=x)
 
 
 def model_block(t):
@@ -30,9 +44,11 @@ def model_block(t):
     for f in t["fields"]:
         if not f["stored"]:
             continue
-        lines.append(field_line(f, f["name"] == t["key"]))
+        lines.append(field_line(f, f["name"] == t["key"], t["sheet"]))
         if f["text_field"]:
             lines.append(f'    {f["text_field"]} = models.TextField({(f["header"] + " (teks asli)")!r}, blank=True, default="")')
+    if t["sheet"] in APP_FIELDS:
+        lines += ["    # kolom aplikasi (tidak diimpor dari workbook)"] + [f"    {line}" for line in APP_FIELDS[t["sheet"]]]
     lines += ["", "    class Meta(ExcelRow.Meta):", f'        db_table = "x_{t["sheet"].lower()}"',
               f'        verbose_name = {t["sheet"]!r}', f'        verbose_name_plural = {t["sheet"]!r}']
     if t["unique"]:

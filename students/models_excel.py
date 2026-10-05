@@ -30,7 +30,7 @@ class StudentMaster(ExcelRow):
     unit = models.TextField('Unit ID', blank=True, default="")
     join = models.DateField('Join', null=True, blank=True)
     join_text = models.TextField('Join (teks asli)', blank=True, default="")
-    harga = models.FloatField('Harga SPP', null=True, blank=True)
+    harga = models.DecimalField('Harga SPP', max_digits=14, decimal_places=2, null=True, blank=True)
     harga_text = models.TextField('Harga SPP (teks asli)', blank=True, default="")
     status_last = models.TextField('Status Terakhir', blank=True, default="")
     month_last = models.DateField('Bulan Status', null=True, blank=True)
@@ -44,7 +44,7 @@ class StudentMaster(ExcelRow):
     prog_in = models.TextField('Program (ubah)', blank=True, default="")
     level_in = models.TextField('Level (ubah)', blank=True, default="")
     guru_in = models.TextField('Guru (ubah)', blank=True, default="")
-    harga_in = models.FloatField('Harga SPP (ubah)', null=True, blank=True)
+    harga_in = models.DecimalField('Harga SPP (ubah)', max_digits=14, decimal_places=2, null=True, blank=True)
     sekolah_in = models.TextField('Sekolah (ubah)', blank=True, default="")
     kode_read = models.TextField('Kode Kelas (terbaca)', blank=True, default="")
     sr_src = models.TextField('Student Report (sumber)', blank=True, default="")
@@ -225,6 +225,11 @@ class FollowUp(ExcelRow):
     oleh = models.TextField('Diinput Oleh', blank=True, default="")
     pada = models.DateTimeField('Diinput Pada', null=True, blank=True)
     sumber = models.TextField('Sumber', blank=True, default="")
+    # kolom aplikasi (tidak diimpor dari workbook)
+    prioritas = models.CharField("Prioritas", max_length=12, blank=True, default="NORMAL")
+    ditugaskan = models.ForeignKey("accounts.User", verbose_name="Ditugaskan ke", on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
+    selesai_pada = models.DateTimeField("Selesai pada", null=True, blank=True)
+    diubah_pada = models.DateTimeField("Diubah pada", auto_now=True, null=True)
 
     class Meta(ExcelRow.Meta):
         db_table = "x_follow_up"

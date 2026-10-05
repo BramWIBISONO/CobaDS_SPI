@@ -3,6 +3,8 @@ from branches.models import Branch
 
 from .capabilities import ROLE_LABELS, caps_for, role_of
 from .nav import nav_for
+from .notifications import unread_count
+from .permissions import PermSet, perms_for_caps
 
 SESSION_KEY = "spi_branch_id"
 
@@ -50,4 +52,6 @@ def branch_context(request):
         return {}
     return {"current_branch": getattr(request, "branch", None), "allowed_branches": list(allowed_branches(user)),
             "role": getattr(request, "role", None), "role_label": ROLE_LABELS.get(getattr(request, "role", None), ""),
-            "caps": getattr(request, "caps", frozenset()), "nav": nav_for(request)}
+            "caps": getattr(request, "caps", frozenset()), "nav": nav_for(request),
+            "perm": PermSet(perms_for_caps(getattr(request, "caps", frozenset()))),
+            "notif_count": unread_count(user, getattr(request, "branch", None))}

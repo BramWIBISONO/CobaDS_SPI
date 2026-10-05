@@ -19,13 +19,15 @@ class Cap(StrEnum):
     SESSION_WRITE_OWN = "session_write_own"  # realisasi sesi milik guru itu sendiri
     SEE_CONTACTS = "see_contacts"          # kontak orang tua / murid
     DATA_VALIDATE = "data_validate"        # Data Quality, CEK NAMA, issue
+    AUDIT_VIEW = "audit_view"              # baca Audit Log & riwayat keamanan cabang
 
 
 ALL_CAPS = frozenset(Cap)
 ROLE_CAPS = {
     "BRANCH_ADMIN": ALL_CAPS - {Cap.MANAGE_ALL},
     "MANAGER": frozenset({Cap.VIEW, Cap.STUDENT_WRITE, Cap.DOCUMENT_WRITE, Cap.STATUS_CHANGE, Cap.PERIOD_OPEN, Cap.PERIOD_CLOSE,
-                          Cap.CLASS_WRITE, Cap.ACADEMIC_WRITE, Cap.SESSION_WRITE, Cap.SEE_CONTACTS, Cap.DATA_VALIDATE}),
+                          Cap.CLASS_WRITE, Cap.ACADEMIC_WRITE, Cap.SESSION_WRITE, Cap.SEE_CONTACTS, Cap.DATA_VALIDATE,
+                          Cap.AUDIT_VIEW}),
     "CSO": frozenset({Cap.VIEW, Cap.STUDENT_WRITE, Cap.DOCUMENT_WRITE, Cap.STATUS_CHANGE, Cap.PAYMENT_EVIDENCE, Cap.CLASS_WRITE,
                       Cap.SESSION_WRITE, Cap.SEE_CONTACTS, Cap.DATA_VALIDATE}),
     "FINANCE": frozenset({Cap.VIEW, Cap.PAYMENT_EVIDENCE, Cap.FINANCE_VERIFY, Cap.PERIOD_OPEN, Cap.SEE_CONTACTS, Cap.DATA_VALIDATE}),

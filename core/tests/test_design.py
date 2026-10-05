@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import pytest
 from django.conf import settings
 from django.template.loader import render_to_string
 
@@ -45,3 +46,10 @@ def test_chart_card_has_data_table_and_legend():
 def test_chart_script_draws_charts_from_the_json_spec():
     js = (STATIC / "js/dashboards.js").read_text(encoding="utf-8")
     assert "window.SPICharts" in js and "new Chart(" in js and "htmx:afterSettle" in js
+
+
+@pytest.mark.django_db
+def test_chart_library_loads_only_on_pages_with_charts(client, branch, make_user):
+    client.force_login(make_user("cso@spi.test", role="CSO", branch=branch))
+    assert "chart.umd.min.js" not in client.get("/").content.decode()
+    assert "chart.umd.min.js" in client.get("/laporan/").content.decode()

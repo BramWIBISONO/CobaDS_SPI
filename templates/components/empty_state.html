@@ -1,0 +1,6 @@
+<div class="card flex flex-col items-center justify-center gap-2 border-dashed px-6 py-10 text-center">
+  <span class="grid h-12 w-12 place-items-center rounded-full bg-slate-100 text-2xl text-slate-500"><i class="ti ti-{{ icon|default:'inbox' }}" aria-hidden="true"></i></span>
+  <p class="font-semibold text-slate-800">{{ title }}</p>
+  {% if text %}<p class="max-w-md text-sm text-slate-500">{{ text }}</p>{% endif %}
+  {% if action_url %}<a href="{{ action_url }}" class="btn btn-primary mt-2">{% if action_icon %}<i class="ti ti-{{ action_icon }}" aria-hidden="true"></i>{% endif %}{{ action_label }}</a>{% endif %}
+</div>

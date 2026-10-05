@@ -1,0 +1,22 @@
+<div class="mb-6">
+  {% if crumbs %}
+    <nav aria-label="Breadcrumb" class="mb-2 text-xs text-slate-500">
+      <ol class="flex flex-wrap items-center gap-1">
+        {% for label, url in crumbs %}
+          <li class="flex items-center gap-1">{% if not forloop.first %}<i class="ti ti-chevron-right text-[10px] text-slate-400" aria-hidden="true"></i>{% endif %}
+            {% if url %}<a href="{{ url }}" class="hover:text-brand-700 hover:underline">{{ label }}</a>{% else %}<span class="font-semibold text-slate-700" aria-current="page">{{ label }}</span>{% endif %}</li>
+        {% endfor %}
+      </ol>
+    </nav>
+  {% endif %}
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <div class="flex min-w-0 items-center gap-3">
+      {% if icon %}<span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-50 text-2xl text-brand-700"><i class="ti ti-{{ icon }}" aria-hidden="true"></i></span>{% endif %}
+      <div class="min-w-0">
+        <h1 class="truncate text-2xl font-extrabold text-slate-900">{{ title }}</h1>
+        {% if subtitle %}<p class="text-sm text-slate-500">{{ subtitle }}</p>{% endif %}
+      </div>
+    </div>
+    {% if actions %}<div class="flex flex-wrap items-center gap-2">{{ actions }}</div>{% endif %}
+  </div>
+</div>

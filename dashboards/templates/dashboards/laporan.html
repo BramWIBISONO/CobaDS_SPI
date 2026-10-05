@@ -1,9 +1,10 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load static ui %}
 {% block title %}Laporan Murid & SPP{% endblock %}
+{% block extra_head %}
+  <script src="{% static 'vendor/chart.umd.min.js' %}" defer></script>
+  <script src="{% static 'js/dashboards.js' %}" defer></script>
+{% endblock %}
 {% block content %}
-<div class="mb-6">
-  <h1 class="text-2xl font-extrabold text-slate-900">Laporan Murid &amp; SPP</h1>
-  <p class="text-sm text-slate-500">{{ current_branch.name }} · status bulan terpilih (DB Murid) dan buku kas · angka sama dengan LAPORAN Excel</p>
-</div>
+{% pageheader title="Laporan Murid & SPP" subtitle="Status bulan terpilih (DB Murid) dan buku kas · bisa disaring tanpa muat ulang" icon="chart-bar" %}{% endpageheader %}
 <div id="laporan-body">{% include "dashboards/_laporan_body.html" %}</div>
 {% endblock %}
