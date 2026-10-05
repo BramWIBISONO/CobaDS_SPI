@@ -1,0 +1,36 @@
+{% extends "base.html" %}{% load ui %}
+{% block title %}Ubah status · {{ student.nama }}{% endblock %}
+{% block content %}
+{% pageheader title="Ubah status murid" subtitle=student.nama icon="activity" %}{% endpageheader %}
+<form method="post" class="max-w-3xl space-y-4" novalidate x-data="{ st: '{{ form.status.value|default:'ACTIVE'|escapejs }}' }">{% csrf_token %}
+  {% if form.non_field_errors %}<div class="form-error" role="alert">{% for e in form.non_field_errors %}<p>{{ e }}</p>{% endfor %}</div>{% endif %}
+  <section class="form-section">
+    <p class="mb-4 text-sm text-slate-600">Status sekarang: {% include "components/status_badge.html" with status=now %}
+      — perubahan dicatat sebagai riwayat (tidak menimpa status lama).</p>
+    <div class="form-grid">
+      <div>
+        <label for="{{ form.status.id_for_label }}" class="field-label">{{ form.status.label }} *</label>
+        <select name="status" id="{{ form.status.id_for_label }}" class="field" x-model="st">
+          {% for v, lab in form.fields.status.choices %}<option value="{{ v }}" {% if form.status.value == v %}selected{% endif %}>{{ lab }}</option>{% endfor %}
+        </select>
+        {% if form.status.errors %}<ul class="errorlist">{% for e in form.status.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+      {% with field=form.tanggal %}{% include "components/field.html" %}{% endwith %}
+      <div class="sm:col-span-2">{% with field=form.alasan %}{% include "components/field.html" %}{% endwith %}</div>
+      <div x-show="st === 'OFF'" x-cloak>
+        <label for="{{ form.kategori.id_for_label }}" class="field-label">{{ form.kategori.label }}</label>
+        <input name="kategori" id="{{ form.kategori.id_for_label }}" class="field" list="kategori-off" value="{{ form.kategori.value|default:'' }}">
+        <datalist id="kategori-off">{% for c in categories %}<option value="{{ c }}">{% endfor %}</datalist>
+      </div>
+      <div x-show="st === 'ON LEAVE'" x-cloak>{% with field=form.kembali %}{% include "components/field.html" %}{% endwith %}</div>
+      <div class="sm:col-span-2">{% with field=form.catatan %}{% include "components/field.html" %}{% endwith %}</div>
+      <div x-show="st === 'ON LEAVE'" x-cloak>{% with field=form.konfirmasi %}{% include "components/field.html" %}{% endwith %}</div>
+      <div x-show="st === 'OFF' || st === 'ON LEAVE'" x-cloak class="sm:col-span-2">{% with field=form.buat_followup %}{% include "components/field.html" %}{% endwith %}</div>
+    </div>
+  </section>
+  <div class="flex flex-wrap gap-2">
+    <button class="btn btn-primary" data-confirm="Simpan perubahan status {{ student.nama }}? Riwayat status akan bertambah satu baris."><i class="ti ti-device-floppy" aria-hidden="true"></i>Simpan status</button>
+    <a href="{% url 'students:detail' student.std %}?tab=status" class="btn btn-secondary">Batal</a>
+  </div>
+</form>
+{% endblock %}

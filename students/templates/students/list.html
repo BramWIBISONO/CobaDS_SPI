@@ -1,0 +1,48 @@
+{% extends "base.html" %}{% load ui %}
+{% block title %}Murid{% endblock %}
+{% block content %}
+{% pageheader title="Murid" subtitle="Semua murid cabang ini · status sekarang dihitung dari riwayat status" icon="users" %}
+  {% if perm.report_export %}<a href="{% url 'students:export' %}{% qs request page=None %}" class="btn btn-secondary"><i class="ti ti-download" aria-hidden="true"></i>CSV</a>{% endif %}
+  {% if perm.student_create %}<a href="{% url 'students:create' %}" class="btn btn-primary"><i class="ti ti-user-plus" aria-hidden="true"></i>Tambah murid</a>{% endif %}
+{% endpageheader %}
+
+<form method="get" action="{% url 'students:list' %}" class="filter-bar lg:grid-cols-6" role="search"
+      x-data="{ more: window.matchMedia('(min-width: 1024px)').matches || {{ n_filters }} > 0 }"
+      hx-get="{% url 'students:list' %}" hx-target="#murid-table" hx-push-url="true" hx-trigger="change, keyup changed delay:300ms from:input[name=q]">
+  <div class="sm:col-span-2">
+    <label class="field-label" for="f-q">Cari nama / Student ID</label>
+    <div class="flex gap-2">
+      <input id="f-q" type="search" name="q" value="{{ f.q }}" class="field" placeholder="mis. Ani atau STD-000001" autocomplete="off">
+      <button type="button" class="btn btn-secondary px-3 lg:hidden" @click="more = !more" :aria-expanded="more.toString()" aria-controls="filter-more">
+        <i class="ti ti-adjustments-horizontal" aria-hidden="true"></i><span class="sr-only">Saringan</span>{% if n_filters %}<span class="text-xs">{{ n_filters }}</span>{% endif %}</button>
+    </div>
+  </div>
+  <div id="filter-more" class="contents" x-show="more">
+  <div><label class="field-label" for="f-status">Status</label>
+    <select id="f-status" name="status" class="field"><option value="">Semua</option>
+      {% for v, lab in opsi.status %}<option value="{{ v }}" {% if f.status == v %}selected{% endif %}>{{ lab }}</option>{% endfor %}</select></div>
+  <div><label class="field-label" for="f-program">Program</label>
+    <select id="f-program" name="program" class="field"><option value="">Semua</option>
+      {% for v in opsi.program %}<option {% if f.program == v %}selected{% endif %}>{{ v }}</option>{% endfor %}</select></div>
+  <div><label class="field-label" for="f-kode">Kelas</label>
+    <select id="f-kode" name="kode" class="field"><option value="">Semua</option>
+      {% for v in opsi.kode %}<option {% if f.kode == v %}selected{% endif %}>{{ v }}</option>{% endfor %}</select></div>
+  <div><label class="field-label" for="f-guru">Guru</label>
+    <select id="f-guru" name="guru" class="field"><option value="">Semua</option>
+      {% for v in opsi.guru %}<option {% if f.guru == v %}selected{% endif %}>{{ v }}</option>{% endfor %}</select></div>
+  <div><label class="field-label" for="f-mode">Mode</label>
+    <select id="f-mode" name="mode" class="field"><option value="">Semua</option>
+      {% for v in opsi.mode %}<option {% if f.mode == v %}selected{% endif %}>{{ v }}</option>{% endfor %}</select></div>
+  <div><label class="field-label" for="f-from">Mulai dari</label>
+    <input id="f-from" type="date" name="join_from" value="{{ f.join_from|date:'Y-m-d' }}" class="field"></div>
+  <div><label class="field-label" for="f-to">Mulai sampai</label>
+    <input id="f-to" type="date" name="join_to" value="{{ f.join_to|date:'Y-m-d' }}" class="field"></div>
+  <div class="flex items-end gap-2">
+    <noscript><button class="btn btn-primary">Terapkan</button></noscript>
+    <a href="{% url 'students:list' %}" class="btn btn-secondary">Atur ulang</a>
+  </div>
+  </div>
+</form>
+
+<div id="murid-table">{% include "students/_student_table.html" %}</div>
+{% endblock %}

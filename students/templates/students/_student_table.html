@@ -1,0 +1,53 @@
+{% load ui spi %}
+<form method="post" action="{% url 'students:bulk' %}" x-data="{ picked: 0 }" @change="picked = $el.querySelectorAll('input[name=std]:checked').length">
+  {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+  <div class="mb-2 flex flex-wrap items-center justify-between gap-2 text-sm">
+    <p class="text-slate-600"><strong>{{ found }}</strong> dari {{ total }} murid</p>
+    {% if perm.followup_manage %}
+    <details class="relative" x-show="picked > 0" x-cloak>
+      <summary class="btn btn-secondary cursor-pointer list-none"><i class="ti ti-checklist" aria-hidden="true"></i>Aksi untuk <span x-text="picked"></span> murid</summary>
+      <div class="absolute right-0 z-10 mt-2 w-[min(22rem,90vw)] space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-lg">
+        <p class="text-sm font-bold text-slate-800">Buat follow-up untuk murid terpilih</p>
+        <div><label class="field-label" for="b-jenis">Jenis</label>
+          <select id="b-jenis" name="jenis" class="field" required>{% for j in "SPP OFF Cuti Akademik Kehadiran Lainnya"|split %}<option>{{ j }}</option>{% endfor %}</select></div>
+        <div><label class="field-label" for="b-aksi">Tindak lanjut</label><input id="b-aksi" name="aksi" class="field" placeholder="mis. Kirim pengingat SPP"></div>
+        <div><label class="field-label" for="b-due">Jatuh tempo</label><input id="b-due" type="date" name="jatuh_tempo" class="field"></div>
+        <input type="hidden" name="prioritas" value="NORMAL">
+        <button class="btn btn-primary w-full">Buat follow-up</button>
+        {% if perm.report_export %}<button formmethod="get" formaction="{% url 'students:export' %}" class="btn btn-secondary w-full"><i class="ti ti-download" aria-hidden="true"></i>Ekspor CSV terpilih</button>{% endif %}
+      </div>
+    </details>
+    {% endif %}
+  </div>
+  {% if page.object_list %}
+  <div class="table-wrap overflow-x-auto">
+    <table class="data-table">
+      <thead><tr>
+        <th class="w-8"><span class="sr-only">Pilih</span></th>
+        {% sort_th request "nama" "Nama" %}{% sort_th request "std" "Student ID" %}{% sort_th request "status" "Status" %}
+        {% sort_th request "program" "Program / level" %}{% sort_th request "kelas" "Kelas" %}{% sort_th request "guru" "Guru" %}
+        <th>Mode</th>{% sort_th request "join" "Mulai" %}
+      </tr></thead>
+      <tbody>
+        {% for r in page.object_list %}
+          <tr>
+            <td><input type="checkbox" name="std" value="{{ r.std }}" aria-label="Pilih {{ r.nama }}" class="h-4 w-4 rounded border-slate-300"></td>
+            <td class="font-semibold"><a href="{% url 'students:detail' r.std %}" class="text-slate-900 hover:text-brand-700 hover:underline">{{ r.nama|default:"(tanpa nama)" }}</a></td>
+            <td class="tabular-nums text-slate-500">{{ r.std }}</td>
+            <td>{% include "components/status_badge.html" with status=r.status %}</td>
+            <td>{{ r.level|default:r.program|default:"—" }}</td>
+            <td>{{ r.kode|default:"—" }}</td>
+            <td>{{ r.guru|default:"—" }}</td>
+            <td>{{ r.mode|default:"—" }}</td>
+            <td class="tabular-nums">{{ r.join|date:"d M Y"|default:"—" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "components/pagination.html" %}
+  {% else %}
+    {% if perm.student_create %}{% url 'students:create' as add_url %}{% endif %}
+    {% include "components/empty_state.html" with icon="user-search" title="Tidak ada murid yang cocok" text="Ubah kata kunci atau saringan, atau tambahkan murid baru." action_url=add_url action_label="Tambah murid" action_icon="user-plus" %}
+  {% endif %}
+</form>

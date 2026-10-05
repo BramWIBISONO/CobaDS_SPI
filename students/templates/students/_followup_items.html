@@ -1,0 +1,13 @@
+{% if items %}
+<ul class="divide-y divide-slate-100">
+  {% for f in items %}
+    <li class="flex flex-wrap items-center justify-between gap-2 py-2.5">
+      <div class="min-w-0">
+        <a href="{% url 'students:followup_detail' f.fid %}" class="font-semibold text-slate-900 hover:text-brand-700 hover:underline">{{ f.jenis }} · {{ f.aksi|default:"tindak lanjut belum diisi" }}</a>
+        <p class="text-xs text-slate-500">{{ f.fid }} · {{ f.status|default:"Terbuka" }}{% if f.next %} · jatuh tempo {{ f.next|date:"d M Y" }}{% endif %}{% if f.pic %} · {{ f.pic }}{% endif %}</p>
+      </div>
+      <span class="status-badge {% if f.prioritas == 'MENDESAK' %}st-kritis{% elif f.prioritas == 'TINGGI' %}st-serius{% else %}st-netral{% endif %}">{{ f.prioritas|default:"NORMAL" }}</span>
+    </li>
+  {% endfor %}
+</ul>
+{% else %}<p class="text-sm text-slate-500">Tidak ada follow-up.</p>{% endif %}

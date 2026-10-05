@@ -1,0 +1,28 @@
+{% extends "base.html" %}{% load ui %}
+{% block title %}{{ fu.fid }} · Follow-up{% endblock %}
+{% block content %}
+{% pageheader title=fu.jenis|add:" · "|add:fu.fid subtitle=fu.aksi icon="phone-call" %}{% endpageheader %}
+<div class="grid gap-4 lg:grid-cols-3">
+  <section class="card p-5 lg:col-span-2">
+    <h2 class="section-title">Detail</h2>
+    <dl class="dl-grid">
+      <div><dt>Murid</dt><dd>{% if student %}<a href="{% url 'students:detail' student.std %}" class="font-semibold text-brand-700 hover:underline">{{ student.nama }}</a> · {{ student.std }}{% else %}{{ fu.std|default:fu.lead|default:"—" }}{% endif %}</dd></div>
+      <div><dt>Status</dt><dd>{{ fu.status|default:"Terbuka" }}{% if fu.selesai_pada %} · selesai {{ fu.selesai_pada|date:"d M Y H:i" }}{% endif %}</dd></div>
+      <div><dt>Prioritas</dt><dd>{{ fu.prioritas|default:"NORMAL" }}</dd></div>
+      <div><dt>Jatuh tempo</dt><dd>{{ fu.next|date:"d M Y"|default:"—" }}{% if open %} · {{ bucket|lower }}{% endif %}</dd></div>
+      <div><dt>Ditugaskan ke</dt><dd>{{ fu.ditugaskan.display_name|default:fu.pic|default:"—" }}</dd></div>
+      <div><dt>Dibuat</dt><dd>{{ fu.tgl|date:"d M Y" }} · {{ fu.oleh|default:"—" }}</dd></div>
+    </dl>
+    <h3 class="mt-5 field-label">Catatan / hasil</h3>
+    <p class="whitespace-pre-line rounded-lg bg-slate-50 p-3 text-sm text-slate-800">{{ fu.catatan|default:"Belum ada catatan." }}</p>
+  </section>
+  {% if perm.followup_manage %}
+  <form method="post" class="form-section space-y-3" novalidate>{% csrf_token %}
+    <h2>Perbarui</h2>
+    {% if form.non_field_errors %}<div class="form-error" role="alert">{% for e in form.non_field_errors %}<p>{{ e }}</p>{% endfor %}</div>{% endif %}
+    {% for field in form %}{% include "components/field.html" %}{% endfor %}
+    <button class="btn btn-primary w-full"><i class="ti ti-device-floppy" aria-hidden="true"></i>Simpan</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

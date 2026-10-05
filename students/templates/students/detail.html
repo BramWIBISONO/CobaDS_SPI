@@ -1,0 +1,187 @@
+{% extends "base.html" %}{% load ui spi %}
+{% block title %}{{ s.nama }} · Murid{% endblock %}
+{% block content %}
+{% url 'students:detail' s.std as here %}
+{% pageheader title=s.nama|default:s.std subtitle=s.std icon="user" %}
+  {% if perm.student_edit %}<a href="{% url 'students:edit' s.std %}" class="btn btn-secondary"><i class="ti ti-edit" aria-hidden="true"></i>Ubah data</a>{% endif %}
+  {% if perm.student_status %}<a href="{% url 'students:status' s.std %}" class="btn btn-secondary"><i class="ti ti-activity" aria-hidden="true"></i>Ubah status</a>{% endif %}
+  {% if perm.followup_manage %}<a href="{% url 'students:followup_create' %}?std={{ s.std }}" class="btn btn-primary"><i class="ti ti-phone-plus" aria-hidden="true"></i>Follow-up</a>{% endif %}
+{% endpageheader %}
+
+<div class="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+  <div class="card p-4"><p class="field-label">Status sekarang</p>
+    <div class="mt-1 flex items-center gap-2">{% include "components/status_badge.html" with status=status %}<span class="text-sm text-slate-500">{{ status_label }}</span></div></div>
+  <div class="card p-4"><p class="field-label">Kelas · guru</p>
+    <p class="mt-1 font-semibold text-slate-900">{{ d.kode|default:"belum ada kelas" }}</p><p class="text-sm text-slate-500">{{ d.guru|default:"guru belum ada" }}</p></div>
+  <div class="card p-4"><p class="field-label">Program · harga SPP</p>
+    <p class="mt-1 font-semibold text-slate-900">{{ d.level|default:d.program|default:"—" }}</p><p class="text-sm text-slate-500">{{ d.harga|rp }}</p></div>
+  <div class="card p-4"><p class="field-label">Follow-up terbuka</p>
+    <p class="mt-1 text-2xl font-extrabold tabular-nums {% if open_followups %}text-amber-700{% else %}text-slate-900{% endif %}">{{ open_followups|length }}</p></div>
+</div>
+
+<nav class="tabs" aria-label="Bagian profil">
+  {% for key, label, icon in tabs %}<a href="{{ here }}?tab={{ key }}" class="tab {% if tab == key %}tab-active{% endif %}" {% if tab == key %}aria-current="page"{% endif %}><i class="ti ti-{{ icon }}" aria-hidden="true"></i>{{ label }}</a>{% endfor %}
+</nav>
+
+{% if tab == "ringkasan" %}
+<div class="grid gap-4 lg:grid-cols-3">
+  <section class="card p-5 lg:col-span-2">
+    <h2 class="section-title">Identitas & pendaftaran</h2>
+    <dl class="dl-grid">
+      <div><dt>Nama</dt><dd>{{ s.nama }}</dd></div>
+      <div><dt>Student ID</dt><dd class="tabular-nums">{{ s.std }}{% if s.v1 %} · ID v1 {{ s.v1 }}{% endif %}</dd></div>
+      <div><dt>Tanggal lahir</dt><dd>{{ s.lahir|date:"d M Y"|default:"—" }}</dd></div>
+      <div><dt>Sekolah</dt><dd>{{ d.sekolah|default:"—" }}</dd></div>
+      <div><dt>Mulai belajar</dt><dd>{{ s.join|date:"d M Y"|default:s.join_text|default:"—" }}</dd></div>
+      <div><dt>Mode</dt><dd>{{ s.mode|default:"—" }}</dd></div>
+      <div><dt>Program · level</dt><dd>{{ d.program|default:"—" }} · {{ d.level|default:"—" }}</dd></div>
+      <div><dt>Harga SPP (dipakai)</dt><dd>{{ d.harga|rp }}</dd></div>
+      {% if contacts %}<div><dt>No. HP kontak</dt><dd>{{ s.hp|default:"—" }}</dd></div>{% endif %}
+    </dl>
+    {% if last_academic %}
+      <div class="mt-5 rounded-lg bg-slate-50 p-3 text-sm"><p class="field-label">Akademik terakhir · {{ last_academic.tgl|date:"d M Y" }}</p>
+        <p class="text-slate-800">{% if last_academic.pct is not None %}Progres {{ last_academic.pct|floatformat:0 }}% · {% endif %}{{ last_academic.kes|default:last_academic.cat|default:"—" }}</p></div>
+    {% endif %}
+  </section>
+  <section class="card p-5">
+    <h2 class="section-title">Orang tua / wali</h2>
+    {% if parent %}
+      <p class="font-semibold text-slate-900">{{ parent.nama }}</p>
+      <p class="text-sm text-slate-500">{{ parent.pid }}{% if parent.hub %} · {{ parent.hub }}{% endif %}</p>
+      {% if contacts %}
+        <dl class="mt-3 space-y-1 text-sm">
+          {% if parent.wa %}<div><dt class="sr-only">WhatsApp</dt><dd><i class="ti ti-brand-whatsapp text-emerald-600" aria-hidden="true"></i> {{ parent.wa }}</dd></div>{% endif %}
+          {% if parent.email %}<div><dt class="sr-only">Email</dt><dd><i class="ti ti-mail text-slate-500" aria-hidden="true"></i> {{ parent.email }}</dd></div>{% endif %}
+        </dl>
+      {% else %}<p class="mt-2 text-xs text-slate-400">Kontak hanya untuk peran yang berwenang.</p>{% endif %}
+      {% if siblings %}<p class="mt-3 text-xs font-semibold uppercase text-slate-500">Saudara di SPI</p>
+        <ul class="text-sm">{% for x in siblings %}<li><a class="text-brand-700 hover:underline" href="{% url 'students:detail' x.std %}">{{ x.nama }}</a></li>{% endfor %}</ul>{% endif %}
+    {% else %}
+      <p class="text-sm text-slate-500">Belum ada orang tua tercatat.{% if perm.student_edit %} <a class="font-semibold text-brand-700 hover:underline" href="{% url 'students:edit' s.std %}">Hubungkan</a>{% endif %}</p>
+    {% endif %}
+  </section>
+  <section class="card p-5 lg:col-span-3">
+    <div class="flex items-center justify-between"><h2 class="section-title">Follow-up terbuka</h2>
+      <a href="{{ here }}?tab=followup" class="text-sm font-semibold text-brand-700 hover:underline">Semua</a></div>
+    {% include "students/_followup_items.html" with items=open_followups|slice:":5" %}
+  </section>
+</div>
+
+{% elif tab == "status" %}
+<div class="grid gap-4 lg:grid-cols-2">
+  <section class="card p-5">
+    <h2 class="section-title">Riwayat status</h2>
+    {% if events %}<ol class="space-y-3">{% for e in events %}
+      <li class="flex gap-3"><span class="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-brand-500"></span>
+        <div class="min-w-0"><p class="text-sm font-semibold text-slate-900">{{ e.tgl|date:"d M Y" }} · {% include "components/status_badge.html" with status=e.status %} <span class="text-xs text-slate-500">{{ e.jenis }}</span></p>
+          {% if e.alasan %}<p class="text-sm text-slate-600">{{ e.alasan }}</p>{% endif %}
+          <p class="text-xs text-slate-400">{{ e.eid }}{% if e.oleh %} · {{ e.oleh }}{% endif %}{% if e.konfirm == "Belum" %} · belum dikonfirmasi{% endif %}</p></div></li>
+    {% endfor %}</ol>
+    {% else %}<p class="text-sm text-slate-500">Belum ada perubahan status tercatat. Status awal (Sep 2026): <strong>{{ s.st_base|default:"PENDING" }}</strong>.</p>{% endif %}
+  </section>
+  <section class="card p-5">
+    <h2 class="section-title">Riwayat OFF</h2>
+    {% if offs %}<div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Bulan</th><th>Status</th><th>Prioritas</th><th>Alasan</th></tr></thead><tbody>
+      {% for o in offs %}<tr><td>{{ o.row.month|date:"M Y" }}</td><td>{{ o.status }}</td><td>{{ o.prioritas }}</td><td class="wrap">{{ o.row.alasan|default:"—" }}</td></tr>{% endfor %}
+    </tbody></table></div>
+    {% else %}<p class="text-sm text-slate-500">Tidak pernah OFF.</p>{% endif %}
+  </section>
+</div>
+
+{% elif tab == "kelas" %}
+<div class="grid gap-4 lg:grid-cols-3">
+  <section class="card p-5">
+    <div class="flex items-center justify-between"><h2 class="section-title">Kelas saat ini</h2>
+      {% if perm.student_edit %}<a href="{% url 'students:class' s.std %}" class="chip"><i class="ti ti-arrows-exchange" aria-hidden="true"></i>Pindah / ubah</a>{% endif %}</div>
+    {% if kelas %}
+      <p class="text-xl font-extrabold text-slate-900">{{ kelas.row.code }}</p>
+      <dl class="dl-grid mt-3">
+        <div><dt>Tipe</dt><dd>{{ kelas.row.tipe|default:"—" }}</dd></div><div><dt>Guru kelas</dt><dd>{{ kelas.row.guru|default:"—" }}</dd></div>
+        <div><dt>Murid aktif / kapasitas</dt><dd>{{ kelas.aktif }} / {{ kelas.kapasitas|angka|default:"—" }}</dd></div>
+        <div><dt>Status</dt><dd>{{ kelas.status_kelas }} · {{ kelas.status_kapasitas }}</dd></div>
+      </dl>
+    {% else %}<p class="text-sm text-slate-500">{% if d.kode %}Kode {{ d.kode }} belum ada di daftar kelas.{% else %}Belum punya kelas.{% endif %}</p>{% endif %}
+  </section>
+  <section class="card p-5 lg:col-span-2">
+    <h2 class="section-title">Riwayat keanggotaan kelas</h2>
+    {% if members %}<div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Kelas</th><th>Status</th><th>Mulai</th><th>Selesai</th><th>Guru</th></tr></thead><tbody>
+      {% for m in members %}<tr><td class="font-semibold">{{ m.code }}</td><td>{{ m.status_plain|default:m.status }}</td><td>{{ m.start|date:"M Y"|default:"—" }}</td><td>{{ m.end|date:"M Y"|default:"—" }}</td><td>{{ m.guru|default:"—" }}</td></tr>{% endfor %}
+    </tbody></table></div>
+    {% else %}<p class="text-sm text-slate-500">Belum ada riwayat kelas.</p>{% endif %}
+  </section>
+</div>
+
+{% elif tab == "akademik" %}
+<section class="card p-5">
+  <h2 class="section-title">Catatan akademik</h2>
+  {% if academics %}<div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Tanggal</th><th class="num">Progres</th><th>Kesimpulan</th><th>Student report</th><th>Sertifikat</th><th>Rekomendasi</th></tr></thead><tbody>
+    {% for a in academics %}<tr><td>{{ a.tgl|date:"d M Y" }}</td><td class="num">{% if a.pct is not None %}{{ a.pct|floatformat:0 }}%{% else %}—{% endif %}</td><td class="wrap">{{ a.kes|default:a.cat|default:"—" }}</td><td>{{ a.sr|default:"—" }}</td><td>{{ a.cert|default:"—" }}</td><td class="wrap">{{ a.rekom|default:"—" }}</td></tr>{% endfor %}
+  </tbody></table></div>
+  {% else %}{% include "components/empty_state.html" with icon="book" title="Belum ada catatan akademik" text="Progres, student report dan sertifikat murid ini akan tampil di sini." %}{% endif %}
+</section>
+
+{% elif tab == "keuangan" %}
+<div class="space-y-4">
+  <section class="card p-5">
+    <h2 class="section-title">Tagihan SPP</h2>
+    {% if tagihan %}<div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Periode</th><th class="num">Harga</th><th class="num">Diskon</th><th>Keputusan</th><th>Catatan</th></tr></thead><tbody>
+      {% for t in tagihan %}<tr><td>{{ t.per }}</td><td class="num">{{ t.harga|rp }}</td><td class="num">{{ t.diskon|rp }}</td><td>{{ t.keputusan|default:"—" }}</td><td class="wrap">{{ t.catatan|default:"" }}</td></tr>{% endfor %}
+    </tbody></table></div>
+    {% else %}<p class="text-sm text-slate-500">Belum ada tagihan SPP aplikasi (tagihan dibuat saat BULAN BARU).</p>{% endif %}
+  </section>
+  <section class="card p-5">
+    <h2 class="section-title">Bukti bayar</h2>
+    {% if bukti %}<div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Tanggal</th><th>Periode</th><th class="num">Nominal</th><th>Metode</th><th>Verifikasi</th></tr></thead><tbody>
+      {% for b in bukti %}<tr><td>{{ b.tgl|date:"d M Y" }}</td><td>{{ b.per }}</td><td class="num">{{ b.nominal|rp }}</td><td>{{ b.metode|default:"—" }}</td><td>{{ b.ver }}</td></tr>{% endfor %}
+    </tbody></table></div>
+    {% else %}<p class="text-sm text-slate-500">Belum ada bukti bayar yang dicatat di aplikasi.</p>{% endif %}
+  </section>
+  <section class="card p-5">
+    <div class="flex flex-wrap items-center justify-between gap-2"><h2 class="section-title">Riwayat pembayaran di buku kas</h2>
+      <p class="text-sm text-slate-600">Total SPP tercatat: <strong>{{ kas_total|rp }}</strong></p></div>
+    {% if kas %}<div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Tanggal</th><th>Bulan buku kas</th><th>Jenis</th><th class="num">Bagian murid</th><th>Dihitung</th></tr></thead><tbody>
+      {% for k in kas %}<tr><td>{{ k.tgl|date:"d M Y" }}</td><td>{{ k.bulan|date:"M Y" }}</td><td>{{ k.jenis }}</td><td class="num">{{ k.nominal|rp }}</td><td>{{ k.dihitung }}</td></tr>{% endfor %}
+    </tbody></table></div>
+    {% else %}<p class="text-sm text-slate-500">Belum ada pembayaran yang tertaut ke murid ini di buku kas.</p>{% endif %}
+  </section>
+</div>
+
+{% elif tab == "followup" %}
+<section class="card p-5">
+  <div class="flex items-center justify-between"><h2 class="section-title">Follow-up</h2>
+    {% if perm.followup_manage %}<a href="{% url 'students:followup_create' %}?std={{ s.std }}" class="chip"><i class="ti ti-plus" aria-hidden="true"></i>Follow-up baru</a>{% endif %}</div>
+  {% include "students/_followup_items.html" with items=followups %}
+</section>
+
+{% elif tab == "catatan" %}
+<div class="grid gap-4 lg:grid-cols-3">
+  {% if perm.student_edit %}
+  <form method="post" action="{% url 'students:note' s.std %}" class="card space-y-3 p-5">{% csrf_token %}
+    <h2 class="section-title">Catatan baru</h2>
+    <label class="sr-only" for="id_teks">Catatan baru</label>{{ note_form.teks }}
+    <button class="btn btn-primary w-full"><i class="ti ti-note" aria-hidden="true"></i>Simpan catatan</button>
+  </form>
+  {% endif %}
+  <section class="card p-5 {% if perm.student_edit %}lg:col-span-2{% else %}lg:col-span-3{% endif %}">
+    <h2 class="section-title">Catatan staf</h2>
+    {% if notes %}<ul class="divide-y divide-slate-100">{% for n in notes %}
+      <li class="py-3"><p class="whitespace-pre-line text-sm text-slate-800">{{ n.teks }}</p>
+        <p class="mt-1 text-xs text-slate-400">{{ n.dibuat_oleh.display_name|default:"sistem" }} · {{ n.dibuat_pada|date:"d M Y H:i" }}</p></li>
+    {% endfor %}</ul>
+    {% else %}<p class="text-sm text-slate-500">Belum ada catatan.</p>{% endif %}
+  </section>
+</div>
+
+{% elif tab == "riwayat" %}
+<section class="card p-5">
+  <h2 class="section-title">Riwayat aktivitas (audit log)</h2>
+  {% if timeline %}<ol class="space-y-3">{% for a in timeline %}
+    <li class="flex gap-3 text-sm"><i class="ti ti-point-filled mt-0.5 text-brand-500" aria-hidden="true"></i>
+      <div class="min-w-0"><p class="text-slate-800"><strong>{{ a.action }}</strong> {{ a.entity }} <span class="text-slate-500">{{ a.eid }}</span>{% if a.field %} · {{ a.field }}{% endif %}</p>
+        <p class="break-words text-slate-600">{% if a.old %}{{ a.old }} → {% endif %}{{ a.new }}</p>
+        <p class="text-xs text-slate-400">{{ a.user }} · {{ a.ts|date:"d M Y H:i" }}</p></div></li>
+  {% endfor %}</ol>
+  {% else %}<p class="text-sm text-slate-500">Belum ada aktivitas tercatat untuk murid ini.</p>{% endif %}
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}{% load ui %}
+{% block title %}Follow-up{% endblock %}
+{% block content %}
+{% pageheader title="Follow-up" subtitle="Tugas staf: hubungi orang tua, tagihan, OFF, cuti · urut paling mendesak" icon="phone-call" %}
+  {% if perm.followup_manage %}<a href="{% url 'students:followup_create' %}" class="btn btn-primary"><i class="ti ti-plus" aria-hidden="true"></i>Follow-up baru</a>{% endif %}
+{% endpageheader %}
+
+<div class="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+  <div class="kpi tone-kritis min-h-0"><p class="kpi-label">Terlambat</p><p class="kpi-value">{{ counts|get:"TERLAMBAT" }}</p></div>
+  <div class="kpi tone-off min-h-0"><p class="kpi-label">Hari ini</p><p class="kpi-value">{{ counts|get:"HARI INI" }}</p></div>
+  <div class="kpi tone-murid min-h-0"><p class="kpi-label">Minggu ini</p><p class="kpi-value">{{ counts|get:"MINGGU INI" }}</p></div>
+  <div class="kpi tone-soon min-h-0"><p class="kpi-label">Nanti / tanpa tanggal</p><p class="kpi-value">{{ counts|get:"LAINNYA" }}</p></div>
+</div>
+
+<form method="get" class="filter-bar lg:grid-cols-5" role="search">
+  <div class="sm:col-span-2"><label class="field-label" for="fq">Cari murid / ID</label><input id="fq" type="search" name="q" value="{{ f.q }}" class="field"></div>
+  <div><label class="field-label" for="fs">Status</label><select id="fs" name="status" class="field" onchange="this.form.submit()">
+    <option value="terbuka" {% if f.status == "terbuka" %}selected{% endif %}>Terbuka</option>
+    <option value="selesai" {% if f.status == "selesai" %}selected{% endif %}>Selesai / batal</option>
+    <option value="semua" {% if f.status == "semua" %}selected{% endif %}>Semua</option></select></div>
+  <div><label class="field-label" for="fp">Prioritas</label><select id="fp" name="prioritas" class="field" onchange="this.form.submit()"><option value="">Semua</option>
+    {% for p in priorities %}<option {% if f.prioritas == p %}selected{% endif %}>{{ p }}</option>{% endfor %}</select></div>
+  <div><label class="field-label" for="fm">Milik</label><select id="fm" name="milik" class="field" onchange="this.form.submit()">
+    <option value="">Semua staf</option><option value="saya" {% if f.milik == "saya" %}selected{% endif %}>Tugas saya</option></select></div>
+  <noscript><button class="btn btn-primary">Terapkan</button></noscript>
+</form>
+
+{% if page.object_list %}
+<div class="table-wrap overflow-x-auto">
+  <table class="data-table">
+    <thead><tr><th>Jatuh tempo</th><th>Follow-up</th><th>Murid</th><th>Prioritas</th><th>Status</th><th>Ditugaskan</th></tr></thead>
+    <tbody>
+      {% for r in page.object_list %}
+        <tr>
+          <td><span class="status-badge {% if r.bucket == 'TERLAMBAT' %}st-kritis{% elif r.bucket == 'HARI INI' %}st-serius{% elif r.bucket == 'MINGGU INI' %}st-perhatian{% else %}st-netral{% endif %}">
+            {% if r.bucket == "TERLAMBAT" %}Terlambat{% elif r.bucket == "HARI INI" %}Hari ini{% elif r.bucket == "MINGGU INI" %}Minggu ini{% elif r.bucket == "SELESAI" %}Selesai{% elif r.bucket == "NANTI" %}Nanti{% else %}Tanpa tanggal{% endif %}</span>
+            <span class="ml-1 text-xs text-slate-500">{{ r.fu.next|date:"d M Y" }}</span></td>
+          <td class="wrap"><a href="{% url 'students:followup_detail' r.fu.fid %}" class="font-semibold text-slate-900 hover:text-brand-700 hover:underline">{{ r.fu.jenis }} · {{ r.fu.aksi|default:"—" }}</a>
+            <p class="text-xs text-slate-400">{{ r.fu.fid }}</p></td>
+          <td>{% if r.fu.std %}<a href="{% url 'students:detail' r.fu.std %}" class="hover:underline">{{ r.nama|default:r.fu.std }}</a>{% else %}{{ r.fu.lead|default:"—" }}{% endif %}</td>
+          <td>{{ r.fu.prioritas|default:"NORMAL" }}</td>
+          <td>{{ r.fu.status|default:"Terbuka" }}</td>
+          <td>{{ r.fu.ditugaskan.display_name|default:r.fu.pic|default:"—" }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% include "components/pagination.html" %}
+{% else %}
+  {% include "components/empty_state.html" with icon="mood-check" title="Tidak ada follow-up di saringan ini" text="Semua pekerjaan beres - atau ubah saringan untuk melihat yang sudah selesai." %}
+{% endif %}
+{% endblock %}

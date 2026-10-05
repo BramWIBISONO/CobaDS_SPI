@@ -60,3 +60,25 @@ def do_pageheader(parser, token):
     nodelist = parser.parse(("endpageheader",))
     parser.delete_first_token()
     return PageHeaderNode(kwargs, nodelist)
+
+
+@register.filter
+def split(value, sep=None):
+    return str(value).split(sep)
+
+
+@register.filter
+def getfield(form, name):
+    """Bound field `name` dari form, atau None bila form tidak punya kolom itu."""
+    try:
+        return form[name]
+    except KeyError:
+        return None
+
+
+@register.filter
+def get(mapping, key):
+    try:
+        return mapping.get(key, "")
+    except AttributeError:
+        return ""
