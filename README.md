@@ -10,6 +10,21 @@ lupa/reset password, peran per cabang dan isolasi data cabang, penomoran ID & AU
 (pratinjau → simpan), dan cabang baru dari template. Berikutnya: tahap 1B (perhitungan + HOME / MURID / PROFIL setara Excel),
 tahap 2 (operasional: form, SPP, kelas, akademik, OFF), tahap 3 (manajemen, admin, deploy).
 
+Dasbor gelombang 1 selesai: sistem desain gaya B (kartu berwarna per topik), Beranda dan Laporan Murid & SPP dengan angka sama
+persis dengan HOME / DASHBOARD Excel, dan akun demo per peran untuk dicoba di laptop.
+
+## Dasbor (gelombang 1)
+
+- **Beranda** (`/`): situasi sekarang seperti HOME Excel (murid aktif, SPP bulan buku kas terakhir, OFF, kelas, masalah kritis,
+  bukti bayar), cari murid sambil mengetik. Kartu "menyusul" = logika belum dibangun (Perlu tindakan, Tagihan, Cuti & sesi).
+- **Laporan Murid & SPP** (`/laporan/`): filter bulan/program/tipe/mode/guru (tanpa muat ulang, tombol kembali berfungsi), kartu KPI,
+  7 grafik (klik batang status → daftar tersaring), daftar perhatian, daftar murid, periode operasional v4. Angka = DASHBOARD Excel.
+- Angka emas: `python tools/export_golden.py` (Python sistem + pywin32, Excel terpasang) menghitung ulang salinan workbook Jakarta
+  dan menulis `dashboards/tests/golden/jkt_golden.json`; `.venv/Scripts/python -m pytest -m slow dashboards` membandingkan tanpa
+  toleransi.
+- Akun demo untuk dicoba di laptop: `docs/AKUN_DEMO.md`.
+- Aset tampilan lokal: `npm run vendor` (htmx, Alpine, Chart.js, Plus Jakarta Sans, Tabler Icons) lalu `npm run build:css`.
+
 ## Menyiapkan (Windows, Git Bash, dari folder `app web`)
 
 ```bash
