@@ -127,3 +127,13 @@ def test_teacher_master_create_and_name_matching(jkt, make_user):
     BranchSetting.objects.create(branch=jkt, key="P", value_number=4)
     summary = {r["t"].name: r for r in teachers.teacher_rows(jkt, TODAY)}
     assert summary["Mr. Bram"]["aktif"] == 1 and summary["Mr. Bram"]["kelas"] == 1
+
+
+@pytest.mark.django_db
+def test_sessions_from_imported_slots_use_the_teacher_master_name(jkt, make_user):
+    user = make_user("akad@spi.test", role="ACADEMIC", branch=jkt)
+    ClassSchedule.objects.create(branch=jkt, row_no=9, sid="SCH-SEN-2-BRAM", day="SENIN", start=datetime.time(11, 15),
+                                 end=datetime.time(12, 15), teacher="BRAM", eff_from="UNKNOWN", text="Partner B")
+    assert services.generate_sessions(jkt, user, TODAY, TODAY) == 1
+    ses = Sesi.objects.get(branch=jkt, sid="SES-20261005-SCH-SEN-2-BRAM")
+    assert (ses.guru, ses.kode, ses.kelas) == ("Mr. Bram", "", "Partner B")

@@ -14,6 +14,8 @@ from dashboards.calc.status import event_terakhir, kode_dipakai, semua_status_se
 from masterdata.services import find_by_key, teacher_key
 from students.services import check_program, ensure_open, find_class, find_teacher, period_status
 
+from masterdata.models import TeacherMaster
+
 from .models import ClassMaster, ClassSchedule, Kehadiran, Sesi
 
 TYPE_LETTER = {"Focus": "F", "Partner": "P", "Group": "G", "School": "S"}
@@ -151,6 +153,7 @@ def end_slot(branch, user, sid, *, until):
 def generate_sessions(branch, user, start, end):
     """Sesi SCHEDULED dari slot jadwal yang berlaku per tanggal; ID SES-yyyymmdd-<slot> sehingga tidak pernah dobel."""
     slots = list(ClassSchedule.objects.for_branch(branch).exclude(sid=""))
+    teachers = {teacher_key(t.name): t.name for t in TeacherMaster.objects.for_branch(branch) if t.name}
     have = set(Sesi.objects.for_branch(branch).filter(tgl__range=(start, end)).values_list("sid", flat=True))
     rows, d, row = [], start, next_row_no(Sesi, branch)
     while d <= end:
@@ -162,7 +165,7 @@ def generate_sessions(branch, user, start, end):
             if sid in have or not slot_valid(slot, d):
                 continue
             rows.append(Sesi(branch=branch, row_no=row, sid=sid, per=period_code(d), tgl=d, hari=day_name(d), mulai=slot.start,
-                             selesai=slot.end, guru=slot.teacher, kode=slot.code, kelas=slot.text or slot.code, ruang=slot.room,
+                             selesai=slot.end, guru=teachers.get(teacher_key(slot.teacher), slot.teacher), kode=slot.code, kelas=slot.text or slot.code, ruang=slot.room,
                              slot=slot.sid, status="SCHEDULED", sumber="JADWAL"))
             have.add(sid)
             row += 1
