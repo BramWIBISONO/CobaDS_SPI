@@ -1,42 +1,55 @@
-from pathlib import Path
+/* Grafik dasbor SPI: membaca spesifikasi JSON dari templat (components/chart_card.html) dan menggambar dengan Chart.js.
+   Batang tipis berujung bulat 4px, garis 2px, grid samar, tooltip angka Indonesia; klik batang = tautan saringan di tabel. */
+(function () {
+  const fmt = new Intl.NumberFormat("id-ID");
+  const ink = "#475569", grid = "#e2e8f0";
+  const charts = new WeakMap();
 
-from django.conf import settings
-from django.template.loader import render_to_string
+  function config(spec) {
+    const money = (v) => (spec.money ? "Rp " : "") + fmt.format(v);
+    const line = spec.type === "line";
+    const datasets = spec.series.map((s) => ({
+      label: s.label, data: s.data, borderColor: s.color, backgroundColor: line ? s.color : s.color,
+      borderWidth: line ? 2 : 0, borderRadius: line ? 0 : 4, borderSkipped: line ? undefined : "start",
+      maxBarThickness: 28, pointRadius: line ? 2 : 0, pointHoverRadius: 5, tension: 0.25,
+    }));
+    const valueAxis = { beginAtZero: true, stacked: spec.stacked, grid: { color: grid }, border: { display: false },
+                        ticks: { color: ink, callback: (v) => (spec.money ? fmt.format(v / 1e6) + " jt" : fmt.format(v)) } };
+    const catAxis = { stacked: spec.stacked, grid: { display: false }, ticks: { color: ink, autoSkip: true, maxRotation: 0 } };
+    return {
+      type: line ? "line" : "bar",
+      data: { labels: spec.labels, datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false, indexAxis: spec.horizontal ? "y" : "x",
+        animation: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? false : { duration: 200 },
+        interaction: line ? { mode: "index", intersect: false } : { mode: "nearest", intersect: true },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: (c) => ` ${c.dataset.label}: ${money(c.parsed[spec.horizontal ? "x" : "y"])}` } },
+        },
+        scales: spec.horizontal ? { x: valueAxis, y: catAxis } : { x: catAxis, y: valueAxis },
+        onHover: (e, els) => { e.native.target.style.cursor = els.length && spec.links && spec.links[els[0].index] ? "pointer" : "default"; },
+        onClick: (e, els) => {
+          if (!els.length || !spec.links || !spec.links[els[0].index]) return;
+          const a = document.querySelector(`[data-chart-link="${spec.id}"][data-i="${els[0].index}"]`);
+          if (a) a.click();
+        },
+      },
+    };
+  }
 
-from dashboards.templatetags.spi import angka, ikon_status, rp, tone_status
+  function init(root) {
+    if (!window.Chart) return;
+    Chart.defaults.font.family = '"Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif';
+    (root || document).querySelectorAll("canvas[data-chart]").forEach((canvas) => {
+      const el = document.getElementById(canvas.dataset.chart);
+      if (!el) return;
+      if (charts.has(canvas)) charts.get(canvas).destroy();
+      charts.set(canvas, new Chart(canvas, config(JSON.parse(el.textContent))));
+    });
+  }
 
-STATIC = Path(settings.BASE_DIR) / "static"
-
-
-def test_local_assets_are_present():
-    for rel in ("vendor/chart.umd.min.js", "vendor/tabler/tabler-icons.min.css", "vendor/fonts/plus-jakarta-sans-latin-400-normal.woff2",
-                "vendor/fonts/plus-jakarta-sans-latin-700-normal.woff2", "js/dashboards.js"):
-        assert (STATIC / rel).is_file(), rel
-    assert any((STATIC / "vendor/tabler/fonts").glob("tabler-icons.woff2*"))
-    css = (STATIC / "css/app.css").read_text(encoding="utf-8")
-    assert ".kpi" in css and "Plus Jakarta Sans" in css and ".tone-spp" in css
-
-
-def test_number_filters_follow_indonesian_format():
-    assert (angka(1234567), angka(1234.5), angka("—"), angka(None)) == ("1.234.567", "1.235", "—", "")
-    assert (rp(69051000), rp("perlu keputusan"), rp(None)) == ("Rp 69.051.000", "perlu keputusan", "—")
-    assert [tone_status(s) for s in ("Aktif", "Baru", "Rejoin", "Cuti", "Off", "ACTIVE", "ON LEAVE", "OFF", "PENDING", "x")] == \
-        ["baik", "baik", "baik", "perhatian", "kritis", "baik", "perhatian", "kritis", "serius", "netral"]
-    assert ikon_status("Off") == "circle-x" and ikon_status("Aktif") == "circle-check"
-
-
-def test_kpi_card_renders_value_or_soon():
-    html = render_to_string("components/kpi_card.html", {"tone": "spp", "icon": "cash", "label": "SPP diterima", "value": "Rp 1",
-                                                          "sub": "buku kas", "href": "/laporan/"})
-    assert "tone-spp" in html and "ti-cash" in html and "Rp 1" in html and 'href="/laporan/"' in html
-    soon = render_to_string("components/kpi_card.html", {"tone": "kritis", "icon": "list-check", "label": "Perlu tindakan", "soon": True})
-    assert "kpi-soon" in soon and "menyusul" in soon and "tone-soon" in soon
-
-
-def test_chart_card_has_data_table_and_legend():
-    from dashboards.calc.base import chart
-
-    c = chart("c-status", "Status murid", ["Aktif", "Off"], [("Murid", [5, 2])], links=["/laporan/?daftar=aktif", None])
-    html = render_to_string("components/chart_card.html", {"chart": c})
-    assert 'data-chart="c-status"' in html and 'id="c-status"' in html and "<table" in html
-    assert 'href="/laporan/?daftar=aktif"' in html and "Status murid" in html and c["series"][0]["color"] == "#2a78d6"
+  window.SPICharts = { init };
+  document.addEventListener("DOMContentLoaded", () => init(document));
+  document.addEventListener("htmx:afterSettle", (e) => init(e.detail.target));
+})();

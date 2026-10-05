@@ -40,3 +40,8 @@ def test_chart_card_has_data_table_and_legend():
     html = render_to_string("components/chart_card.html", {"chart": c})
     assert 'data-chart="c-status"' in html and 'id="c-status"' in html and "<table" in html
     assert 'href="/laporan/?daftar=aktif"' in html and "Status murid" in html and c["series"][0]["color"] == "#2a78d6"
+
+
+def test_chart_script_draws_charts_from_the_json_spec():
+    js = (STATIC / "js/dashboards.js").read_text(encoding="utf-8")
+    assert "window.SPICharts" in js and "new Chart(" in js and "htmx:afterSettle" in js
