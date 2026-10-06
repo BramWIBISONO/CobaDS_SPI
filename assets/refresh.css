@@ -106,6 +106,20 @@
                 background: linear-gradient(140deg, var(--ev-bg), color-mix(in srgb, var(--ev-line) 22%, white)); }
   .class-band::after { content: ""; position: absolute; right: -2rem; top: -2.5rem; width: 7rem; height: 7rem; border-radius: 999px; background: rgb(255 255 255 / 0.4); }
   .class-band > * { position: relative; z-index: 1; }
+
+  /* sel matriks Student Lifecycle: warna = makna status (Aktif hijau, Baru biru, Rejoin ungu, Cuti kuning, Off merah) */
+  .lc-td { border-bottom: 1px solid var(--color-line); padding: 0.1875rem 0.125rem; text-align: center; }
+  .lc { display: inline-grid; width: 2rem; height: 1.75rem; place-items: center; border-radius: 6px; font-size: 0.75rem; font-weight: 600;
+        background: #f0f2f6; color: var(--color-muted); }
+  .lc-m { width: auto; min-width: 2.5rem; height: 2.25rem; padding: 0 0.25rem; }
+  a.lc:hover { outline: 2px solid var(--color-brand-300); outline-offset: 1px; }
+  .lc-A { background: #e3f6ec; color: #146c3a; }
+  .lc-B { background: #e3edff; color: #0b4bb3; }
+  .lc-R { background: #ece8ff; color: #4a3cc0; }
+  .lc-C { background: #fff3db; color: #8a5100; }
+  .lc-O { background: #ffe5e2; color: #a8301f; }
+  .lc-q { background: #fff8d6; color: #8a6100; box-shadow: inset 0 0 0 1px #f2d06b; }
+  .lc-n { background: transparent; color: #8a94a7; }
 }
 
 @media (min-width: 1024px) {

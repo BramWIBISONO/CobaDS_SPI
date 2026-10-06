@@ -1,0 +1,18 @@
+{% comment %}Skor kesehatan: r = health.ringkasan(...). Setiap skor bisa dijelaskan (komponen di Business Health).{% endcomment %}
+<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+  <a href="{% url 'management:health' %}" class="card card-link flex items-center gap-4 p-5 xl:col-span-1">
+    {% include "components/ring.html" with pct=r.bisnis.skor size=76 color="#176df8" aria="Business Health" %}
+    <div class="min-w-0"><p class="text-sm font-semibold text-ink">Business Health</p>
+      <span class="status-badge {{ r.bisnis.nada }} mt-1"><span class="dot" aria-hidden="true"></span>{{ r.bisnis.status }}</span>
+      <p class="mt-1 text-xs text-muted">rata-rata tertimbang 4 dimensi</p></div>
+  </a>
+  {% for d in r.dimensi %}
+    <a href="{% if d.key == 'financial' %}{% url 'management:finance' %}{% elif d.key == 'operational' %}{% url 'management:operations' %}{% elif d.key == 'data' %}{% url 'management:data' %}{% else %}{% url 'management:lifecycle' %}{% endif %}"
+       class="card card-link flex items-center gap-4 p-5">
+      {% include "components/ring.html" with pct=d.skor size=64 color="#6d5df2" aria=d.nama %}
+      <div class="min-w-0"><p class="text-sm font-semibold text-ink">{{ d.nama }}</p>
+        <span class="status-badge {{ d.nada }} mt-1"><span class="dot" aria-hidden="true"></span>{{ d.status }}</span>
+        <p class="mt-1 truncate text-xs text-muted">{% for k in d.komponen %}{% if k.skor is not None %}{{ k.nama|lower }}{% if not forloop.last %} · {% endif %}{% endif %}{% endfor %}</p></div>
+    </a>
+  {% endfor %}
+</div>

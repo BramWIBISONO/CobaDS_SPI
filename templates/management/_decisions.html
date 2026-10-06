@@ -1,0 +1,30 @@
+{% comment %}Keputusan manajemen: daftar dari health.keputusan(). Setiap baris = isu, dampak, metrik, tren, jumlah, aksi, sumber.{% endcomment %}
+{% load spi %}
+{% if keputusan %}
+  <ul class="divide-y divide-line">
+    {% for x in keputusan %}
+      <li class="grid gap-3 px-5 py-4 lg:grid-cols-[minmax(0,1fr)_14rem_auto] lg:items-center">
+        <div class="min-w-0">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="status-badge {% if x.kat == 'Kritis' %}st-kritis{% elif x.kat == 'Perlu Keputusan' %}st-serius{% elif x.kat == 'Perlu Follow-up' %}st-perhatian{% elif x.kat == 'Data Issue' %}st-info{% else %}st-baik{% endif %}"><span class="dot" aria-hidden="true"></span>{{ x.kat }}</span>
+            <p class="text-sm font-semibold text-ink">{{ x.isu }}</p>
+          </div>
+          <p class="mt-1 text-[0.8125rem] text-ink-2">{{ x.dampak }}{% if x.sebab %} <span class="text-muted">Kemungkinan sebab: {{ x.sebab }}</span>{% endif %}</p>
+          <p class="mt-1 text-xs text-muted">Sumber: {{ x.modul }}{% if x.update %} · data impor {{ x.update|date:"j M Y H:i" }}{% endif %}{% if x.ambang %} · ambang {{ x.ambang }}{% endif %}</p>
+        </div>
+        <dl class="grid grid-cols-2 gap-x-3 text-xs">
+          <dt class="text-muted">{{ x.metrik }}</dt><dd class="text-right font-semibold tabular-nums text-ink">{{ x.nilai }}</dd>
+          {% if x.sebelum != "" and x.sebelum is not None %}<dt class="text-muted">Sebelumnya</dt><dd class="text-right tabular-nums text-ink-2">{{ x.sebelum }}
+            {% if x.tren %}<i class="ti ti-{{ x.tren.ikon }} {% if x.tren.baik %}text-success-600{% elif x.tren.baik is None %}text-muted{% else %}text-danger-600{% endif %}" aria-label="{{ x.tren.arah }}"></i>{% endif %}</dd>{% endif %}
+          <dt class="text-muted">Terkena</dt><dd class="text-right tabular-nums text-ink-2">{{ x.jumlah|angka }}</dd>
+        </dl>
+        <div class="flex items-center gap-2 lg:justify-end">
+          <p class="text-xs text-ink-2 lg:hidden">{{ x.aksi }}</p>
+          {% if x.url %}<a href="{{ x.url }}" class="btn btn-secondary btn-sm whitespace-nowrap" title="{{ x.aksi }}">{{ x.aksi|truncatechars:30 }}</a>{% else %}<span class="text-xs text-ink-2">{{ x.aksi }}</span>{% endif %}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  {% include "components/empty_state.html" with bare=True icon="circle-check" title="Tidak ada yang perlu perhatian" text="Semua aturan keputusan tidak terpicu oleh data periode ini." %}
+{% endif %}

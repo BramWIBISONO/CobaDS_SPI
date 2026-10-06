@@ -1,0 +1,89 @@
+{% extends "base.html" %}{% load static ui spi %}
+{% block title %}{% if log %}Nota {{ log.no }}{% else %}Pratinjau nota{% endif %}{% endblock %}
+{% block content %}
+<div class="no-print">
+{% pageheader title=s.nama subtitle=judul icon="receipt" %}
+  <a href="{% url 'management:nota' %}?periode={{ bulan|date:'Y-m' }}" class="btn btn-ghost"><i class="ti ti-arrow-left" aria-hidden="true"></i>Nota lain</a>
+  <button type="button" class="btn btn-secondary" onclick="window.print()"><i class="ti ti-printer" aria-hidden="true"></i>Cetak / PDF</button>
+  {% if wa %}<a href="{{ wa }}" target="_blank" rel="noopener" class="btn btn-secondary"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i>Kirim ke orang tua</a>{% endif %}
+  {% if not log and perm.nota_issue and st.bisa_nota %}
+    <form method="post" action="{% url 'management:nota_issue' s.std bulan|date:'Y-m' %}" data-confirm="Terbitkan nota dengan nomor {{ perkiraan_no }}? Nomor tidak bisa dipakai ulang.">{% csrf_token %}
+      <button class="btn btn-primary"><i class="ti ti-file-check" aria-hidden="true"></i>Terbitkan nota</button></form>
+  {% endif %}
+{% endpageheader %}
+{% if not st.bisa_nota %}
+  <div class="callout callout-warning mb-5" role="status"><i class="ti ti-alert-triangle" aria-hidden="true"></i><div><p class="font-semibold">Nota belum bisa dibuat · {{ st.status|capfirst }}</p><p class="text-sm">{{ st.pesan }}</p></div></div>
+{% elif log %}
+  <div class="callout callout-info mb-5" role="status"><i class="ti ti-file-check" aria-hidden="true"></i><div><p class="font-semibold">Nota {{ log.no }} diterbitkan {{ log.tgl|date:"j F Y H:i" }} oleh {{ log.user }}</p>
+    <p class="text-sm">Angka saat diterbitkan: tagihan {{ log.tagihan|rp }}, tercatat {{ log.bayar|rp }}, status {{ log.status }}. Dokumen di bawah memakai angka itu; rincian pembayaran dari buku kas terkini.</p></div></div>
+{% elif not perm.nota_issue %}
+  <p class="mb-5 text-sm text-muted">Pratinjau saja - penerbitan nomor nota hanya untuk peran Finance / Branch Admin.</p>
+{% endif %}
+</div>
+
+<article class="nota-doc mx-auto max-w-[210mm] rounded-2xl bg-surface p-5 shadow-sm ring-1 ring-line sm:p-12 print:max-w-none print:rounded-none print:p-0 print:shadow-none print:ring-0" aria-label="Dokumen nota SPP">
+  <header class="flex flex-col gap-3 border-b-2 border-brand-900 pb-5 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+    <div class="flex items-center gap-3"><img src="{% static 'img/spi-mark.png' %}" alt="" class="h-12 w-12">
+      <div><p class="text-xl font-bold tracking-tight text-brand-900">{{ kop }}</p><p class="text-xs text-muted">Sekolah Programming Indonesia</p></div></div>
+    <div class="sm:text-right"><p class="text-2xl font-bold tracking-tight text-success-700">NOTA SPP</p>
+      <p class="mt-1 text-sm tabular-nums text-ink">{% if log %}{{ log.no }}{% else %}<span class="text-muted">(dibuat saat diterbitkan · perkiraan {{ perkiraan_no }})</span>{% endif %}</p></div>
+  </header>
+
+  <dl class="mt-6 grid grid-cols-1 gap-x-10 gap-y-3 text-sm sm:grid-cols-2">
+    <div class="flex justify-between gap-4 border-b border-line pb-2"><dt class="text-muted">Kepada</dt><dd class="text-right font-semibold text-ink">{{ doc.kepada }}</dd></div>
+    <div class="flex justify-between gap-4 border-b border-line pb-2"><dt class="text-muted">Tanggal</dt><dd class="text-right font-semibold tabular-nums text-ink">{% if log %}{{ log.tgl|date:"j F Y" }}{% else %}{{ today|date:"j F Y" }}{% endif %}</dd></div>
+    <div class="flex justify-between gap-4 border-b border-line pb-2"><dt class="text-muted">Murid</dt><dd class="text-right font-semibold text-ink">{{ s.nama }}</dd></div>
+    <div class="flex justify-between gap-4 border-b border-line pb-2"><dt class="text-muted">Student ID</dt><dd class="text-right font-semibold tabular-nums text-ink">{{ s.std }}</dd></div>
+    <div class="flex justify-between gap-4 border-b border-line pb-2"><dt class="text-muted">Program · Level</dt><dd class="text-right font-semibold text-ink">{{ level }}</dd></div>
+    <div class="flex justify-between gap-4 border-b border-line pb-2"><dt class="text-muted">Kode kelas</dt><dd class="text-right font-semibold text-ink">{{ kode|default:"-" }}</dd></div>
+  </dl>
+
+  <div class="mt-8 overflow-x-auto"><table class="w-full min-w-[18rem] text-sm">
+    <thead><tr class="bg-brand-900 text-left text-white"><th class="rounded-l-lg px-3 py-2.5 font-semibold sm:px-4">Uraian</th><th class="px-3 py-2.5 font-semibold sm:px-4">Periode</th><th class="rounded-r-lg px-3 py-2.5 text-right font-semibold sm:px-4">Jumlah (Rp)</th></tr></thead>
+    <tbody>
+      <tr class="border-b border-line"><td class="px-4 py-3">SPP bulanan{% if st.sumber == "SPP_TAGIHAN" %} (tagihan){% endif %}</td><td class="px-4 py-3">{{ bulan|date:"F Y" }}</td><td class="px-4 py-3 text-right tabular-nums">{{ doc.tagihan|angka|default:"—" }}</td></tr>
+      <tr class="border-b border-line"><td class="px-4 py-3">Pembayaran diterima (buku kas{% if st.sumber == "SPP_TAGIHAN" %} / terverifikasi{% endif %})</td><td class="px-4 py-3">{{ bulan|date:"F Y" }}</td>
+        <td class="px-4 py-3 text-right tabular-nums">{% if doc.tagihan is not None %}({{ doc.bayar|angka }}){% else %}—{% endif %}</td></tr>
+      <tr class="border-b-2 border-brand-900 font-bold"><td class="px-4 py-3 text-brand-900" colspan="2">Sisa tagihan</td>
+        <td class="px-4 py-3 text-right text-base tabular-nums text-brand-900">{% if doc.tagihan is not None %}{{ doc.sisa|angka }}{% else %}—{% endif %}</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="mt-6 flex flex-wrap items-center gap-4">
+    <span class="status-badge {{ doc.nada }} px-4 py-2 text-base"><span class="dot" aria-hidden="true"></span>{{ doc.status }}</span>
+    <p class="min-w-0 flex-1 text-sm text-ink-2">
+      {% if doc.status == "LUNAS" %}Terima kasih - pembayaran SPP periode ini sudah tercatat di buku kas.{% if doc.lebih %} Total diterima {{ doc.bayar|rp }} (kemungkinan untuk lebih dari satu bulan).{% endif %}
+      {% elif doc.status == "SEBAGIAN" %}Sebagian SPP periode ini sudah tercatat di buku kas.
+      {% elif doc.status == "BELUM TERCATAT" %}Belum ada pembayaran SPP periode ini yang tercatat di buku kas.
+      {% elif doc.status == "MENUNGGU VERIFIKASI" %}Bukti bayar sudah diterima dan sedang diverifikasi.
+      {% else %}{{ st.pesan }}{% endif %}</p>
+  </div>
+
+  <section class="mt-8">
+    <h2 class="text-xs font-semibold uppercase tracking-[0.08em] text-muted">Pembayaran tercatat di buku kas (periode ini)</h2>
+    {% if st.baris %}
+      <table class="mt-2 w-full text-sm"><tbody>
+        {% for row, jumlah in st.baris %}<tr class="border-b border-line"><td class="py-2 pr-3 tabular-nums">{{ row.tgl|date:"j M Y" }}</td><td class="py-2 pr-3 text-ink-2">{{ row.ket|truncatechars:80 }}</td><td class="py-2 text-right tabular-nums">{{ jumlah|angka }}</td></tr>{% endfor %}
+      </tbody></table>
+    {% else %}<p class="mt-2 text-sm text-muted">- tidak ada di buku kas</p>{% endif %}
+  </section>
+
+  <section class="mt-8">
+    <h2 class="text-xs font-semibold uppercase tracking-[0.08em] text-muted">Cara pembayaran</h2>
+    <p class="mt-1 text-sm text-ink">{% if instruksi %}{{ instruksi }}{% else %}Hubungi admin {{ kop }} untuk cara pembayaran.{% endif %}</p>
+  </section>
+
+  <footer class="mt-10 flex items-end justify-between gap-6">
+    <p class="max-w-md text-xs text-muted">Nota ini dibuat dari catatan buku kas {{ kop }} (tercatat s/d {{ kas_tgl|date:"j F Y"|default:"-" }}). Bila Anda sudah membayar tetapi belum tercatat, mohon kirim bukti transfer ke admin.</p>
+    <div class="w-48 border-t border-muted pt-2 text-center text-sm font-semibold text-brand-900">Admin {{ kop }}</div>
+  </footer>
+</article>
+{% if riwayat %}
+<section class="no-print mx-auto mt-6 max-w-[210mm]" aria-labelledby="rw-title">
+  <h2 id="rw-title" class="t-section mb-3">Riwayat nota murid ini</h2>
+  <ul class="card divide-y divide-line">{% for n in riwayat %}
+    <li><a href="{% url 'management:nota_view' n.pk %}" class="flex items-center justify-between gap-3 px-5 py-3 hover:bg-subtle"><span class="font-medium tabular-nums text-ink">{{ n.no }}</span>
+      <span class="text-sm text-muted">{{ n.periode }} · {{ n.status|capfirst }} · {{ n.tgl|date:"j M Y" }}</span></a></li>{% endfor %}</ul>
+</section>
+{% endif %}
+{% endblock %}

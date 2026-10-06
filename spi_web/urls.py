@@ -9,4 +9,5 @@ urlpatterns = [
     path("akun/", include("accounts.urls")),
     path("impor/", include("importer.urls")),
     path("cabang/", include("branches.urls")),
+    path("manajemen/", include("management.urls")),
 ]

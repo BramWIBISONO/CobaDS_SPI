@@ -1,0 +1,215 @@
+{% extends "base.html" %}{% load spi %}
+
+{% block title %}Management Center{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-[1500px] space-y-5">
+  <header class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-[0.12em] text-brand-700">Management · {{ current_branch.name }}</p>
+      <h1 class="mt-1 text-2xl font-semibold tracking-tight text-ink">Management Center</h1>
+      <p class="mt-1 max-w-3xl text-sm text-muted">Ringkasan cabang dari data operasional yang tersedia. Nilai yang sumbernya belum cukup ditandai tidak tersedia, bukan diperkirakan.</p>
+    </div>
+    <a class="btn btn-secondary btn-sm" href="{% url 'management:lifecycle' %}">
+      <i class="ti ti-timeline" aria-hidden="true"></i>Student Lifecycle
+    </a>
+  </header>
+
+  <section class="card p-4 sm:p-5">
+    <form method="get" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <label class="text-xs font-medium text-muted">Periode
+        <select class="field mt-1 w-full" name="periode">
+          {% for item in periods %}<option value="{{ item.code }}" {% if period_code == item.code %}selected{% endif %}>{{ item.date|date:"F Y" }}</option>{% endfor %}
+        </select>
+      </label>
+      <label class="text-xs font-medium text-muted">Program · memengaruhi Student Health
+        <select class="field mt-1 w-full" name="program"><option value="">Semua program</option>
+          {% for item in programs %}<option value="{{ item }}" {% if query.program == item %}selected{% endif %}>{{ item }}</option>{% endfor %}
+        </select>
+      </label>
+      <label class="text-xs font-medium text-muted">Guru · memengaruhi Student Health
+        <select class="field mt-1 w-full" name="guru"><option value="">Semua guru</option>
+          {% for item in teachers %}<option value="{{ item }}" {% if query.guru == item %}selected{% endif %}>{{ item }}</option>{% endfor %}
+        </select>
+      </label>
+      <div class="flex items-end gap-2">
+        <button class="btn btn-primary" type="submit"><i class="ti ti-filter" aria-hidden="true"></i>Terapkan</button>
+        <a class="btn btn-secondary" href="{% url 'management:center' %}">Reset</a>
+      </div>
+    </form>
+    {% if filter_error %}<p class="mt-3 rounded-lg border border-warning-200 bg-warning-50 px-3 py-2 text-sm text-warning-700" role="alert">{{ filter_error }}</p>{% endif %}
+    <p class="mt-3 text-xs text-muted">
+      Cabang: {{ current_branch.name }} · Periode: {{ snapshot.period|date:"F Y" }} ·
+      Impor terakhir: {{ last_import|default:"Tidak tercatat" }} ·
+      Filter program/guru hanya berlaku pada metrik Student Health.
+    </p>
+  </section>
+
+  <section aria-labelledby="kesehatan-title">
+    <div class="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+      <div><h2 id="kesehatan-title" class="font-semibold text-ink">Kesehatan SPI</h2>
+        <p class="text-xs text-muted">Skor 0-100 dari aturan transparan · Sehat ≥ 80 · Pantau ≥ 65 · Berisiko ≥ 50 · Kritis &lt; 50</p></div>
+      <a class="text-sm font-medium text-brand-700 hover:underline" href="{% url 'management:health' %}?periode={{ period_code }}">Cara hitung skor</a>
+    </div>
+    {% include "management/_scores.html" %}
+  </section>
+
+  <section class="card" aria-labelledby="perhatian-title">
+    <div class="card-header"><div><h2 id="perhatian-title" class="card-title flex items-center gap-2">Yang membutuhkan perhatian
+      {% if keputusan %}<span class="rounded-full bg-danger-50 px-2 py-0.5 text-xs font-semibold tabular-nums text-danger-700">{{ keputusan|length }}</span>{% endif %}</h2>
+      <p class="card-sub">Kritis · perlu keputusan · perlu follow-up · masalah data · tren positif - setiap baris punya sumber dan tindakan</p></div>
+      <a href="{% url 'management:report_monthly' %}?periode={{ period_code }}" class="btn btn-secondary btn-sm"><i class="ti ti-file-text" aria-hidden="true"></i>Laporan bulanan</a></div>
+    {% include "management/_decisions.html" %}
+  </section>
+
+  {% if cabang %}
+  <section aria-labelledby="cabang-title">
+    <h2 id="cabang-title" class="mb-3 font-semibold text-ink">Cabang mana yang sehat</h2>
+    <div class="table-wrap"><table class="data-table">
+      <thead><tr><th>Cabang</th><th class="num">Business</th><th class="num">Student</th><th class="num">Financial</th><th class="num">Operational</th><th class="num">Data</th><th class="num">Murid aktif</th></tr></thead>
+      <tbody>{% for c in cabang %}<tr><td class="font-medium">{{ c.b.name }}<span class="cell-sub">{{ c.b.code }}</span></td>
+        {% if c.kosong %}<td colspan="6" class="text-muted">Belum ada data murid.</td>{% else %}
+        <td class="num"><span class="status-badge {{ c.r.bisnis.nada }}"><span class="dot" aria-hidden="true"></span>{{ c.r.bisnis.skor|default_if_none:"—" }}</span></td>
+        {% for d in c.r.dimensi %}<td class="num">{{ d.skor|default_if_none:"—" }}</td>{% endfor %}<td class="num">{{ c.r.cur.aktif }}</td>{% endif %}</tr>{% endfor %}</tbody>
+    </table></div>
+    <p class="mt-2 text-xs text-muted">Hanya untuk Super Admin. Skor tiap cabang memakai aturan yang sama.</p>
+  </section>
+  {% endif %}
+
+  <section aria-labelledby="student-health-title">
+    <div class="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+      <div>
+        <h2 id="student-health-title" class="font-semibold text-ink">Student Health</h2>
+        <p class="text-xs text-muted">{{ snapshot.student_count }} murid · sumber status D_BULAN / STATUS_EVENT</p>
+      </div>
+      <a class="text-sm font-medium text-brand-700 hover:underline" href="{% url 'management:lifecycle' %}?dari={{ period_code }}&amp;sampai={{ period_code }}&amp;program={{ query.program|urlencode }}&amp;guru={{ query.guru|urlencode }}">Buka matriks periode ini</a>
+    </div>
+    <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+      <div class="card p-4"><p class="text-xs font-medium text-muted">Murid aktif</p><p class="mt-1 text-2xl font-semibold tabular-nums text-ink">{{ snapshot.current.aktif }}</p><p class="mt-1 text-xs text-muted">A + B + R</p></div>
+      <div class="card p-4"><p class="text-xs font-medium text-muted">Baru</p><p class="mt-1 text-2xl font-semibold tabular-nums text-ink">{{ snapshot.current.baru }}</p><p class="mt-1 text-xs text-muted">Status B</p></div>
+      <div class="card p-4"><p class="text-xs font-medium text-muted">Rejoin</p><p class="mt-1 text-2xl font-semibold tabular-nums text-ink">{{ snapshot.current.rejoin }}</p><p class="mt-1 text-xs text-muted">Status R</p></div>
+      <div class="card p-4"><p class="text-xs font-medium text-muted">Cuti</p><p class="mt-1 text-2xl font-semibold tabular-nums text-ink">{{ snapshot.current.cuti }}</p><p class="mt-1 text-xs text-muted">Status C</p></div>
+      <div class="card p-4"><p class="text-xs font-medium text-muted">OFF</p><p class="mt-1 text-2xl font-semibold tabular-nums text-ink">{{ snapshot.current.off }}</p><p class="mt-1 text-xs text-muted">Status O</p></div>
+    </div>
+    <div class="mt-3 grid gap-3 lg:grid-cols-3">
+      <div class="card p-4">
+        <h3 class="text-sm font-semibold text-ink">Retensi bulan ke bulan</h3>
+        {% if snapshot.current.retensi is not None %}
+          <p class="mt-1 text-2xl font-semibold tabular-nums text-ink">{{ snapshot.current.retensi|floatformat:1 }}%</p>
+          <p class="mt-1 text-xs text-muted">{{ snapshot.current.tetap }} dari basis {{ snapshot.current.basis }} pada bulan sebelumnya; definisi ada di Student Lifecycle.</p>
+        {% else %}<p class="mt-2 text-sm text-muted">Tidak tersedia: belum ada periode pembanding.</p>{% endif %}
+      </div>
+      <div class="card p-4">
+        <h3 class="text-sm font-semibold text-ink">Status kosong</h3>
+        <p class="mt-1 text-2xl font-semibold tabular-nums text-ink">{{ snapshot.status_missing }}</p>
+        <p class="mt-1 text-xs text-muted">Sel berstatus ? pada periode terpilih. Ini indikator kelengkapan riwayat, bukan murid OFF.</p>
+      </div>
+      <div class="card p-4">
+        <h3 class="text-sm font-semibold text-ink">Perbandingan murid aktif</h3>
+        {% if snapshot.previous %}<p class="mt-2 text-sm text-ink">vs bulan lalu: {{ snapshot.previous.aktif }} murid aktif</p>{% else %}<p class="mt-2 text-sm text-muted">Bulan lalu: tidak tersedia.</p>{% endif %}
+        {% if snapshot.previous_year %}<p class="mt-1 text-sm text-ink">vs tahun lalu: {{ snapshot.previous_year.aktif }} murid aktif</p>{% else %}<p class="mt-1 text-sm text-muted">Tahun lalu: tidak tersedia.</p>{% endif %}
+      </div>
+    </div>
+  </section>
+
+  <section class="grid gap-4 xl:grid-cols-3">
+    <div class="card p-4 sm:p-5">
+      <div class="flex items-start justify-between gap-2"><h2 class="font-semibold text-ink">Financial Health</h2>
+        {% if perm.management_finance %}<a class="text-sm font-medium text-brand-700 hover:underline" href="{% url 'management:finance' %}?periode={{ r.kas.bulan|date:'Y-m' }}">Finance Control</a>{% endif %}</div>
+      {% if perm.management_finance %}
+        <p class="mt-1 text-xs text-muted">Periode tagihan {{ r.kas.label }} · {{ r.kas.sumber }}</p>
+        {% if r.kas.keputusan %}<p class="mt-4 text-sm font-semibold text-warning-700">Periode ini menunggu keputusan jurnal Agustus 2026.</p>
+        {% elif r.kas.potensi %}
+          <div class="mt-4 grid grid-cols-2 gap-3">
+            <div><p class="text-xs text-muted">Collection</p><p class="text-2xl font-semibold tabular-nums text-ink">{{ r.kas.collection|default_if_none:"—" }}%</p></div>
+            <div><p class="text-xs text-muted">Murid aktif lunas</p><p class="text-2xl font-semibold tabular-nums text-ink">{{ r.kas.lunas_pct|default_if_none:"—" }}%</p></div>
+          </div>
+          <dl class="mt-3 grid grid-cols-2 gap-y-1.5 border-t border-line pt-3 text-sm">
+            <dt class="text-muted">Tagihan</dt><dd class="text-right tabular-nums">{{ r.kas.potensi|rp }}</dd>
+            <dt class="text-muted">Diterima</dt><dd class="text-right tabular-nums">{{ r.kas.diterima_aktif|rp }}</dd>
+            <dt class="text-muted">Sisa</dt><dd class="text-right font-semibold tabular-nums">{{ r.kas.outstanding|rp }}</dd>
+            <dt class="text-muted">Penerimaan tak tertaut</dt><dd class="text-right tabular-nums">{{ r.tak_tertaut.n }} baris</dd>
+          </dl>
+          {% for c in r.catatan_kas %}<p class="mt-2 text-xs text-warning-700"><i class="ti ti-info-triangle" aria-hidden="true"></i> {{ c }}</p>{% endfor %}
+        {% else %}<p class="mt-4 text-sm text-muted">Belum ada tagihan untuk periode ini.</p>{% endif %}
+      {% else %}
+        <p class="mt-2 text-sm text-muted">Rincian keuangan hanya untuk peran dengan akses Finance Control.</p>
+      {% endif %}
+    </div>
+
+    <div class="card p-4 sm:p-5">
+      <div class="flex items-start justify-between gap-2"><h2 class="font-semibold text-ink">Operational Health</h2>
+        <a class="text-sm font-medium text-brand-700 hover:underline" href="{% url 'management:operations' %}">Detail</a></div>
+      <p class="mt-1 text-xs text-muted">{{ r.op.bulan|date:"F Y" }}</p>
+      <dl class="mt-4 grid grid-cols-2 gap-y-1.5 text-sm">
+        <dt class="text-muted">Sesi bulan ini · terlaksana</dt><dd class="text-right tabular-nums">{{ r.op.sesi.bulan }} · {{ r.op.sesi.realisasi }}</dd>
+        <dt class="text-muted">Sesi lampau belum dikonfirmasi</dt><dd class="text-right font-semibold tabular-nums {% if r.op.sesi.lampau_belum %}text-warning-700{% endif %}">{{ r.op.sesi.lampau_belum }}</dd>
+        <dt class="text-muted">Sesi terlaksana dengan absensi</dt><dd class="text-right tabular-nums">{% if r.op.sesi.absen_pct is None %}—{% else %}{{ r.op.sesi.absen_pct }}%{% endif %}</dd>
+        <dt class="text-muted">Keterisian kursi</dt><dd class="text-right tabular-nums">{{ r.op.kelas.util|default_if_none:"—" }}%</dd>
+        <dt class="text-muted">Kelas melebihi kapasitas</dt><dd class="text-right tabular-nums">{{ r.op.kelas.melebihi|length }}</dd>
+        <dt class="text-muted">Follow-up terbuka · terlambat</dt><dd class="text-right tabular-nums">{{ r.op.followup.terbuka }} · {{ r.op.followup.terlambat }}</dd>
+      </dl>
+    </div>
+
+    <div class="card p-4 sm:p-5">
+      <div class="flex items-start justify-between gap-2"><h2 class="font-semibold text-ink">Data Health</h2>
+        <a class="text-sm font-medium text-brand-700 hover:underline" href="{% url 'management:data' %}">Detail</a></div>
+      <div class="mt-3 flex items-center gap-4">{% include "components/ring.html" with pct=r.data_skor size=64 color="#176df8" aria="Skor Data Health" %}
+        <p class="text-xs text-muted">Rata-rata tertimbang {{ r.cek|length }} cek kelengkapan &amp; kerapian data.</p></div>
+      <ul class="mt-3 divide-y divide-line border-t border-line text-sm">
+        {% for c in r.cek %}{% if c.n %}{% if c.tingkat == "kritis" or c.tingkat == "tinggi" %}
+          <li><a href="{% url 'management:data' %}#{{ c.key }}" class="flex items-center justify-between gap-3 py-2 hover:text-brand-700"><span class="truncate">{{ c.judul }}</span><span class="font-semibold tabular-nums">{{ c.n }}</span></a></li>
+        {% endif %}{% endif %}{% endfor %}
+      </ul>
+    </div>
+  </section>
+
+  <section class="grid gap-4 lg:grid-cols-2">
+    <div class="card p-4 sm:p-5">
+      <h2 class="font-semibold text-ink">Tren murid aktif · 12 bulan</h2>
+      <p class="mt-1 text-xs text-muted">A + B + R per bulan dari sumber lifecycle yang sama.</p>
+      <div class="mt-5 flex h-36 items-end gap-1 border-b border-line" role="img" aria-label="Tren jumlah murid aktif per bulan">
+        {% for point in snapshot.trend %}
+        <div class="group flex h-full min-w-0 flex-1 flex-col justify-end" title="{{ point.label }}: {{ point.active }}">
+          <span class="mb-1 truncate text-center text-[0.625rem] text-muted">{{ point.active }}</span>
+          <div class="mx-auto w-full max-w-8 rounded-t bg-brand-500" style="height: {{ point.height }}%"></div>
+          <span class="mt-1 truncate text-center text-[0.625rem] text-muted">{{ point.label }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card p-4 sm:p-5">
+      <h2 class="font-semibold text-ink">Perlu perhatian</h2>
+      <p class="mt-1 text-xs text-muted">Daftar lifecycle berasal dari murid cabang ini dan dapat ditelusuri ke profil.</p>
+      <div class="mt-3 divide-y divide-line">
+        {% for group in snapshot.attention_groups %}
+          <details class="py-2">
+            <summary class="cursor-pointer text-sm font-medium text-ink">{{ group.title }} <span class="text-muted">({{ group.items|length }})</span></summary>
+            <ul class="mt-2 space-y-2">
+              {% for row, reason in group.items|slice:":5" %}
+              <li class="text-xs"><a class="font-medium text-brand-700 hover:underline" href="{% url 'students:detail' row.std %}">{{ row.nama|default:row.std }}</a><span class="text-muted"> · {{ reason }}</span></li>
+              {% endfor %}
+            </ul>
+          </details>
+        {% empty %}
+          <p class="py-3 text-sm text-muted">Tidak ada temuan lifecycle pada filter cabang dan periode ini.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="card overflow-hidden">
+    <div class="border-b border-line px-4 py-3 sm:px-5">
+      <h2 class="font-semibold text-ink">Status sumber keuangan</h2>
+      <p class="mt-1 text-xs text-muted">Jumlah baris di cabang aktif; bukan jumlah yang dibuat oleh dashboard.</p>
+    </div>
+    <div class="grid gap-px bg-line sm:grid-cols-2 xl:grid-cols-4">
+      <div class="bg-white p-4"><p class="text-xs text-muted">BUKU_KAS · semua periode</p><p class="mt-1 text-xl font-semibold tabular-nums text-ink">{{ snapshot.finance.cash_rows }}</p></div>
+      <div class="bg-white p-4"><p class="text-xs text-muted">SPP_TAGIHAN · periode terpilih</p><p class="mt-1 text-xl font-semibold tabular-nums text-ink">{{ snapshot.finance.invoice_rows }}</p></div>
+      <div class="bg-white p-4"><p class="text-xs text-muted">BUKTI_BAYAR · periode terpilih</p><p class="mt-1 text-xl font-semibold tabular-nums text-ink">{{ snapshot.finance.payment_rows }}</p></div>
+      <div class="bg-white p-4"><p class="text-xs text-muted">NOTA_LOG · semua periode</p><p class="mt-1 text-xl font-semibold tabular-nums text-ink">{{ snapshot.finance.nota_rows }}</p></div>
+    </div>
+  </section>
+</div>
+{% endblock %}

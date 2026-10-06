@@ -1,0 +1,71 @@
+{% extends "base.html" %}{% load ui spi %}
+{% block title %}Data Health{% endblock %}
+{% block content %}
+{% pageheader title="Data Health" subtitle="Kelengkapan & kerapian data cabang - setiap temuan bisa dibuka ke catatannya" icon="database-search" %}
+  <a href="?ekspor=csv" class="btn btn-secondary"><i class="ti ti-file-spreadsheet" aria-hidden="true"></i>CSV</a>
+  <a href="?ekspor=xlsx" class="btn btn-secondary"><i class="ti ti-table-export" aria-hidden="true"></i>Excel</a>
+{% endpageheader %}
+
+<section class="mb-6 grid gap-4 lg:grid-cols-[18rem_minmax(0,1fr)]">
+  <div class="card flex items-center gap-5 p-5">
+    {% include "components/ring.html" with pct=skor size=88 color="#176df8" aria="Skor Data Health" %}
+    <div><p class="text-sm font-semibold text-ink">Skor Data Health</p>
+      <span class="status-badge {{ nada }} mt-1"><span class="dot" aria-hidden="true"></span>{{ status }}</span>
+      <p class="mt-1 text-xs text-muted">{{ total_terkena|angka }} temuan · {{ kategori|length }} kategori</p></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div><h2 class="card-title">Prioritas perbaikan</h2><p class="card-sub">Bobot tingkat × jumlah terkena</p></div></div>
+    {% if prioritas %}
+      <ul class="divide-y divide-line">
+        {% for c in prioritas %}
+          <li><a href="#{{ c.key }}" class="flex items-center gap-3 px-5 py-2.5 hover:bg-subtle">
+            <span class="status-badge {{ c.nada }}"><span class="dot" aria-hidden="true"></span>{{ c.tingkat|capfirst }}</span>
+            <span class="min-w-0 flex-1 truncate text-sm text-ink">{{ c.judul }}</span>
+            <span class="text-sm font-semibold tabular-nums text-ink">{{ c.n|angka }}</span><span class="text-xs text-muted">/ {{ c.diperiksa|angka }}</span></a></li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      {% include "components/empty_state.html" with bare=True icon="circle-check" title="Data rapi" text="Tidak ada temuan pada cek mana pun." %}
+    {% endif %}
+  </div>
+</section>
+
+{% for k in kategori %}
+  <section class="mb-6" aria-labelledby="kat-{{ forloop.counter }}">
+    <div class="mb-3 flex items-baseline justify-between gap-3">
+      <h2 id="kat-{{ forloop.counter }}" class="t-section">{{ k.nama }}</h2>
+      <span class="text-sm text-muted">skor {{ k.skor|default_if_none:"—" }}</span>
+    </div>
+    <div class="space-y-3">
+      {% for c in k.cek %}
+        <details id="{{ c.key }}" class="card group" {% if c.n and c.tingkat == "kritis" %}open{% endif %}>
+          <summary class="flex cursor-pointer list-none items-center gap-3 px-5 py-4">
+            <span class="status-badge {{ c.nada }} shrink-0"><span class="dot" aria-hidden="true"></span>{% if c.n %}{{ c.tingkat|capfirst }}{% else %}Bersih{% endif %}</span>
+            <span class="min-w-0 flex-1"><span class="block text-sm font-semibold text-ink">{{ c.judul }}</span>
+              <span class="block text-xs text-muted">Sumber: {{ c.sumber }}</span></span>
+            <span class="text-right"><span class="block text-sm font-semibold tabular-nums text-ink">{{ c.n|angka }} <span class="font-normal text-muted">/ {{ c.diperiksa|angka }}</span></span>
+              <span class="block text-xs text-muted">{% if c.diperiksa %}{{ c.skor }}% bersih{% else %}tidak ada yang diperiksa{% endif %}</span></span>
+            <i class="ti ti-chevron-down text-muted transition group-open:rotate-180" aria-hidden="true"></i>
+          </summary>
+          {% if c.n %}
+            <div class="border-t border-line px-5 py-3">
+              <p class="mb-2 text-[0.8125rem] text-ink-2"><i class="ti ti-tool mr-1" aria-hidden="true"></i>{{ c.aksi }}</p>
+              <ul class="divide-y divide-line text-sm">
+                {% for it in c.terkena|slice:":50" %}
+                  <li class="flex items-center gap-3 py-2">
+                    <span class="min-w-0 flex-1">{% if it.url %}<a href="{{ it.url }}" class="link font-medium">{{ it.label }}</a>{% else %}<span class="font-medium text-ink">{{ it.label }}</span>{% endif %}
+                      <span class="block truncate text-xs text-muted">{{ it.detail }}</span></span>
+                    {% if it.url %}<a href="{{ it.url }}" class="btn btn-ghost btn-sm">Buka</a>{% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+              {% if c.n > 50 %}<p class="mt-2 text-xs text-muted">Menampilkan 50 dari {{ c.n|angka }} - unduh CSV/Excel untuk daftar lengkap.</p>{% endif %}
+            </div>
+          {% endif %}
+        </details>
+      {% endfor %}
+    </div>
+  </section>
+{% endfor %}
+<p class="text-xs text-muted">Skor = rata-rata tertimbang (1 − terkena ÷ diperiksa) per cek; bobot {% for t, w in bobot.items %}{{ t }} {{ w }}{% if not forloop.last %} · {% endif %}{% endfor %}. Cek tanpa data yang bisa diperiksa tidak dihitung.</p>
+{% endblock %}

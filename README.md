@@ -34,6 +34,12 @@ angka kunci, akademik, keuangan, aktivitas); kerangka aplikasi dengan sidebar ya
 global (Ctrl+K), tombol Tambah sesuai izin; modul Murid, Orang Tua, Kelas, Guru, Sesi (kalender Hari / Minggu / Bulan / Tertunda),
 Jadwal Saya & absensi guru didesain ulang dan diuji di 390 / 768 / 1440 px.
 
+Management layer (Okt 2026): **Management Center** (`/manajemen/`) dengan skor Kesehatan SPI dan daftar "yang membutuhkan perhatian",
+**Business Health**, **Student Lifecycle** (matriks = sheet MATRIKS, divalidasi sel-per-sel), **Finance Control**, **Nota SPP** (A4, nomor
+seri, NOTA_LOG), **Operational Health**, **Data Health** (22 cek, tiap temuan bisa dibuka), dan **Management Reports** (laporan bulanan
+siap cetak, ekspor Excel/CSV). Izin: `management.view` (Branch Admin, Manager), `management.finance` (+ Finance), `nota.issue` (Branch Admin,
+Finance). Rumus, sumber, ambang skor (usulan, perlu disahkan), dan batasan: `docs/MANAGEMENT_CENTER.md`, `docs/MANAGEMENT_LIFECYCLE.md`.
+
 ## Dasbor (gelombang 1)
 
 - **Beranda** (`/`): situasi sekarang seperti HOME Excel (murid aktif, SPP bulan buku kas terakhir, OFF, kelas, masalah kritis,

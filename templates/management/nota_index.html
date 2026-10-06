@@ -1,0 +1,48 @@
+{% extends "base.html" %}{% load ui spi %}
+{% block title %}Nota SPP{% endblock %}
+{% block content %}
+{% pageheader title="Nota SPP" subtitle="Nota untuk orang tua - angka dari buku kas & harga SPP murid, tidak diketik manual" icon="receipt" %}{% endpageheader %}
+
+<form method="get" class="card mb-5 grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_14rem_auto] sm:items-end">
+  <div><label for="n-q" class="field-label">Murid</label>
+    <div class="input-icon"><i class="ti ti-search" aria-hidden="true"></i><input id="n-q" name="q" value="{{ q }}" class="field" placeholder="Nama atau Student ID (min. 2 huruf)" autofocus></div></div>
+  <div><label for="n-per" class="field-label">Periode tagihan</label>
+    <select id="n-per" name="periode" class="field">{% for m in pilihan %}<option value="{{ m|date:'Y-m' }}" {% if m == bulan %}selected{% endif %}>{{ m|date:"F Y" }}</option>{% endfor %}</select></div>
+  <button class="btn btn-primary"><i class="ti ti-search" aria-hidden="true"></i>Cari</button>
+</form>
+
+{% if q %}
+  <section class="mb-6" aria-labelledby="hasil-title">
+    <h2 id="hasil-title" class="t-section mb-3">Hasil · {{ bulan|date:"F Y" }}</h2>
+    {% if hasil %}
+      <div class="table-wrap"><table class="data-table">
+        <thead><tr><th>Murid</th><th>Status SPP</th><th class="num">Tagihan</th><th class="num">Tercatat</th><th class="num">Sisa</th><th></th></tr></thead>
+        <tbody>{% for h in hasil %}
+          <tr><td><span class="font-medium text-ink">{{ h.murid.nama }}</span><span class="cell-sub">{{ h.murid.std }}</span></td>
+            <td><span class="status-badge {{ h.nada }}"><span class="dot" aria-hidden="true"></span>{{ h.status|capfirst }}</span></td>
+            <td class="num">{{ h.tagihan|rp|default:"—" }}</td><td class="num">{{ h.bayar|rp }}</td><td class="num">{{ h.sisa|rp|default:"—" }}</td>
+            <td class="text-right"><a href="{% url 'management:nota_preview' h.murid.std bulan|date:'Y-m' %}" class="btn btn-secondary btn-sm">Pratinjau nota</a></td></tr>
+        {% endfor %}</tbody>
+      </table></div>
+    {% else %}
+      {% include "components/empty_state.html" with icon="search" title="Murid tidak ditemukan" text="Coba nama lain atau Student ID lengkap." %}
+    {% endif %}
+  </section>
+{% endif %}
+
+<section aria-labelledby="log-title">
+  <h2 id="log-title" class="t-section mb-3">Nota terakhir (NOTA_LOG)</h2>
+  {% if log %}
+    <div class="table-wrap"><table class="data-table">
+      <thead><tr><th>Nomor</th><th>Tanggal</th><th>Murid</th><th>Periode</th><th>Status</th><th class="num">Tagihan</th><th class="num">Tercatat</th><th>Oleh</th></tr></thead>
+      <tbody>{% for n in log %}
+        <tr><td><a href="{% url 'management:nota_view' n.pk %}" class="link font-medium tabular-nums">{{ n.no }}</a></td><td class="tabular-nums">{{ n.tgl|date:"j M Y H:i" }}</td>
+          <td>{{ n.nama }}<span class="cell-sub">{{ n.std }}</span></td><td>{{ n.periode }}</td><td>{{ n.status|capfirst }}</td>
+          <td class="num">{{ n.tagihan|rp }}</td><td class="num">{{ n.bayar|rp }}</td><td class="text-muted">{{ n.user }}</td></tr>
+      {% endfor %}</tbody>
+    </table></div>
+  {% else %}
+    {% include "components/empty_state.html" with icon="receipt-off" title="Belum ada nota" text="Nota yang diterbitkan tercatat di sini dengan nomor urut per tahun." %}
+  {% endif %}
+</section>
+{% endblock %}

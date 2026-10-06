@@ -1,0 +1,87 @@
+{% extends "base.html" %}{% load static ui spi %}
+{% block title %}Business Health{% endblock %}
+{% block extra_head %}
+  <script src="{% static 'vendor/chart.umd.min.js' %}" defer></script>
+  <script src="{% static 'js/dashboards.js' %}" defer></script>
+{% endblock %}
+{% block content %}
+{% pageheader title="Business Health" subtitle="Apakah SPI sehat sebagai bisnis - skor dari aturan yang bisa dibaca, bukan angka buatan" icon="heart-rate-monitor" %}
+  <form method="get" class="flex items-center gap-2 no-print">
+    <label for="bh-periode" class="sr-only">Periode</label>
+    <select id="bh-periode" name="periode" class="field" onchange="this.form.submit()">
+      {% for p in periods %}<option value="{{ p.code }}" {% if p.code == period_code %}selected{% endif %}>{{ p.date|date:"F Y" }}</option>{% endfor %}
+    </select>
+    <noscript><button class="btn btn-secondary">Tampilkan</button></noscript>
+  </form>
+{% endpageheader %}
+
+<section aria-labelledby="skor-title" class="mb-6">
+  <h2 id="skor-title" class="sr-only">Skor kesehatan</h2>
+  {% include "management/_scores.html" %}
+</section>
+
+<section class="card mb-6" aria-labelledby="komp-title">
+  <div class="card-header"><div><h2 id="komp-title" class="card-title">Dari mana skornya</h2>
+    <p class="card-sub">Setiap komponen: angka nyata → 0-100 secara linear antara ambang buruk (0) dan baik (100). Komponen tanpa data tidak dihitung.</p></div></div>
+  <div class="table-wrap rounded-none border-0 shadow-none">
+    <table class="data-table">
+      <thead><tr><th>Dimensi</th><th>Komponen</th><th class="num">Nilai</th><th class="num">Buruk → Baik</th><th class="num">Skor</th><th>Sumber</th></tr></thead>
+      <tbody>
+        {% for d in r.dimensi %}{% for k in d.komponen %}
+          <tr>
+            <td>{% if forloop.first %}<span class="font-semibold text-ink">{{ d.nama }}</span><span class="cell-sub">bobot {% for key, w in bobot.items %}{% if key == d.key %}{{ w }}%{% endif %}{% endfor %}</span>{% endif %}</td>
+            <td>{{ k.nama }}<span class="cell-sub">{{ k.arti }}</span></td>
+            <td class="num">{% if k.nilai is None %}<span class="text-muted">tidak ada data</span>{% else %}{{ k.nilai }}{% if k.satuan == "%" %}%{% elif k.satuan %} {{ k.satuan }}{% endif %}{% endif %}</td>
+            <td class="num text-muted">{{ k.buruk }} → {{ k.baik }}{% if k.satuan == "%" %}%{% endif %}</td>
+            <td class="num font-semibold">{% if k.skor is None %}—{% else %}{{ k.skor }}{% endif %}</td>
+            <td class="text-muted">{{ k.sumber }}</td>
+          </tr>
+        {% endfor %}{% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="px-5 pb-4 pt-3 text-xs text-muted">Status: {% for s in status %}{{ s.1 }} ≥ {{ s.0 }}{% if not forloop.last %} · {% endif %}{% endfor %}. Ambang adalah pilihan awal manajemen (bukan rumus Excel) dan bisa disesuaikan.</p>
+</section>
+
+<section class="mb-6" aria-labelledby="banding-title">
+  <h2 id="banding-title" class="t-section mb-3">Perbandingan {{ r.cur.label }}</h2>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead><tr><th>Metrik</th><th class="num">{{ r.cur.label }}</th>{% for b in banding.0.rows %}<th class="num">{{ b.nama }}</th>{% endfor %}</tr></thead>
+      <tbody>
+        {% for m in banding %}
+          <tr><td class="font-medium text-ink">{{ m.nama }}</td><td class="num font-semibold">{{ m.nilai|default_if_none:"—" }}</td>
+            {% for b in m.rows %}<td class="num">{% if b.nilai is None %}<span class="text-muted">—</span>{% else %}{{ b.nilai }}
+              {% if b.tren %}<i class="ti ti-{{ b.tren.ikon }} ml-1 {% if b.tren.baik %}text-success-600{% elif b.tren.baik is None %}text-muted{% else %}text-danger-600{% endif %}" title="{{ m.nama }} sekarang {{ b.tren.arah }} {{ b.tren.beda }} dibanding {{ b.nama|lower }}"></i>{% endif %}{% endif %}</td>{% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="mt-2 text-xs text-muted">Panah hijau = membaik, merah = memburuk (untuk Cuti, Off baru, dan Churn, turun berarti membaik).</p>
+</section>
+
+<section class="mb-6 grid gap-5 lg:grid-cols-2" aria-label="Tren">
+  {% for c in charts %}<div class="{% if forloop.last and charts|length == 3 %}lg:col-span-2{% endif %}">{% include "components/chart_card.html" with chart=c %}</div>{% endfor %}
+</section>
+
+<section class="grid gap-5 lg:grid-cols-2">
+  <div class="card">
+    <div class="card-header"><div><h2 class="card-title">Kapasitas & operasional</h2><p class="card-sub">{{ r.op.bulan|date:"F Y" }}</p></div>
+      <a href="{% url 'management:operations' %}" class="btn btn-ghost btn-sm">Detail<i class="ti ti-arrow-right" aria-hidden="true"></i></a></div>
+    <dl class="card-body">
+      <div class="stat-row"><dt>Kelas aktif</dt><dd class="font-semibold tabular-nums">{{ r.op.kelas.aktif }}</dd></div>
+      <div class="stat-row"><dt>Keterisian kursi (Partner & Group)</dt><dd class="font-semibold tabular-nums">{{ r.op.kelas.util|default_if_none:"—" }}%</dd></div>
+      <div class="stat-row"><dt>Kelas penuh · melebihi kapasitas</dt><dd class="tabular-nums">{{ r.op.kelas.penuh }} · {{ r.op.kelas.melebihi|length }}</dd></div>
+      <div class="stat-row"><dt>Murid per kelas aktif</dt><dd class="tabular-nums">{% if r.op.kelas.aktif %}{% widthratio r.cur.aktif r.op.kelas.aktif 1 %}{% else %}—{% endif %}</dd></div>
+      <div class="stat-row"><dt>Sesi lampau belum dikonfirmasi</dt><dd class="tabular-nums">{{ r.op.sesi.lampau_belum }}</dd></div>
+    </dl>
+  </div>
+  <div class="card">
+    <div class="card-header"><div><h2 class="card-title">Definisi lifecycle</h2><p class="card-sub">Dipakai di semua halaman Management</p></div></div>
+    <dl class="card-body space-y-2 text-[0.8125rem]">
+      {% for n, arti in definisi %}<div><dt class="font-semibold text-ink">{{ n }}</dt><dd class="text-ink-2">{{ arti }}</dd></div>{% endfor %}
+    </dl>
+  </div>
+</section>
+{% endblock %}

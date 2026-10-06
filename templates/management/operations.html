@@ -1,0 +1,96 @@
+{% extends "base.html" %}{% load ui spi %}
+{% block title %}Operational Health{% endblock %}
+{% block content %}
+{% pageheader title="Operational Health" subtitle="Apakah jadwal berjalan, absensi dikerjakan, kelas & guru seimbang, follow-up tidak tertunda" icon="activity-heartbeat" %}
+  <form method="get" class="flex items-center gap-2">
+    <label for="op-periode" class="sr-only">Periode</label>
+    <select id="op-periode" name="periode" class="field" onchange="this.form.submit()">
+      {% for p in periods %}<option value="{{ p.code }}" {% if p.code == period_code %}selected{% endif %}>{{ p.date|date:"F Y" }}</option>{% endfor %}
+    </select>
+  </form>
+{% endpageheader %}
+
+<section class="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Angka operasional">
+  {% include "components/tile.html" with tone="violet" icon="calendar-event" label="Sesi bulan ini" value=op.sesi.bulan|angka sub=sub.sesi %}
+  {% if op.sesi.lampau_belum %}
+    {% include "components/tile.html" with tone="rose" icon="clock-exclamation" label="Sesi lampau belum dikonfirmasi" value=op.sesi.lampau_belum|angka sub="realisasi & kehadiran belum dicatat" href="#tertunda" link_text="Lihat daftar" %}
+  {% else %}
+    {% include "components/tile.html" with tone="green" icon="circle-check" label="Sesi lampau belum dikonfirmasi" value="0" sub="semua sesi lampau sudah dikonfirmasi" %}
+  {% endif %}
+  {% include "components/tile.html" with tone="green" icon="user-check" label="Kehadiran 30 hari" value=sub.hadir_val sub=sub.hadir %}
+  {% include "components/tile.html" with tone="amber" icon="phone-call" label="Follow-up terlambat" value=op.followup.terlambat|angka sub=sub.fu href=followup_url link_text="Buka follow-up" %}
+</section>
+
+<div class="mb-6 grid gap-5 lg:grid-cols-2">
+  <section class="card" aria-labelledby="eks-title">
+    <div class="card-header"><div><h2 id="eks-title" class="card-title">Eksekusi sesi</h2><p class="card-sub">{{ op.bulan|date:"F Y" }}</p></div></div>
+    <dl class="card-body">
+      <div class="stat-row"><dt>Sesi terjadwal / terlaksana / batal</dt><dd class="tabular-nums">{{ op.sesi.terjadwal }} / {{ op.sesi.realisasi }} / {{ op.sesi.batal }}</dd></div>
+      <div class="stat-row"><dt>Sesi lampau terkonfirmasi (semua waktu)</dt><dd class="font-semibold tabular-nums">{{ op.sesi.konfirmasi_pct|default_if_none:"—" }}%</dd></div>
+      <div class="stat-row"><dt>Sesi terlaksana dengan absensi</dt><dd class="font-semibold tabular-nums">{% if op.sesi.absen_pct is None %}—{% else %}{{ op.sesi.absen_pct }}%{% endif %} <span class="font-normal text-muted">({{ op.sesi.absen_lengkap }} dari {{ op.sesi.realisasi }})</span></dd></div>
+      <div class="stat-row"><dt>Sesi terlaksana tanpa absensi</dt><dd class="tabular-nums">{{ op.sesi.tanpa_absen|length }}</dd></div>
+    </dl>
+  </section>
+  <section class="card" id="kelas" aria-labelledby="kelas-title">
+    <div class="card-header"><div><h2 id="kelas-title" class="card-title">Kapasitas kelas</h2><p class="card-sub">Kapasitas per huruf kode (pengaturan F / P / G / S)</p></div>
+      <a href="{% url 'classes:list' %}" class="btn btn-ghost btn-sm">Kelas<i class="ti ti-arrow-right" aria-hidden="true"></i></a></div>
+    <div class="card-body">
+      <div class="flex items-center gap-4">
+        {% include "components/ring.html" with pct=op.kelas.util size=72 color="#6d5df2" aria="Keterisian kursi" %}
+        <div class="text-sm text-ink-2"><p><span class="font-semibold text-ink">{{ op.kelas.terisi|angka }}</span> dari {{ op.kelas.kursi|angka }} kursi terisi</p>
+          <p class="text-xs text-muted">{{ op.kelas.aktif }} kelas aktif · {{ op.kelas.kursi_kosong|angka }} kursi kosong (Partner & Group)</p></div>
+      </div>
+      <dl class="mt-3">
+        <div class="stat-row"><dt>Kelas penuh</dt><dd class="tabular-nums">{{ op.kelas.penuh }}</dd></div>
+        <div class="stat-row"><dt>Melebihi kapasitas</dt><dd class="tabular-nums {% if op.kelas.melebihi %}font-semibold text-danger-700{% endif %}">{{ op.kelas.melebihi|length }}</dd></div>
+        <div class="stat-row"><dt>Masih terjadwal tanpa murid aktif</dt><dd class="tabular-nums {% if op.kelas.kosong_terjadwal %}font-semibold text-warning-700{% endif %}">{{ op.kelas.kosong_terjadwal|length }}</dd></div>
+        <div class="stat-row"><dt>Kelas aktif tanpa jadwal resmi</dt><dd class="tabular-nums">{{ op.kelas.tanpa_jadwal|length }}</dd></div>
+      </dl>
+      {% if op.kelas.melebihi or op.kelas.kosong_terjadwal %}
+        <div class="mt-3 flex flex-wrap gap-1.5">
+          {% for k in op.kelas.melebihi %}<a href="{% url 'classes:detail' k.row.code %}" class="chip border-danger-100 text-danger-700">{{ k.row.code }} · {{ k.aktif }}/{{ k.kapasitas }}</a>{% endfor %}
+          {% for k in op.kelas.kosong_terjadwal|slice:":16" %}<a href="{% url 'classes:detail' k.row.code %}" class="chip">{{ k.row.code }} · 0 murid</a>{% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </section>
+</div>
+
+<section class="mb-6" aria-labelledby="guru-title">
+  <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
+    <div><h2 id="guru-title" class="t-section">Beban guru</h2><p class="text-xs text-muted">Rata-rata {{ op.rata_beban }} murid aktif per guru yang mengajar · sesi = terlaksana bulan berjalan</p></div>
+    <div class="flex gap-2"><a href="?periode={{ period_code }}&ekspor=csv" class="btn btn-secondary btn-sm">CSV</a><a href="?periode={{ period_code }}&ekspor=xlsx" class="btn btn-secondary btn-sm">Excel</a></div>
+  </div>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead><tr><th>Guru</th><th>Status</th><th class="num">Murid aktif</th><th class="num">Kelas</th><th class="num">Slot jadwal</th><th class="num">Sesi terlaksana</th><th>Catatan</th></tr></thead>
+      <tbody>
+        {% for g in op.guru %}
+          <tr><td><a href="{% url 'masterdata:teacher' g.t.tid %}" class="link font-medium">{{ g.t.name }}</a></td>
+            <td>{% include "components/status_badge.html" with status=g.t.status %}</td>
+            <td class="num"><span class="inline-flex items-center gap-2"><span class="progress w-16 {% if g.rasio and g.rasio >= 1.5 %}is-warning{% endif %}"><span style="width: {% widthratio g.aktif op.rata_beban 50 %}%"></span></span><span class="font-semibold">{{ g.aktif }}</span></span></td>
+            <td class="num">{{ g.kelas }}</td><td class="num">{{ g.slot }}</td><td class="num">{{ g.sesi }}</td>
+            <td class="text-xs {% if 'tinggi' in g.catatan %}text-warning-700{% else %}text-muted{% endif %}">{{ g.catatan }}</td></tr>
+        {% empty %}<tr><td colspan="7" class="text-muted">Belum ada guru.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="tertunda" aria-labelledby="tertunda-title">
+  <h2 id="tertunda-title" class="t-section mb-3">Sesi lampau belum dikonfirmasi</h2>
+  {% if op.sesi.lampau %}
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Tanggal</th><th>Kelas</th><th>Guru</th><th>Jam</th><th></th></tr></thead>
+        <tbody>{% for s in op.sesi.lampau|slice:":40" %}
+          <tr><td class="tabular-nums">{{ s.tgl|date:"D j M Y" }}</td><td class="font-medium">{{ s.kode|default:s.kelas }}</td><td>{{ s.guru|default:"—" }}</td>
+            <td class="tabular-nums">{{ s.mulai|time:"H:i" }}–{{ s.selesai|time:"H:i" }}</td><td class="text-right"><a href="{% url 'classes:session' s.sid %}" class="btn btn-secondary btn-sm">Konfirmasi</a></td></tr>
+        {% endfor %}</tbody>
+      </table>
+    </div>
+  {% else %}
+    {% include "components/empty_state.html" with icon="circle-check" title="Tidak ada sesi tertunda" text="Semua sesi sebelum hari ini sudah dikonfirmasi." %}
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "base.html" %}{% load static ui spi %}
+{% block title %}Finance Control{% endblock %}
+{% block extra_head %}
+  <script src="{% static 'vendor/chart.umd.min.js' %}" defer></script>
+  <script src="{% static 'js/dashboards.js' %}" defer></script>
+{% endblock %}
+{% block content %}
+{% pageheader title="Finance Control" subtitle="SPP per periode tagihan: tagihan, diterima, sisa, dan murid berisiko - dari buku kas & data murid" icon="report-money" %}
+  <a href="?periode={{ k.bulan|date:'Y-m' }}&program={{ program|urlencode }}&ekspor=xlsx" class="btn btn-secondary"><i class="ti ti-table-export" aria-hidden="true"></i>Excel</a>
+  <a href="{% url 'management:nota' %}?periode={{ k.bulan|date:'Y-m' }}" class="btn btn-primary"><i class="ti ti-receipt" aria-hidden="true"></i>Nota SPP</a>
+{% endpageheader %}
+
+<form method="get" class="card mb-5 flex flex-wrap items-end gap-3 p-4">
+  <div><label for="fc-per" class="field-label">Periode tagihan</label>
+    <select id="fc-per" name="periode" class="field">{% for m in pilihan %}<option value="{{ m|date:'Y-m' }}" {% if m == k.bulan %}selected{% endif %}>{{ m|date:"F Y" }}</option>{% endfor %}</select></div>
+  <div><label for="fc-prog" class="field-label">Program</label>
+    <select id="fc-prog" name="program" class="field"><option value="">Semua program</option>{% for p in programs %}<option value="{{ p }}" {% if p == program %}selected{% endif %}>{{ p }}</option>{% endfor %}</select></div>
+  <button class="btn btn-primary"><i class="ti ti-filter" aria-hidden="true"></i>Terapkan</button>
+  <p class="w-full text-xs text-muted">Dasar tagihan: <strong class="text-ink-2">{{ k.sumber }}</strong> · buku kas tercatat s/d {{ kas_tgl|date:"j F Y"|default:"—" }} - pembayaran sesudah tanggal itu belum terlihat.</p>
+</form>
+
+{% if k.keputusan %}
+  <div class="callout callout-warning mb-5" role="status"><i class="ti ti-alert-triangle" aria-hidden="true"></i>
+    <div><p class="font-semibold">{{ k.label }}: jurnal penerimaan perlu keputusan</p><p class="text-sm">Dua versi jurnal Agustus 2026 belum diputuskan (pengaturan <code>jurnal_agu</code>). Sampai diputuskan, tagihan, pembayaran, dan nota periode ini tidak dihitung.</p></div></div>
+{% elif belum_resmi %}
+    <div class="callout callout-info mb-5" role="status"><i class="ti ti-info-circle" aria-hidden="true"></i>
+      <div><p class="font-semibold">{{ k.label }}: belum ada tagihan resmi</p><p class="text-sm">Mulai Oktober 2026 tagihan dibuat oleh BULAN BARU (SPP_TAGIHAN). Tabel itu masih kosong, jadi periode ini belum punya tagihan - bukan nol rupiah.</p></div></div>
+{% endif %}
+
+{% if catatan %}
+  <div class="callout callout-warning mb-5" role="status"><i class="ti ti-info-triangle" aria-hidden="true"></i>
+    <div><p class="font-semibold">Angka pembayaran {{ k.label }} belum lengkap</p><ul class="mt-1 list-disc space-y-0.5 pl-4 text-sm">{% for c in catatan %}<li>{{ c }}</li>{% endfor %}</ul></div></div>
+{% endif %}
+<section class="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Angka SPP">
+  {% include "components/tile.html" with tone="blue" icon="file-invoice" label="Tagihan periode" value=k.potensi|rp sub=sub.tagihan %}
+  {% include "components/tile.html" with tone="green" icon="cash" label="Diterima (murid aktif)" value=k.diterima_aktif|rp sub=sub.diterima %}
+  {% include "components/tile.html" with tone="amber" icon="hourglass" label="Sisa / outstanding" value=k.outstanding|rp sub=sub.sisa %}
+  {% include "components/tile.html" with tone="violet" icon="percentage" label="Collection rate" value=sub.coll_val sub=sub.coll %}
+</section>
+
+<div class="mb-6 grid gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
+  <div class="grid gap-5">{% for c in charts|slice:":1" %}{% include "components/chart_card.html" with chart=c %}{% endfor %}</div>
+  <section class="card" aria-labelledby="st-title">
+    <div class="card-header"><div><h2 id="st-title" class="card-title">Status pembayaran</h2><p class="card-sub">{{ k.aktif }} murid aktif {{ k.label }}</p></div></div>
+    <dl class="card-body">
+      {% for s, n in status_list %}{% if n %}<div class="stat-row"><dt>{{ s|capfirst }}</dt><dd class="font-semibold tabular-nums">{{ n }}</dd></div>{% endif %}{% endfor %}
+      <div class="stat-row"><dt>Rata-rata bayar per murid membayar</dt><dd class="tabular-nums">{{ k.rata_bayar|rp|default:"—" }}</dd></div>
+      <div class="stat-row"><dt>Bukti bayar menunggu verifikasi</dt><dd class="tabular-nums">{{ k.menunggu.semua }}</dd></div>
+      <div class="stat-row"><dt>Penerimaan SPP tak tertaut (bulan kas)</dt><dd class="tabular-nums {% if k.tak_tertaut.n %}text-warning-700 font-semibold{% endif %}">{{ k.tak_tertaut.n }} · {{ k.tak_tertaut.rp|rp }}</dd></div>
+    </dl>
+  </section>
+</div>
+
+<div class="mb-6 grid gap-5 lg:grid-cols-2">{% for c in charts|slice:"1:" %}{% include "components/chart_card.html" with chart=c %}{% endfor %}</div>
+
+<section id="risiko" class="mb-6" aria-labelledby="risiko-title">
+  <div class="mb-3"><h2 id="risiko-title" class="t-section">Risiko pembayaran murid · {{ k.label }}</h2>
+    <p class="text-xs text-muted">Murid aktif yang belum lunas. "Beruntun" = periode berturut-turut (s/d periode ini, maks 3) tanpa pembayaran.</p></div>
+  {% if risiko %}
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Murid</th><th>Kategori</th><th class="num">Tagihan</th><th class="num">Diterima</th><th class="num">Sisa</th><th class="num">Beruntun</th><th></th></tr></thead>
+        <tbody>{% for x in risiko|slice:":60" %}
+          <tr><td><a href="{% url 'students:detail' x.r.murid.std %}" class="link font-medium">{{ x.r.murid.nama }}</a><span class="cell-sub">{{ x.kode|default:"tanpa kelas" }} · {{ x.guru|default:"—" }}</span></td>
+            <td><span class="status-badge {{ x.r.nada }}"><span class="dot" aria-hidden="true"></span>{{ x.kategori }}</span></td>
+            <td class="num">{{ x.r.tagihan|rp|default:"—" }}</td><td class="num">{{ x.r.bayar|rp }}</td><td class="num font-semibold">{{ x.r.sisa|rp|default:"—" }}</td>
+            <td class="num {% if x.beruntun >= 2 %}font-semibold text-danger-700{% endif %}">{{ x.beruntun }}</td>
+            <td class="text-right">{% if x.r.tagihan is not None %}<a href="{% url 'management:nota_preview' x.r.murid.std k.bulan|date:'Y-m' %}" class="btn btn-ghost btn-sm">Nota</a>{% endif %}</td></tr>
+        {% endfor %}</tbody>
+      </table>
+    </div>
+    {% if risiko|length > 60 %}<p class="mt-2 text-xs text-muted">Menampilkan 60 dari {{ risiko|length }} - unduh Excel untuk semua.</p>{% endif %}
+  {% else %}
+    {% include "components/empty_state.html" with icon="circle-check" title="Tidak ada risiko pembayaran" text="Semua murid aktif periode ini lunas, atau periode ini belum punya tagihan." %}
+  {% endif %}
+</section>
+
+<section class="mb-6" aria-labelledby="prog-title">
+  <h2 id="prog-title" class="t-section mb-3">Per program</h2>
+  <div class="table-wrap"><table class="data-table">
+    <thead><tr><th>Program</th><th class="num">Murid aktif</th><th class="num">Lunas</th><th class="num">Tagihan</th><th class="num">Diterima</th><th class="num">Collection</th></tr></thead>
+    <tbody>{% for p in per_program %}<tr><td class="font-medium">{{ p.program }}</td><td class="num">{{ p.aktif }}</td><td class="num">{{ p.lunas }}</td>
+      <td class="num">{{ p.potensi|rp }}</td><td class="num">{{ p.diterima|rp }}</td><td class="num">{{ p.collection|default_if_none:"—" }}{% if p.collection is not None %}%{% endif %}</td></tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+
+{% if branches %}
+<section aria-labelledby="cab-title">
+  <h2 id="cab-title" class="t-section mb-3">Perbandingan cabang · {{ k.label }}</h2>
+  <div class="table-wrap"><table class="data-table">
+    <thead><tr><th>Cabang</th><th class="num">Murid aktif</th><th class="num">Tagihan</th><th class="num">Diterima</th><th class="num">Sisa</th><th class="num">Collection</th></tr></thead>
+    <tbody>{% for b in branches %}<tr><td class="font-medium">{{ b.b.name }}<span class="cell-sub">{{ b.b.code }}</span></td>
+      {% if b.kosong %}<td colspan="5" class="text-muted">Belum ada buku kas di cabang ini.</td>
+      {% else %}<td class="num">{{ b.k.aktif }}</td><td class="num">{{ b.k.potensi|rp }}</td><td class="num">{{ b.k.diterima_aktif|rp }}</td><td class="num">{{ b.k.outstanding|rp }}</td>
+        <td class="num">{{ b.k.collection|default_if_none:"—" }}{% if b.k.collection is not None %}%{% endif %}</td>{% endif %}</tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+{% endif %}
+{% endblock %}

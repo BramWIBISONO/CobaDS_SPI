@@ -1,0 +1,79 @@
+{% extends "base.html" %}{% load ui spi %}
+{% block title %}Laporan Bulanan Manajemen · {{ r.cur.label }}{% endblock %}
+{% block content %}
+<div class="no-print mb-5 flex flex-wrap items-center justify-between gap-3">
+  <a href="{% url 'management:reports' %}" class="back-link"><i class="ti ti-chevron-left" aria-hidden="true"></i>Management Reports</a>
+  <button type="button" class="btn btn-primary" onclick="window.print()"><i class="ti ti-printer" aria-hidden="true"></i>Cetak / PDF</button>
+</div>
+
+<article class="mx-auto max-w-[210mm] space-y-8 rounded-2xl bg-surface p-8 shadow-sm ring-1 ring-line sm:p-10 print:max-w-none print:rounded-none print:p-0 print:shadow-none print:ring-0">
+  <header class="border-b-2 border-brand-900 pb-4">
+    <p class="text-xs font-semibold uppercase tracking-[0.12em] text-brand-700">{{ current_branch.name }} · Laporan Bulanan Manajemen</p>
+    <h1 class="mt-1 text-2xl font-bold tracking-tight text-brand-900">{{ r.cur.label }}</h1>
+    <p class="mt-1 text-xs text-muted">Dibuat {{ dibuat|date:"j F Y H:i" }} · data impor terakhir {{ impor|date:"j F Y H:i"|default:"—" }} · keuangan periode {{ r.kas.label }} (buku kas)</p>
+  </header>
+
+  <section aria-labelledby="ex-title">
+    <h2 id="ex-title" class="text-base font-semibold text-ink">1. Ringkasan eksekutif</h2>
+    <div class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-5">
+      <div class="rounded-xl border border-line p-3"><p class="text-xs text-muted">Business Health</p><p class="text-2xl font-semibold tabular-nums text-ink">{{ r.bisnis.skor|default_if_none:"—" }}</p><p class="text-xs font-medium">{{ r.bisnis.status }}</p></div>
+      {% for d in r.dimensi %}<div class="rounded-xl border border-line p-3"><p class="text-xs text-muted">{{ d.nama }}</p><p class="text-2xl font-semibold tabular-nums text-ink">{{ d.skor|default_if_none:"—" }}</p><p class="text-xs font-medium">{{ d.status }}</p></div>{% endfor %}
+    </div>
+    <p class="mt-3 text-sm text-ink-2">Murid aktif {{ r.cur.aktif }}{% if r.prev %} (bulan lalu {{ r.prev.aktif }}){% endif %} ·
+      baru {{ r.cur.baru }} · rejoin {{ r.cur.rejoin }} · Off baru {{ r.cur.off_baru|default_if_none:"—" }} · retensi {{ r.cur.retensi|default_if_none:"—" }}%.
+      {% if finance %}SPP {{ r.kas.label }}: collection {{ r.kas.collection|default_if_none:"—" }}%, sisa {{ r.kas.outstanding|rp }}.{% endif %}</p>
+  </section>
+
+  <section aria-labelledby="st-title">
+    <h2 id="st-title" class="text-base font-semibold text-ink">2. Student Health</h2>
+    <table class="mt-3 w-full text-sm"><tbody>
+      <tr class="border-b border-line"><td class="py-1.5 text-muted">Murid aktif (A+B+R) · cuti · Off bulan ini</td><td class="py-1.5 text-right tabular-nums">{{ r.cur.aktif }} · {{ r.cur.cuti }} · {{ r.cur.off }}</td></tr>
+      <tr class="border-b border-line"><td class="py-1.5 text-muted">Baru · rejoin · Off baru</td><td class="py-1.5 text-right tabular-nums">{{ r.cur.baru }} · {{ r.cur.rejoin }} · {{ r.cur.off_baru|default_if_none:"—" }}</td></tr>
+      <tr class="border-b border-line"><td class="py-1.5 text-muted">Retensi · churn · hilang dari catatan</td><td class="py-1.5 text-right tabular-nums">{{ r.cur.retensi|default_if_none:"—" }}% · {{ r.cur.churn|default_if_none:"—" }}% · {{ r.cur.hilang|default_if_none:"—" }}</td></tr>
+      <tr class="border-b border-line"><td class="py-1.5 text-muted">Pertumbuhan murid aktif 3 bulan · vs tahun lalu</td><td class="py-1.5 text-right tabular-nums">{{ r.tumbuh|default_if_none:"—" }}% · {% if r.tahun %}{{ r.tahun.aktif }} murid{% else %}—{% endif %}</td></tr>
+      <tr><td class="py-1.5 text-muted">Perlu perhatian (cuti berulang · baru Off · lama tidak aktif · status kosong)</td><td class="py-1.5 text-right tabular-nums">{{ wawasan.mendekati_off }} · {{ wawasan.baru_off }} · {{ wawasan.lama_tidak_aktif }} · {{ wawasan.status_kosong }}</td></tr>
+    </tbody></table>
+  </section>
+
+  {% if finance %}
+  <section aria-labelledby="fin-title">
+    <h2 id="fin-title" class="text-base font-semibold text-ink">3. Financial Health · {{ r.kas.label }}</h2>
+    <table class="mt-3 w-full text-sm"><tbody>
+      <tr class="border-b border-line"><td class="py-1.5 text-muted">Tagihan ({{ r.kas.sumber }})</td><td class="py-1.5 text-right tabular-nums">{{ r.kas.potensi|rp }}</td></tr>
+      <tr class="border-b border-line"><td class="py-1.5 text-muted">Diterima murid aktif · semua penerimaan periode</td><td class="py-1.5 text-right tabular-nums">{{ r.kas.diterima_aktif|rp }} · {{ r.kas.diterima_semua|rp }}</td></tr>
+      <tr class="border-b border-line"><td class="py-1.5 text-muted">Sisa · collection rate · murid lunas</td><td class="py-1.5 text-right tabular-nums">{{ r.kas.outstanding|rp }} · {{ r.kas.collection|default_if_none:"—" }}% · {{ r.kas.lunas_pct|default_if_none:"—" }}%</td></tr>
+      <tr><td class="py-1.5 text-muted">Bukti menunggu verifikasi · penerimaan tak tertaut</td><td class="py-1.5 text-right tabular-nums">{{ r.kas.menunggu.semua }} · {{ r.tak_tertaut.n }} ({{ r.tak_tertaut.rp|rp }})</td></tr>
+    </tbody></table>
+  </section>
+  {% endif %}
+
+  <section aria-labelledby="op-title">
+    <h2 id="op-title" class="text-base font-semibold text-ink">{% if finance %}4{% else %}3{% endif %}. Operational Health</h2>
+    <table class="mt-3 w-full text-sm"><tbody>
+      <tr class="border-b border-line"><td class="py-1.5 text-muted">Sesi bulan ini · terlaksana · lampau belum dikonfirmasi</td><td class="py-1.5 text-right tabular-nums">{{ r.op.sesi.bulan }} · {{ r.op.sesi.realisasi }} · {{ r.op.sesi.lampau_belum }}</td></tr>
+      <tr class="border-b border-line"><td class="py-1.5 text-muted">Kehadiran 30 hari</td><td class="py-1.5 text-right tabular-nums">{{ r.op.kehadiran.pct|default_if_none:"—" }}% ({{ r.op.kehadiran.total }} catatan)</td></tr>
+      <tr class="border-b border-line"><td class="py-1.5 text-muted">Kelas aktif · keterisian kursi · penuh · melebihi</td><td class="py-1.5 text-right tabular-nums">{{ r.op.kelas.aktif }} · {{ r.op.kelas.util|default_if_none:"—" }}% · {{ r.op.kelas.penuh }} · {{ r.op.kelas.melebihi|length }}</td></tr>
+      <tr><td class="py-1.5 text-muted">Follow-up terbuka · terlambat</td><td class="py-1.5 text-right tabular-nums">{{ r.op.followup.terbuka }} · {{ r.op.followup.terlambat }}</td></tr>
+    </tbody></table>
+  </section>
+
+  <section aria-labelledby="dq-title">
+    <h2 id="dq-title" class="text-base font-semibold text-ink">{% if finance %}5{% else %}4{% endif %}. Data Health · skor {{ r.data_skor|default_if_none:"—" }}</h2>
+    <table class="mt-3 w-full text-sm"><tbody>
+      {% for c in r.cek %}{% if c.n %}<tr class="border-b border-line"><td class="py-1.5 text-muted">{{ c.judul }}</td><td class="py-1.5 text-right tabular-nums">{{ c.n }} / {{ c.diperiksa }}</td></tr>{% endif %}{% endfor %}
+    </tbody></table>
+  </section>
+
+  <section aria-labelledby="kp-title" class="break-inside-avoid">
+    <h2 id="kp-title" class="text-base font-semibold text-ink">{% if finance %}6{% else %}5{% endif %}. Risiko utama & tindakan yang disarankan</h2>
+    <ol class="mt-3 space-y-3 text-sm">
+      {% for x in keputusan %}
+        <li class="rounded-xl border border-line p-3"><p class="font-semibold text-ink">[{{ x.kat }}] {{ x.isu }}</p>
+          <p class="text-ink-2">{{ x.dampak }}</p><p class="mt-1"><span class="font-medium text-ink">Tindakan:</span> {{ x.aksi }} <span class="text-muted">(sumber: {{ x.modul }})</span></p></li>
+      {% empty %}<li class="text-muted">Tidak ada aturan keputusan yang terpicu.</li>{% endfor %}
+    </ol>
+  </section>
+
+  <footer class="border-t border-line pt-3 text-xs text-muted">Skor & ambang: lihat Business Health. Definisi retensi/churn: Student Lifecycle. Semua angka dihitung dari data cabang {{ current_branch.name }} saat laporan dibuka.</footer>
+</article>
+{% endblock %}

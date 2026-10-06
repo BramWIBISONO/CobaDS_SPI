@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pytest
 from django.conf import settings
+from openpyxl import load_workbook
 
 from branches.models import Branch
 from dashboards.calc.base import HIST_MONTHS, PERIOD_MONTHS, BranchData, fold, label
@@ -77,6 +78,34 @@ def test_students_now(data):
     st = semua_status_sekarang(data)
     web = {s.std: [st[fold(s.std)], kode_dipakai(s), guru_dipakai(s)] for s in data.students if s.std}
     assert_same(web, GOLDEN["students"], "status sekarang / kode / guru")
+
+
+def test_management_lifecycle_matrix_matches_matriks_excel(data):
+    from management.services.lifecycle import matrix
+
+    workbook = load_workbook(SOURCE, data_only=True, read_only=True)
+    excel_matrix = workbook["MATRIKS"]
+    excel_students = workbook["D_MURID"]
+    web_by_v1 = {fold(row.v1): row for row in matrix(data) if row.v1}
+    months = len(HIST_MONTHS)
+    matrix_rows = excel_matrix.iter_rows(
+        min_row=6, max_row=328, min_col=1, max_col=39, values_only=True
+    )
+    student_rows = excel_students.iter_rows(
+        min_row=4, max_row=326, min_col=1, max_col=1, values_only=True
+    )
+
+    checked = 0
+    for offset, (excel_row, student_row) in enumerate(zip(matrix_rows, student_rows), start=6):
+        v1 = fold(student_row[0])
+        assert v1 in web_by_v1, f"MATRIKS row {offset} has no lifecycle row for ID v1 {student_row[0]!r}"
+        web = web_by_v1[v1]
+        assert web.huruf[:months] == list(excel_row[4:4 + months]), f"MATRIKS status cells differ at row {offset}"
+        assert web.bulan_aktif == excel_row[37], f"MATRIKS active-month count differs at row {offset}"
+        assert (web.status_terakhir_historis or None) == excel_row[38], f"MATRIKS last status differs at row {offset}"
+        checked += 1
+
+    assert checked == 323, f"Expected 323 populated MATRIKS formula rows, checked {checked}"
 
 
 def scenario(f):

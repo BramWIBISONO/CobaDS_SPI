@@ -11,6 +11,14 @@ NAV = (
     (None, (("Beranda", "core:home", ("student.view",), "home"),
             ("Pusat Tindakan", "students:action_center", ("student.view",), "checklist"),
             ("Jadwal Saya", "classes:my_sessions", ("session.own",), "calendar-user"))),
+    ("Management", (("Management Center", "management:center", ("management.view",), "layout-dashboard"),
+                    ("Business Health", "management:health", ("management.view",), "heart-rate-monitor"),
+                    ("Student Lifecycle", "management:lifecycle", ("management.view",), "timeline"),
+                    ("Finance Control", "management:finance", ("management.finance",), "report-money"),
+                    ("Nota SPP", "management:nota", ("management.finance",), "receipt"),
+                    ("Operational Health", "management:operations", ("management.view",), "activity-heartbeat"),
+                    ("Data Health", "management:data", ("management.view",), "database-search"),
+                    ("Management Reports", "management:reports", ("management.view",), "file-analytics"))),
     ("Murid", (("Murid", "students:list", ("student.view",), "users"),
                ("Orang Tua", "students:parents", ("parent.view",), "users-group"),
                ("Follow-up", "students:followups", ("student.view",), "phone-call"),
@@ -74,6 +82,10 @@ def nav_for(request):
             shown.append({"label": text, "href": href, "icon": icon, "active": active, "badge": badges.get(url_name, 0), "name": url_name})
         if shown:
             groups.append({"label": label, "items": shown})
+    lit = [it for g in groups for it in g["items"] if it["active"]]
+    best = max(lit, key=lambda it: len(it["href"]), default=None)     # /manajemen/ vs /manajemen/lifecycle/: yang paling spesifik
+    for it in lit:
+        it["active"] = it is best
     return groups
 
 

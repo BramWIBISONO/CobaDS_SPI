@@ -41,6 +41,9 @@ PERMISSIONS = {
     "import.run": Cap.BRANCH_ADMIN,
     "audit.view": Cap.AUDIT_VIEW,
     "branch.manage": Cap.MANAGE_ALL,
+    "management.view": Cap.MANAGEMENT,           # Management Center, Business/Operational/Data Health, Lifecycle, laporan manajemen
+    "management.finance": Cap.FINANCE_CONTROL,   # Finance Control, pratinjau & cetak Nota SPP
+    "nota.issue": Cap.FINANCE_VERIFY,            # terbitkan nomor Nota SPP (NOTA_LOG)
 }
 
 
