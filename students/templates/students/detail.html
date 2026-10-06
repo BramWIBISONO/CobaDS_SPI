@@ -243,6 +243,24 @@
 </section>
 
 {% elif tab == "akademik" %}
+<section class="card mb-5" aria-labelledby="fp-title">
+  <div class="card-header"><div><h2 id="fp-title" class="card-title">Final project & sertifikat</h2>
+    <p class="card-sub">Setelah final project disetujui Manager / Admin, sertifikat dan Student Report dibuat otomatis</p></div>
+    {% if perm.project_submit %}<a href="{% url 'akademik:ajukan' s.std %}" class="btn btn-primary btn-sm"><i class="ti ti-certificate" aria-hidden="true"></i>Final project selesai</a>{% endif %}</div>
+  {% if final_projects %}
+    <ul class="divide-y divide-line">{% for p in final_projects %}
+      <li class="flex flex-wrap items-center gap-3 px-5 py-3">
+        <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl {% if p.status == 'DISETUJUI' %}bg-success-50 text-success-700{% elif p.status == 'DITOLAK' %}bg-danger-50 text-danger-700{% else %}bg-warning-50 text-warning-700{% endif %}"><i class="ti ti-certificate" aria-hidden="true"></i></span>
+        <span class="min-w-0 flex-1"><span class="block text-sm font-semibold text-ink">{{ p.level }} · {{ p.judul }}</span>
+          <span class="block text-xs text-muted">{{ p.get_status_display }} · rata-rata {{ p.rata }} ({{ p.predikat }}){% if p.cert_no %} · sertifikat {{ p.cert_no }}{% endif %}</span></span>
+        {% if p.ada_sertifikat %}<a href="{% url 'akademik:sertifikat' p.pk 'pdf' %}" class="btn btn-secondary btn-sm"><i class="ti ti-download" aria-hidden="true"></i>Sertifikat</a>{% endif %}
+        {% if p.status == "DISETUJUI" %}<a href="{% url 'akademik:rapor' p.pk %}" class="btn btn-secondary btn-sm"><i class="ti ti-file-description" aria-hidden="true"></i>Student Report</a>{% endif %}
+        <a href="{% url 'akademik:detail' p.pk %}" class="btn btn-ghost btn-sm">Detail</a>
+      </li>{% endfor %}</ul>
+  {% else %}
+    {% include "components/empty_state.html" with bare=True icon="certificate" title="Belum ada final project" text="Klik 'Final project selesai' saat murid menyelesaikan project akhir levelnya." %}
+  {% endif %}
+</section>
 <section class="card">
   <div class="card-header"><div><h2 class="card-title">Catatan akademik</h2><p class="card-sub">Progres, student report, sertifikat, dan rekomendasi</p></div></div>
   {% if academics %}<div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Tanggal</th><th>Progres</th><th>Kesimpulan</th><th>Student report</th><th>Sertifikat</th><th>Rekomendasi</th></tr></thead><tbody>

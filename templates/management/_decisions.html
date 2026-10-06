@@ -22,6 +22,25 @@
           <p class="text-xs text-ink-2 lg:hidden">{{ x.aksi }}</p>
           {% if x.url %}<a href="{{ x.url }}" class="btn btn-secondary btn-sm whitespace-nowrap" title="{{ x.aksi }}">{{ x.aksi|truncatechars:30 }}</a>{% else %}<span class="text-xs text-ink-2">{{ x.aksi }}</span>{% endif %}
         </div>
+        {% if x.records %}
+          <details class="rounded-lg bg-subtle px-3 py-2 lg:col-span-3">
+            <summary class="cursor-pointer text-xs font-semibold text-ink">
+              Record terdampak · {{ x.records_total }}
+              {% if x.records_total > 5 %}<span class="font-normal text-muted">· menampilkan 5 teratas</span>{% endif %}
+            </summary>
+            <ul class="mt-2 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+              {% for record in x.records %}
+                <li class="min-w-0 rounded-md border border-line bg-white px-3 py-2">
+                  {% if record.url %}<a class="text-xs font-semibold text-brand-700 hover:underline" href="{{ record.url }}">{{ record.label }}</a>
+                  {% else %}<p class="text-xs font-semibold text-ink">{{ record.label }}</p>{% endif %}
+                  {% if record.detail %}<p class="mt-0.5 break-words text-xs text-muted">{{ record.detail }}</p>{% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          </details>
+        {% elif x.records_restricted %}
+          <p class="rounded-lg bg-subtle px-3 py-2 text-xs text-muted lg:col-span-3">Rincian record keuangan hanya tersedia untuk pengguna dengan izin Finance Control.</p>
+        {% endif %}
       </li>
     {% endfor %}
   </ul>

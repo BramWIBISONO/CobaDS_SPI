@@ -71,6 +71,11 @@ def filter_options(rows):
             "guru": distinct("guru"), "mode": distinct("mode")}
 
 
+def _final_projects(branch, std):
+    from akademik.models import FinalProject
+    return list(FinalProject.objects.filter(branch=branch, std=std).order_by("-diajukan_pada"))
+
+
 def profile(branch, student, today, can_see_contacts):
     data = BranchData(branch, today)
     std = student.std
@@ -110,6 +115,7 @@ def profile(branch, student, today, can_see_contacts):
         "followups": followups, "open_followups": [f for f in followups if is_open_followup(f)], "notes": notes,
         "tagihan": tagihan, "bukti": bukti, "kas": kas[:60], "kas_total": sum(r["nominal"] for r in kas if r["dihitung"] == "YA"),
         "timeline": timeline, "contacts": can_see_contacts,
+        "final_projects": _final_projects(branch, std),
         "last_academic": academics.first(), "attendance": attendance[:60],
         "attendance_rate": {"total": len(hadir), "hadir": n_present, "pct": round(n_present * 100 / len(hadir)) if hadir else None},
     }

@@ -1,0 +1,111 @@
+{% extends "base.html" %}{% load ui %}
+{% block title %}Final project · {{ p.nama }}{% endblock %}
+{% block content %}
+{% pageheader title=p.nama subtitle="Final project "|add:p.level icon="certificate" %}
+  <a href="{% url 'students:detail' p.std %}" class="btn btn-ghost"><i class="ti ti-user" aria-hidden="true"></i>Profil murid</a>
+  {% if p.status != "DITOLAK" %}<a href="{% url 'akademik:rapor' p.pk %}" class="btn btn-secondary"><i class="ti ti-file-description" aria-hidden="true"></i>Student Report{% if p.status == "DIAJUKAN" %} (draf){% endif %}</a>{% endif %}
+{% endpageheader %}
+
+{# Status alur: diajukan -> disetujui -> sertifikat & report #}
+<ol class="card mb-5 grid gap-3 p-4 sm:grid-cols-3" aria-label="Tahapan">
+  <li class="flex items-center gap-3"><span class="grid h-9 w-9 place-items-center rounded-full bg-success-50 text-success-700"><i class="ti ti-check" aria-hidden="true"></i></span>
+    <div><p class="text-sm font-semibold text-ink">Diajukan</p><p class="text-xs text-muted">{{ p.diajukan_pada|date:"j M Y H:i" }} · {{ p.diajukan_oleh.display_name|default:"-" }}</p></div></li>
+  <li class="flex items-center gap-3">
+    {% if p.status == "DIAJUKAN" %}<span class="grid h-9 w-9 place-items-center rounded-full bg-warning-50 text-warning-700"><i class="ti ti-hourglass" aria-hidden="true"></i></span>
+      <div><p class="text-sm font-semibold text-ink">Menunggu persetujuan</p><p class="text-xs text-muted">Manager / Branch Admin</p></div>
+    {% elif p.status == "DISETUJUI" %}<span class="grid h-9 w-9 place-items-center rounded-full bg-success-50 text-success-700"><i class="ti ti-check" aria-hidden="true"></i></span>
+      <div><p class="text-sm font-semibold text-ink">Disetujui</p><p class="text-xs text-muted">{{ p.diputuskan_pada|date:"j M Y H:i" }} · {{ p.diputuskan_oleh.display_name|default:"-" }}</p></div>
+    {% else %}<span class="grid h-9 w-9 place-items-center rounded-full bg-danger-50 text-danger-700"><i class="ti ti-x" aria-hidden="true"></i></span>
+      <div><p class="text-sm font-semibold text-ink">Ditolak</p><p class="text-xs text-muted">{{ p.diputuskan_pada|date:"j M Y H:i" }} · {{ p.diputuskan_oleh.display_name|default:"-" }}</p></div>{% endif %}
+  </li>
+  <li class="flex items-center gap-3">
+    {% if p.status == "DISETUJUI" %}<span class="grid h-9 w-9 place-items-center rounded-full bg-brand-50 text-brand-700"><i class="ti ti-certificate" aria-hidden="true"></i></span>
+      <div><p class="text-sm font-semibold text-ink">Sertifikat {{ p.cert_no }}</p><p class="text-xs text-muted">{% if p.ada_sertifikat %}PDF & JPG siap{% else %}template level belum tersedia{% endif %} · Student Report siap</p></div>
+    {% else %}<span class="grid h-9 w-9 place-items-center rounded-full bg-subtle text-muted"><i class="ti ti-certificate" aria-hidden="true"></i></span>
+      <div><p class="text-sm font-semibold text-muted">Sertifikat & Student Report</p><p class="text-xs text-muted">dibuat otomatis setelah disetujui</p></div>{% endif %}
+  </li>
+</ol>
+
+{% if p.status == "DITOLAK" %}<div class="callout callout-danger mb-5" role="status"><i class="ti ti-x" aria-hidden="true"></i><div><p class="font-semibold">Ditolak</p><p class="text-sm">{{ p.alasan_tolak }}</p></div></div>{% endif %}
+
+<div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
+  <div class="space-y-5">
+    {% if p.status == "DISETUJUI" %}
+      <section class="card overflow-hidden" aria-labelledby="sert-title">
+        <div class="card-header"><div><h2 id="sert-title" class="card-title">Sertifikat {{ p.cert_no }}</h2><p class="card-sub">{{ p.level }} · diterbitkan {{ p.cert_tgl|date:"j F Y" }}</p></div>
+          {% if p.ada_sertifikat %}<div class="flex gap-2"><a href="{% url 'akademik:sertifikat' p.pk 'pdf' %}" class="btn btn-primary btn-sm"><i class="ti ti-download" aria-hidden="true"></i>PDF</a>
+            <a href="{% url 'akademik:sertifikat' p.pk 'jpg' %}" class="btn btn-secondary btn-sm">Gambar (JPG)</a></div>{% endif %}</div>
+        {% if p.ada_sertifikat %}
+          <img src="{% url 'akademik:sertifikat' p.pk 'pratinjau' %}" alt="Sertifikat {{ p.nama }} {{ p.level }} nomor {{ p.cert_no }}" class="block w-full">
+        {% else %}
+          <div class="card-body">
+            {% include "components/empty_state.html" with bare=True icon="certificate-off" title="Template sertifikat level ini belum tersedia" text="Nomor sertifikat sudah tercatat. Tambahkan template level ini ke folder sertif di server, lalu klik Buat sertifikat." %}
+            {% if template and perm.project_approve %}<form method="post" action="{% url 'akademik:buat_ulang' p.pk %}" class="text-center">{% csrf_token %}<button class="btn btn-primary">Buat sertifikat</button></form>{% endif %}
+          </div>
+        {% endif %}
+      </section>
+    {% endif %}
+
+    <section class="card" aria-labelledby="proj-title">
+      <div class="card-header"><div><h2 id="proj-title" class="card-title">{{ p.judul }}</h2><p class="card-sub">Selesai {{ p.tgl_selesai|date:"j F Y" }} · {{ p.kode_kelas|default:"tanpa kelas" }} · {{ p.guru|default:"guru -" }}</p></div>
+        {% if p.link %}<a href="{{ p.link }}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm"><i class="ti ti-external-link" aria-hidden="true"></i>Buka project</a>{% endif %}</div>
+      <div class="card-body space-y-4">
+        {% if p.deskripsi %}<p class="text-sm text-ink-2">{{ p.deskripsi|linebreaksbr }}</p>{% endif %}
+        <div class="space-y-3">
+          {% for label, v in p.nilai %}
+            <div><div class="flex justify-between text-sm"><span class="text-ink-2">{{ label }}</span><span class="font-semibold tabular-nums text-ink">{{ v }}</span></div>
+              <div class="progress mt-1 {% if v < lulus_min %}is-warning{% endif %}"><span style="width: {{ v }}%"></span></div></div>
+          {% endfor %}
+        </div>
+        <div class="flex items-center gap-3 border-t border-line pt-3"><span class="text-sm text-muted">Rata-rata</span><span class="text-xl font-semibold tabular-nums text-ink">{{ p.rata }}</span>
+          <span class="status-badge {% if p.lulus %}st-baik{% else %}st-kritis{% endif %}"><span class="dot" aria-hidden="true"></span>{{ p.predikat }}</span></div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="ub-title">
+      <div class="card-header"><h2 id="ub-title" class="card-title">Umpan balik guru</h2></div>
+      <dl class="card-body grid gap-4 text-sm sm:grid-cols-2">
+        <div><dt class="font-semibold text-ink">Kekuatan</dt><dd class="mt-1 text-ink-2">{{ p.kekuatan|default:"—"|linebreaksbr }}</dd></div>
+        <div><dt class="font-semibold text-ink">Yang perlu ditingkatkan</dt><dd class="mt-1 text-ink-2">{{ p.perlu_ditingkatkan|default:"—"|linebreaksbr }}</dd></div>
+        <div class="sm:col-span-2"><dt class="font-semibold text-ink">Catatan untuk orang tua</dt><dd class="mt-1 text-ink-2">{{ p.catatan|default:"—"|linebreaksbr }}</dd></div>
+        <div><dt class="font-semibold text-ink">Rekomendasi berikutnya</dt><dd class="mt-1 text-ink-2">{{ p.rekomendasi|default:"—" }}</dd></div>
+      </dl>
+    </section>
+  </div>
+
+  <aside class="space-y-4">
+    {% if p.status == "DIAJUKAN" %}
+      {% if perm.project_approve %}
+        <section class="card p-5" aria-labelledby="putus-title">
+          <h2 id="putus-title" class="text-sm font-semibold text-ink">Keputusan</h2>
+          {% if p.lulus %}
+            <form method="post" action="{% url 'akademik:setujui' p.pk %}" class="mt-3 space-y-3" data-confirm="Setujui final project {{ p.level }} {{ p.nama }}? Nomor sertifikat dibuat dan tidak bisa dipakai ulang.">{% csrf_token %}
+              {% if p.rekomendasi %}<label class="flex items-start gap-2 text-sm text-ink-2"><input type="checkbox" name="naik" value="1" class="check mt-0.5"><span>Sekaligus naikkan murid ke <strong>{{ p.rekomendasi }}</strong></span></label>{% endif %}
+              <button class="btn btn-primary w-full"><i class="ti ti-certificate" aria-hidden="true"></i>Setujui & buat sertifikat</button>
+            </form>
+          {% else %}
+            <p class="mt-2 text-sm text-danger-700">Rata-rata {{ p.rata }} di bawah batas lulus {{ lulus_min }} - tidak bisa disetujui.</p>
+          {% endif %}
+          <form method="post" action="{% url 'akademik:tolak' p.pk %}" class="mt-4 space-y-2 border-t border-line pt-4">{% csrf_token %}
+            <label for="alasan" class="field-label">Tolak dengan alasan</label>
+            <textarea id="alasan" name="alasan" rows="3" class="field" placeholder="mis. project belum selesai, perbaiki fitur skor" required></textarea>
+            <button class="btn btn-danger-soft w-full">Tolak</button>
+          </form>
+        </section>
+      {% else %}
+        <div class="callout callout-info"><i class="ti ti-hourglass" aria-hidden="true"></i><p class="text-sm">Menunggu persetujuan Manager atau Branch Admin.</p></div>
+      {% endif %}
+    {% endif %}
+    <section class="card p-5">
+      <h2 class="text-sm font-semibold text-ink">Ringkasan</h2>
+      <dl class="mt-2 text-sm">
+        <div class="stat-row"><dt>Murid</dt><dd><a class="link" href="{% url 'students:detail' p.std %}">{{ p.std }}</a></dd></div>
+        <div class="stat-row"><dt>Level</dt><dd class="font-semibold">{{ p.level }}</dd></div>
+        <div class="stat-row"><dt>Template sertifikat</dt><dd class="text-right">{% if template %}{{ template.judul }}{% else %}<span class="text-warning-700">belum tersedia</span>{% endif %}</dd></div>
+        {% if p.cert_no %}<div class="stat-row"><dt>Nomor sertifikat</dt><dd class="font-semibold tabular-nums">{{ p.cert_no }}</dd></div>{% endif %}
+        {% if p.aid %}<div class="stat-row"><dt>Catatan akademik</dt><dd class="tabular-nums">{{ p.aid }}</dd></div>{% endif %}
+      </dl>
+    </section>
+  </aside>
+</div>
+{% endblock %}

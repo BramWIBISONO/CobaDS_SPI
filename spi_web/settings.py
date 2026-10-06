@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "importer",
     "dashboards",
     "management",
+    "akademik",
 ]
 
 MIDDLEWARE = [
@@ -114,6 +115,7 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 
+CERT_TEMPLATE_DIR = Path(env("CERT_TEMPLATE_DIR", default=str(BASE_DIR / "sertif")))   # template sertifikat (bertanda tangan, tidak di Git)
 SPI_EXCEL_DIR = Path(env("SPI_EXCEL_DIR", default=str(BASE_DIR.parent / "APP")))   # reference workbooks (read-only)
 ENV_FILE = BASE_DIR / ".env"
 DEMO_ACCOUNTS = env.bool("DEMO_ACCOUNTS", default=False)     # akun demo per peran - hanya untuk dicoba di laptop (DEBUG)

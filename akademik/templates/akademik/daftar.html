@@ -1,0 +1,26 @@
+{% extends "base.html" %}{% load ui %}
+{% block title %}Final Project & Sertifikat{% endblock %}
+{% block content %}
+{% pageheader title="Final Project & Sertifikat" subtitle="Murid yang menyelesaikan level: diajukan guru/akademik, disetujui Manager/Admin, sertifikat & Student Report otomatis" icon="certificate" %}{% endpageheader %}
+
+<nav class="segmented mb-5" aria-label="Status">
+  {% for key, label, n in tabs %}<a href="?tab={{ key }}" {% if key == tab %}aria-current="page" class="is-active"{% endif %}>{{ label }} <span class="text-muted tabular-nums">{{ n }}</span></a>{% endfor %}
+</nav>
+
+{% if rows %}
+  <div class="table-wrap"><table class="data-table">
+    <thead><tr><th>Murid</th><th>Level</th><th>Project</th><th class="num">Rata-rata</th><th>Status</th><th>Sertifikat</th><th></th></tr></thead>
+    <tbody>{% for p in rows %}
+      <tr><td><span class="flex items-center gap-2.5"><span class="avatar avatar-sm {{ p.nama|avatar_tone }}" aria-hidden="true">{{ p.nama|initials }}</span>
+            <span><a href="{% url 'students:detail' p.std %}" class="link font-medium">{{ p.nama }}</a><span class="cell-sub">{{ p.std }} · {{ p.kode_kelas|default:"-" }}</span></span></span></td>
+        <td class="font-medium">{{ p.level }}</td><td>{{ p.judul|truncatechars:40 }}<span class="cell-sub">{{ p.tgl_selesai|date:"j M Y" }}</span></td>
+        <td class="num font-semibold">{{ p.rata }}</td>
+        <td><span class="status-badge {% if p.status == 'DISETUJUI' %}st-baik{% elif p.status == 'DITOLAK' %}st-kritis{% else %}st-perhatian{% endif %}"><span class="dot" aria-hidden="true"></span>{{ p.get_status_display }}</span></td>
+        <td class="tabular-nums">{{ p.cert_no|default:"—" }}</td>
+        <td class="text-right"><a href="{% url 'akademik:detail' p.pk %}" class="btn btn-secondary btn-sm">{% if p.status == "DIAJUKAN" and perm.project_approve %}Tinjau{% else %}Buka{% endif %}</a></td></tr>
+    {% endfor %}</tbody>
+  </table></div>
+{% else %}
+  {% include "components/empty_state.html" with icon="certificate" title="Belum ada final project di sini" text="Ajukan dari profil murid: tab Akademik → Final project selesai." %}
+{% endif %}
+{% endblock %}

@@ -167,6 +167,48 @@ def test_health_scores_are_explainable_and_skip_missing_data(jkt):
 
 
 @pytest.mark.django_db
+def test_decision_insights_include_period_matched_affected_records_and_respect_finance_permission(jkt, make_user):
+    for i in range(1, 5):
+        make_rows(
+            DBulan,
+            jkt,
+            {"key": f"M{i}|202608", "v1": f"M{i}", "bulan": D(2026, 8, 1), "status": "Aktif"},
+        )
+    DBulan.objects.filter(branch=jkt, key__in=["M1|202609", "M2|202609", "M3|202609"]).update(status="Off")
+    DBulan.objects.filter(branch=jkt, key="M4|202609").update(status="")
+
+    data = _data(jkt)
+    summary = health.ringkasan(data, D(2026, 9, 1))
+    items = health.keputusan(data, summary, {"management.view", "management.finance"})
+    off = next(item for item in items if item["metrik"] == "Off baru")
+    missing = next(item for item in items if item["metrik"] == "Hilang dari catatan")
+
+    assert off["kat"] == "Kritis"
+    assert off["ambang"] == "≥ 3 dan naik dari bulan lalu"
+    assert off["sebelum"] == 0 and off["nilai"] == 3
+    assert {record["detail"].split(" · ")[0] for record in off["records"]} == {
+        "STD-000001", "STD-000002", "STD-000003"
+    }
+    assert all(record["url"].endswith(f"/{record['detail'].split(' · ')[0]}/") for record in off["records"])
+    assert missing["records_total"] == 1
+    assert missing["records"][0]["detail"].startswith("STD-000004 ·")
+
+    restricted = health.keputusan(data, summary, {"management.view"})
+    unmatched = next(item for item in restricted if item["metrik"] == "Baris kas tak tertaut")
+    assert unmatched["records_restricted"] is True
+    assert unmatched["records"] == []
+
+    client = Client()
+    client.force_login(make_user("decision-center@spi.test", role="BRANCH_ADMIN", branch=jkt))
+    response = client.get(reverse("management:center"), {"periode": "2026-09"})
+    html = response.content.decode()
+    assert response.status_code == 200
+    assert "Record terdampak" in html
+    assert "Ani Lunas" in html and "Budi Sebagian" in html and "Citra Belum" in html
+    assert reverse("students:detail", args=["STD-000001"]) in html
+
+
+@pytest.mark.django_db
 def test_exports_are_logged_and_scoped(jkt, make_user):
     c = Client()
     c.force_login(make_user("ba2@spi.test", role="BRANCH_ADMIN", branch=jkt))

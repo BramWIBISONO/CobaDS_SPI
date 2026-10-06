@@ -42,3 +42,5 @@ Super Admin memiliki semua izin di semua cabang. Staff = CSO, Management = Manag
 | `management.view` | management | ✓ | ✓ | – | – | – | – |
 | `management.finance` | finance_control | ✓ | ✓ | – | ✓ | – | – |
 | `nota.issue` | finance_verify | ✓ | – | – | ✓ | – | – |
+| `project.submit` | academic_write | ✓ | ✓ | – | – | ✓ | – |
+| `project.approve` | management | ✓ | ✓ | – | – | – | – |

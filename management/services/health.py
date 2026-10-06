@@ -6,10 +6,13 @@ Ambang adalah pilihan manajemen awal (bukan dari Excel) dan ditampilkan di halam
 """
 from django.urls import reverse
 
-from dashboards.calc.base import label, same
+from dashboards.calc.base import label, period_code, same
 from dashboards.calc.operasional import kritis
 
+from students.services import is_open_followup
+
 from . import data_health, finance, lifecycle, operations
+from .lifecycle import AKTIF, TERDAFTAR
 
 STATUS = [(80, "Sehat", "st-baik"), (65, "Pantau", "st-perhatian"), (50, "Berisiko", "st-serius"), (0, "Kritis", "st-kritis")]
 BOBOT_BISNIS = {"student": 30, "financial": 30, "operational": 20, "data": 20}
@@ -119,74 +122,162 @@ def keputusan(data, r, perms):
     out = []
     upd = data.last_import.date if data.last_import else None
     cur, prev = r["cur"], r["prev"]
+    rows, i = r["rows"], r["i"]
+    current_letter = lambda row: row.huruf[i]
+    previous_letter = lambda row: row.huruf[i - 1] if i else None
 
-    def add(kat, isu, dampak, metrik, nilai, sebelum, tren, jumlah, aksi, url, modul, ambang="", sebab=""):
+    def murid_records(students, reason):
+        return [
+            {
+                "label": student.nama or student.std,
+                "detail": f"{student.std} · {reason(student)}",
+                "url": reverse("students:detail", args=[student.std]),
+            }
+            for student in students
+        ]
+
+    def add(kat, isu, dampak, metrik, nilai, sebelum, tren, jumlah, aksi, url, modul, ambang="", sebab="",
+            records=None, records_restricted=False):
         out.append({"kat": kat, "isu": isu, "dampak": dampak, "metrik": metrik, "nilai": nilai, "sebelum": sebelum, "tren": tren,
-                    "jumlah": jumlah, "aksi": aksi, "url": url, "modul": modul, "ambang": ambang, "sebab": sebab, "update": upd})
+                    "jumlah": jumlah, "aksi": aksi, "url": url, "modul": modul, "ambang": ambang, "sebab": sebab, "update": upd,
+                    "records": (records or [])[:5], "records_total": len(records or []), "records_restricted": records_restricted})
 
     lc = reverse("management:lifecycle")
     if same(data.setting("jurnal_agu", ""), "BELUM DIPUTUSKAN"):
         add("Perlu Keputusan", "Jurnal penerimaan Agustus 2026 belum diputuskan", "SPP Agustus 2026 tidak bisa dihitung, ditagih, maupun dibuatkan nota.",
             "Setting jurnal_agu", "BELUM DIPUTUSKAN", "", None, 1, "Putuskan versi jurnal yang dipakai (tersembunyi atau revisi).", "", "Pengaturan cabang",
-            sebab="Dua versi jurnal Agustus 2026 di buku kas.")
+            ambang="jurnal_agu = BELUM DIPUTUSKAN", sebab="Dua versi jurnal Agustus 2026 di buku kas.")
     n_kritis = kritis(data)
     if n_kritis:
+        issue_check = next((check for check in r["cek"] if check.key == "isu_kritis"), None)
         add("Kritis", f"{n_kritis} isu data kritis terbuka", "Angka laporan yang bergantung pada data ini bisa salah.", "ISSUE_UNIT CRITICAL",
-            n_kritis, "", None, n_kritis, "Tinjau isu kritis di Data Health.", reverse("management:data") + "#isu_kritis", "Data Health")
+            n_kritis, "", None, n_kritis, "Tinjau isu kritis di Data Health.", reverse("management:data") + "#isu_kritis", "Data Health",
+            ambang="lebih dari 0 isu CRITICAL terbuka", records=issue_check.terkena if issue_check else [])
     if prev and cur["off_baru"] and prev["off_baru"] is not None and cur["off_baru"] > prev["off_baru"] and cur["off_baru"] >= 3:
+        off_records = murid_records(
+            [row.murid for row in rows if previous_letter(row) in TERDAFTAR and current_letter(row) == "O"],
+            lambda student: f"baru OFF pada {cur['label']}",
+        )
         add("Kritis", f"Off baru naik: {cur['off_baru']} murid ({cur['label']})", "Risiko churn meningkat.", "Off baru",
             cur["off_baru"], prev["off_baru"], _tren(cur["off_baru"], prev["off_baru"], False), cur["off_baru"],
-            "Tinjau murid baru Off dan buka follow-up.", lc + "?status=O", "Student Lifecycle", sebab="Lihat alasan OFF per murid.")
+            "Tinjau murid baru Off dan buka follow-up.", lc + f"?dari={period_code(r['bulan'])}&sampai={period_code(r['bulan'])}&status=O",
+            "Student Lifecycle", ambang="≥ 3 dan naik dari bulan lalu", sebab="Lihat alasan OFF per murid.", records=off_records)
     elif cur["off_baru"]:
+        off_records = murid_records(
+            [row.murid for row in rows if previous_letter(row) in TERDAFTAR and current_letter(row) == "O"],
+            lambda student: f"baru OFF pada {cur['label']}",
+        )
         add("Perlu Follow-up", f"{cur['off_baru']} murid baru menjadi Off ({cur['label']})", "Murid yang baru Off paling mungkin diajak kembali.",
             "Off baru", cur["off_baru"], prev["off_baru"] if prev else None, _tren(cur["off_baru"], prev["off_baru"] if prev else None, False),
-            cur["off_baru"], "Hubungi orang tua & catat follow-up.", lc + "?status=O", "Student Lifecycle")
+            cur["off_baru"], "Hubungi orang tua & catat follow-up.",
+            lc + f"?dari={period_code(r['bulan'])}&sampai={period_code(r['bulan'])}&status=O",
+            "Student Lifecycle", ambang="lebih dari 0 murid baru OFF", records=off_records)
     if cur["hilang"]:
+        missing_records = murid_records(
+            [row.murid for row in rows if previous_letter(row) in TERDAFTAR and current_letter(row) not in (TERDAFTAR | {"O"})],
+            lambda student: f"tidak ada status terdaftar pada {cur['label']}",
+        )
         add("Data Issue", f"{cur['hilang']} murid hilang dari catatan status ({cur['label']})",
             "Bulan lalu aktif/cuti, bulan ini tanpa status - angka retensi tidak lengkap.", "Hilang dari catatan", cur["hilang"], "", None,
-            cur["hilang"], "Lengkapi status murid di matriks lifecycle.", lc + "?status=%3F", "Student Lifecycle")
+            cur["hilang"], "Lengkapi status murid di matriks lifecycle.",
+            lc + f"?dari={period_code(r['bulan'])}&sampai={period_code(r['bulan'])}&status=%3F",
+            "Student Lifecycle", ambang="lebih dari 0 murid basis tanpa status", records=missing_records)
     k = r["kas"]
     if "management.finance" in perms and not k["keputusan"] and not k["resmi"]:
         belum = k["hitung"][finance.BELUM] + k["hitung"][finance.SEBAGIAN]
         if belum:
+            unpaid = [
+                {"label": row.murid.nama or row.murid.std,
+                 "detail": f"{row.murid.std} · {row.status} · sisa Rp {int(row.sisa or 0):,}".replace(",", "."),
+                 "url": reverse("students:detail", args=[row.murid.std])}
+                for row in k["rows"] if row.status in (finance.BELUM, finance.SEBAGIAN)
+            ]
             add("Perlu Follow-up", f"{belum} murid aktif belum lunas SPP {k['label']}", "Pendapatan periode ini belum tertagih penuh.",
                 "Collection (estimasi)", f"{k['collection']}%" if k["collection"] is not None else "-", "", None, belum,
                 "Tinjau daftar risiko pembayaran dan kirim nota.", reverse("management:finance") + f"?periode={k['bulan']:%Y-%m}#risiko",
-                "Finance Control", ambang="≥ 95% sehat", sebab=" ".join(r["catatan_kas"]) or "Belum ada pembayaran tercatat di buku kas.")
+                "Finance Control", ambang="ada murid BELUM/SEBAGIAN; target collection ≥ 95%",
+                sebab=" ".join(r["catatan_kas"]) or "Belum ada pembayaran tercatat di buku kas.",
+                records=unpaid)
         if k["hitung"][finance.TANPA_HARGA]:
             n = k["hitung"][finance.TANPA_HARGA]
+            without_price = murid_records(
+                [row.murid for row in k["rows"] if row.status == finance.TANPA_HARGA],
+                lambda student: "harga SPP belum tercatat",
+            )
             add("Data Issue", f"{n} murid aktif tanpa harga SPP", "Tagihan & nota murid ini tidak bisa dihitung.", "Harga SPP kosong", n, "", None, n,
-                "Isi harga SPP di profil murid.", reverse("management:data") + "#murid_tanpa_harga", "Data Health")
+                "Isi harga SPP di profil murid.", reverse("management:data") + "#murid_tanpa_harga", "Data Health",
+                ambang="harga SPP kosong", records=without_price)
     if r["tak_tertaut"]["n"]:
+        unmatched_records = [
+            {"label": cash.row.lid, "detail": (cash.row.ket or "Keterangan kosong")[:110], "url": ""}
+            for cash in r["tak_tertaut"]["baris"]
+        ] if "management.finance" in perms else []
         add("Data Issue", f"{r['tak_tertaut']['n']} penerimaan SPP belum tertaut ke murid ({label(r['per_kas'])})",
             "Uang masuk tidak tercatat sebagai pembayaran murid mana pun.", "Baris kas tak tertaut", r["tak_tertaut"]["n"], "", None,
-            r["tak_tertaut"]["n"], "Isi 'Murid (koreksi)' pada baris buku kas.", reverse("management:data") + "#kas_tak_tertaut", "Data Health")
+            r["tak_tertaut"]["n"], "Isi 'Murid (koreksi)' pada baris buku kas.", reverse("management:data") + "#kas_tak_tertaut", "Data Health",
+            ambang="baris SPP dihitung YA tanpa Student ID tertaut",
+            records=unmatched_records, records_restricted="management.finance" not in perms)
     op = r["op"]
     if op["sesi"]["lampau_belum"]:
+        sessions = [
+            {"label": f"{session.kode or session.kelas or session.sid} · {session.tgl:%d/%m/%Y}",
+             "detail": f"{session.sid} · {session.guru or 'Guru belum diisi'}",
+             "url": reverse("classes:session", args=[session.sid])}
+            for session in op["sesi"]["lampau"]
+        ]
         add("Perlu Follow-up", f"{op['sesi']['lampau_belum']} sesi lampau belum dikonfirmasi", "Kehadiran & realisasi mengajar belum lengkap.",
             "Sesi SCHEDULED < hari ini", op["sesi"]["lampau_belum"], "", None, op["sesi"]["lampau_belum"], "Konfirmasi sesi dan isi absensi.",
-            reverse("classes:sessions") + "?tampilan=tertunda", "Sesi & Kehadiran")
+            reverse("classes:sessions") + "?tampilan=tertunda", "Sesi & Kehadiran", ambang="sesi terjadwal bertanggal lampau", records=sessions)
     if op["kelas"]["melebihi"]:
         n = len(op["kelas"]["melebihi"])
+        classes = [
+            {"label": cls.row.code, "detail": f"{cls.aktif} murid aktif · kapasitas {cls.kapasitas}",
+             "url": reverse("classes:detail", args=[cls.row.code])}
+            for cls in op["kelas"]["melebihi"]
+        ]
         add("Kritis", f"{n} kelas melebihi kapasitas", "Kualitas kelas & kepuasan orang tua terancam.", "Kelas OVER CAPACITY", n, "", None, n,
-            "Pecah kelas atau pindahkan murid.", reverse("management:operations") + "#kelas", "Operational Health")
+            "Pecah kelas atau pindahkan murid.", reverse("management:operations") + "#kelas", "Operational Health",
+            ambang="jumlah murid aktif melebihi kapasitas kelas", records=classes)
     kosong = op["kelas"]["kosong_terjadwal"]
     if kosong:
+        empty_classes = [
+            {"label": cls.row.code, "detail": f"{cls.row.program or '-'} · {cls.row.guru or 'Guru belum diisi'}",
+             "url": reverse("classes:detail", args=[cls.row.code])}
+            for cls in kosong
+        ]
         add("Perlu Keputusan", f"{len(kosong)} kelas masih terjadwal tanpa murid aktif", "Slot guru & ruang terpakai tanpa pendapatan.",
             "Kelas tanpa murid aktif + jadwal", len(kosong), "", None, len(kosong), "Tutup jadwal kelas atau isi dengan murid baru.",
-            reverse("management:operations") + "#kelas", "Operational Health")
+            reverse("management:operations") + "#kelas", "Operational Health",
+            ambang="jadwal aktif dengan 0 murid aktif", records=empty_classes)
     if op["followup"]["terlambat"]:
         n = op["followup"]["terlambat"]
+        followups = [
+            {"label": item.fid, "detail": f"{item.std or item.lead or 'Tanpa murid/lead'} · tenggat {item.next:%d/%m/%Y}",
+             "url": reverse("students:followup_detail", args=[item.fid])}
+            for item in data.followups if is_open_followup(item) and item.next and item.next <= data.today
+        ]
         add("Perlu Follow-up", f"{n} follow-up lewat tanggal", "Tindak lanjut ke orang tua tertunda.", "Follow-up terlambat", n, "", None, n,
-            "Kerjakan follow-up terlambat.", reverse("students:followups"), "Follow-up")
+            "Kerjakan follow-up terlambat.", reverse("students:followups"), "Follow-up",
+            ambang="tenggat pada atau sebelum hari ini", records=followups)
     if prev and cur["aktif"] > prev["aktif"]:
+        gained = murid_records(
+            [row.murid for row in rows if current_letter(row) in AKTIF and previous_letter(row) not in AKTIF],
+            lambda student: f"status aktif pada {cur['label']}",
+        )
         add("Positive Trend", f"Murid aktif naik menjadi {cur['aktif']}", "Basis pendapatan bertambah.", "Murid aktif", cur["aktif"], prev["aktif"],
-            _tren(cur["aktif"], prev["aktif"]), cur["aktif"] - prev["aktif"], "Pertahankan; pastikan kapasitas kelas cukup.", lc, "Student Lifecycle")
+            _tren(cur["aktif"], prev["aktif"]), cur["aktif"] - prev["aktif"], "Pertahankan; pastikan kapasitas kelas cukup.", lc, "Student Lifecycle",
+            ambang="lebih tinggi dari bulan lalu", records=gained)
     if prev and cur["rejoin"]:
+        rejoined = murid_records(
+            [row.murid for row in rows if current_letter(row) == "R"],
+            lambda student: f"rejoin pada {cur['label']}",
+        )
         add("Positive Trend", f"{cur['rejoin']} murid kembali (rejoin) {cur['label']}", "Reaktivasi berjalan.", "Rejoin", cur["rejoin"],
-            prev["rejoin"], _tren(cur["rejoin"], prev["rejoin"]), cur["rejoin"], "Catat apa yang membuat mereka kembali.", lc + "?status=R", "Student Lifecycle")
+            prev["rejoin"], _tren(cur["rejoin"], prev["rejoin"]), cur["rejoin"], "Catat apa yang membuat mereka kembali.",
+            lc + f"?dari={period_code(r['bulan'])}&sampai={period_code(r['bulan'])}&status=R",
+            "Student Lifecycle", ambang="lebih dari 0 murid rejoin", records=rejoined)
     urut = {"Kritis": 0, "Perlu Keputusan": 1, "Perlu Follow-up": 2, "Data Issue": 3, "Positive Trend": 4}
-    return sorted(out, key=lambda x: urut[x["kat"]])
+    return sorted(out, key=lambda x: (urut[x["kat"]], -(x["jumlah"] or 0), x["isu"]))
 
 
 KATEGORI_NADA = {"Kritis": "st-kritis", "Perlu Keputusan": "st-serius", "Perlu Follow-up": "st-perhatian", "Data Issue": "st-info",

@@ -40,6 +40,11 @@ seri, NOTA_LOG), **Operational Health**, **Data Health** (22 cek, tiap temuan bi
 siap cetak, ekspor Excel/CSV). Izin: `management.view` (Branch Admin, Manager), `management.finance` (+ Finance), `nota.issue` (Branch Admin,
 Finance). Rumus, sumber, ambang skor (usulan, perlu disahkan), dan batasan: `docs/MANAGEMENT_CENTER.md`, `docs/MANAGEMENT_LIFECYCLE.md`.
 
+Final project → sertifikat & Student Report (Okt 2026): murid yang selesai final project diajukan dari profil murid (tab Akademik),
+disetujui Manager / Admin, lalu nomor sertifikat (`SPI21-2026008`, lanjutan seri lama), sertifikat PDF/JPG dari template level
+(1.0, 1.1, 2.1, 2.2), Student Report siap cetak, dan catatan akademik dibuat otomatis. Template bertanda tangan disimpan di
+`sertif/` (tidak di Git). Lihat `docs/SERTIFIKAT_STUDENT_REPORT.md`.
+
 ## Dasbor (gelombang 1)
 
 - **Beranda** (`/`): situasi sekarang seperti HOME Excel (murid aktif, SPP bulan buku kas terakhir, OFF, kelas, masalah kritis,

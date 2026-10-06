@@ -39,7 +39,7 @@ def test_management_center_uses_branch_data_and_marks_empty_billing_unavailable(
     html = response.content.decode()
 
     assert response.status_code == 200
-    assert "Murid Jakarta" not in html
+    assert "Murid Jakarta" in html
     assert "Murid Cabang Lain" not in html
     assert "Kesehatan SPI" in html and "Yang membutuhkan perhatian" in html
     assert "Belum ada tagihan untuk periode ini" in html          # tanpa buku kas: tidak ada angka buatan

@@ -1,0 +1,84 @@
+{% extends "base.html" %}{% load static ui %}
+{% block title %}Student Report · {{ p.nama }} · {{ p.level }}{% endblock %}
+{% block content %}
+<div class="no-print mb-5 flex flex-wrap items-center justify-between gap-3">
+  <a href="{% url 'akademik:detail' p.pk %}" class="back-link"><i class="ti ti-chevron-left" aria-hidden="true"></i>Final project</a>
+  <div class="flex gap-2">
+    {% if p.ada_sertifikat %}<a href="{% url 'akademik:sertifikat' p.pk 'pdf' %}" class="btn btn-secondary"><i class="ti ti-certificate" aria-hidden="true"></i>Sertifikat PDF</a>{% endif %}
+    <button type="button" class="btn btn-primary" onclick="window.print()"><i class="ti ti-printer" aria-hidden="true"></i>Cetak / PDF</button>
+  </div>
+</div>
+{% if draft %}<div class="callout callout-warning no-print mb-5"><i class="ti ti-alert-triangle" aria-hidden="true"></i><p class="text-sm">Draf - final project belum disetujui. Report resmi tersedia setelah Manager / Admin menyetujui.</p></div>{% endif %}
+
+<article class="relative mx-auto max-w-[210mm] overflow-hidden rounded-2xl bg-surface p-6 shadow-sm ring-1 ring-line sm:p-10 print:max-w-none print:rounded-none print:p-0 print:shadow-none print:ring-0" aria-label="Student Report">
+  {% if draft %}<p class="pointer-events-none absolute inset-0 grid place-items-center text-[7rem] font-bold tracking-widest text-danger-600/10 -rotate-12 select-none" aria-hidden="true">DRAF</p>{% endif %}
+  <header class="flex flex-col gap-4 border-b-2 border-brand-900 pb-5 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex items-center gap-3"><img src="{% static 'img/spi-mark.png' %}" alt="" class="h-12 w-12">
+      <div><p class="text-lg font-bold tracking-tight text-brand-900">Sekolah Programming Indonesia</p><p class="text-xs text-muted">{{ kop }}</p></div></div>
+    <div class="sm:text-right"><p class="text-2xl font-bold tracking-tight text-brand-600">STUDENT REPORT</p>
+      <p class="text-sm text-ink-2">{{ p.level }}{% if p.cert_no %} · {{ p.cert_no }}{% endif %}</p></div>
+  </header>
+
+  <dl class="mt-6 grid gap-x-10 gap-y-2 text-sm sm:grid-cols-2">
+    <div class="flex justify-between gap-4 border-b border-line pb-1.5"><dt class="text-muted">Nama murid</dt><dd class="font-semibold text-ink">{{ s.nama }}</dd></div>
+    <div class="flex justify-between gap-4 border-b border-line pb-1.5"><dt class="text-muted">Student ID</dt><dd class="font-semibold tabular-nums text-ink">{{ s.std }}</dd></div>
+    <div class="flex justify-between gap-4 border-b border-line pb-1.5"><dt class="text-muted">Level diselesaikan</dt><dd class="font-semibold text-ink">{{ p.level }}</dd></div>
+    <div class="flex justify-between gap-4 border-b border-line pb-1.5"><dt class="text-muted">Kelas · Guru</dt><dd class="text-right font-semibold text-ink">{{ p.kode_kelas|default:"-" }} · {{ p.guru|default:"-" }}</dd></div>
+    <div class="flex justify-between gap-4 border-b border-line pb-1.5"><dt class="text-muted">Orang tua / wali</dt><dd class="font-semibold text-ink">{{ par.nama|default:"-" }}</dd></div>
+    <div class="flex justify-between gap-4 border-b border-line pb-1.5"><dt class="text-muted">Tanggal</dt><dd class="font-semibold tabular-nums text-ink">{{ p.cert_tgl|default:p.tgl_selesai|date:"j F Y" }}</dd></div>
+  </dl>
+
+  <section class="mt-8">
+    <h2 class="text-xs font-semibold uppercase tracking-[0.1em] text-brand-700">Final project</h2>
+    <p class="mt-1 text-lg font-semibold text-ink">{{ p.judul }}</p>
+    {% if p.deskripsi %}<p class="mt-1 text-sm text-ink-2">{{ p.deskripsi|linebreaksbr }}</p>{% endif %}
+    {% if p.link %}<p class="mt-1 break-all text-xs text-muted">{{ p.link }}</p>{% endif %}
+  </section>
+
+  <section class="mt-8">
+    <h2 class="text-xs font-semibold uppercase tracking-[0.1em] text-brand-700">Penilaian</h2>
+    <table class="mt-3 w-full text-sm">
+      <tbody>
+        {% for label, v in p.nilai %}
+          <tr class="border-b border-line"><td class="w-1/2 py-2 pr-4 text-ink-2">{{ label }}</td>
+            <td class="py-2"><span class="block h-2 overflow-hidden rounded-full bg-[#eaedf3]"><span class="block h-full rounded-full bg-brand-500 print:bg-brand-700" style="width: {{ v }}%"></span></span></td>
+            <td class="w-14 py-2 pl-3 text-right font-semibold tabular-nums text-ink">{{ v }}</td></tr>
+        {% endfor %}
+        <tr><td class="py-3 font-semibold text-ink">Nilai akhir</td><td class="py-3"><span class="font-semibold text-ink">{{ p.predikat }}</span></td>
+          <td class="py-3 pl-3 text-right text-lg font-bold tabular-nums text-brand-900">{{ p.rata }}</td></tr>
+      </tbody>
+    </table>
+    <p class="text-xs text-muted">Skala 0-100 · Sangat Baik ≥ 90 · Baik ≥ 80 · Cukup ≥ {{ lulus_min }}</p>
+  </section>
+
+  <section class="mt-8 grid gap-6 sm:grid-cols-2">
+    <div><h2 class="text-xs font-semibold uppercase tracking-[0.1em] text-brand-700">Kekuatan</h2><p class="mt-1 text-sm text-ink">{{ p.kekuatan|default:"-"|linebreaksbr }}</p></div>
+    <div><h2 class="text-xs font-semibold uppercase tracking-[0.1em] text-brand-700">Yang perlu ditingkatkan</h2><p class="mt-1 text-sm text-ink">{{ p.perlu_ditingkatkan|default:"-"|linebreaksbr }}</p></div>
+  </section>
+
+  <section class="mt-6">
+    <h2 class="text-xs font-semibold uppercase tracking-[0.1em] text-brand-700">Catatan guru untuk orang tua</h2>
+    <p class="mt-1 text-sm text-ink">{{ p.catatan|default:"-"|linebreaksbr }}</p>
+  </section>
+
+  <section class="mt-8 grid gap-6 sm:grid-cols-2">
+    <div><h2 class="text-xs font-semibold uppercase tracking-[0.1em] text-brand-700">Kehadiran</h2>
+      {% if hadir.total %}<p class="mt-1 text-sm text-ink"><span class="text-xl font-bold tabular-nums">{{ hadir.pct }}%</span> hadir ({{ hadir.hadir }} dari {{ hadir.total }} sesi tercatat)</p>
+      {% else %}<p class="mt-1 text-sm text-muted">Belum ada catatan kehadiran di aplikasi.</p>{% endif %}</div>
+    <div><h2 class="text-xs font-semibold uppercase tracking-[0.1em] text-brand-700">Rekomendasi</h2>
+      <p class="mt-1 text-sm text-ink">{% if p.rekomendasi %}Lanjut ke <strong>{{ p.rekomendasi }}</strong>{% else %}-{% endif %}</p></div>
+  </section>
+
+  {% if perjalanan|length > 1 %}
+  <section class="mt-8">
+    <h2 class="text-xs font-semibold uppercase tracking-[0.1em] text-brand-700">Perjalanan level di SPI</h2>
+    <ol class="mt-2 flex flex-wrap gap-2 text-xs">{% for x in perjalanan %}<li class="rounded-full border border-line px-3 py-1"><span class="font-semibold text-ink">{{ x.level }}</span> · {{ x.cert_no }} · {{ x.cert_tgl|date:"M Y" }}</li>{% endfor %}</ol>
+  </section>
+  {% endif %}
+
+  <footer class="mt-12 grid grid-cols-2 gap-10 text-center text-sm">
+    <div><div class="mx-auto h-14"></div><p class="border-t border-muted pt-2 font-semibold text-ink">{{ p.guru|default:"Guru" }}</p><p class="text-xs text-muted">Guru kelas</p></div>
+    <div><div class="mx-auto h-14"></div><p class="border-t border-muted pt-2 font-semibold text-ink">{{ p.diputuskan_oleh.display_name|default:"Manager / Admin" }}</p><p class="text-xs text-muted">Disetujui {{ p.diputuskan_pada|date:"j F Y"|default:"-" }}</p></div>
+  </footer>
+</article>
+{% endblock %}

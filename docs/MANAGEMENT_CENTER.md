@@ -50,7 +50,10 @@ ditampilkan di halaman Business Health. **Ambang & bobot ini usulan awal, bukan 
 ## Yang membutuhkan perhatian (decision support)
 
 `health.keputusan()` hanya memunculkan item bila datanya nyata: kategori Kritis / Perlu Keputusan / Perlu Follow-up / Data Issue / Positive Trend,
-masing-masing dengan isu, dampak, metrik, nilai sekarang & sebelumnya, tren, jumlah terkena, kemungkinan sebab, tindakan, tautan, dan sumber.
+masing-masing dengan isu, dampak, metrik, nilai sekarang & sebelumnya, tren, jumlah terkena, ambang, kemungkinan sebab, tindakan, tautan, dan sumber.
+Temuan murid dihitung dari transisi status untuk periode terpilih yang sama dengan metrik lifecycle; record yang terpengaruh ditautkan langsung ke profil.
+Daftar record ditampilkan maksimal lima per temuan, tetapi jumlah terdampak tetap menunjukkan totalnya. Keputusan diurutkan berdasarkan kategori
+prioritas lalu jumlah terdampak terbesar. Rincian baris penerimaan yang belum tertaut hanya ditampilkan kepada pengguna berizin `management.finance`.
 
 ## Batasan
 

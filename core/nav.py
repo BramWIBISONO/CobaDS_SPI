@@ -26,7 +26,8 @@ NAV = (
     ("Akademik", (("Kelas", "classes:list", ("class.view",), "school"),
                   ("Guru", "masterdata:teachers", ("teacher.view",), "user-star"),
                   ("Sesi & Kehadiran", "classes:sessions", ("session.view",), "calendar-event"),
-                  ("Akademik", "students:academic", ("student.view",), "book"))),
+                  ("Akademik", "students:academic", ("student.view",), "book"),
+                  ("Final Project & Sertifikat", "akademik:list", ("student.view",), "certificate"))),
     ("Keuangan", (("SPP & Keuangan", "finance:home", ("finance.view",), "cash"),)),
     ("Laporan", (("Laporan Murid & SPP", "dashboards:laporan", ("report.view",), "chart-bar"),
                  ("Pusat Laporan", "dashboards:reports", ("report.view",), "report-analytics"))),
@@ -53,6 +54,12 @@ def nav_badges(request, perms):
         n = sum(1 for fu in FollowUp.objects.for_branch(branch).only("status", "next") if is_open_followup(fu) and fu.next and fu.next <= today)
         if n:
             out["students:followups"] = n
+    if "project.approve" in perms:
+        from akademik.models import FinalProject
+
+        n = FinalProject.objects.filter(branch=branch, status=FinalProject.DIAJUKAN).count()
+        if n:
+            out["akademik:list"] = n
     if "session.view" in perms:
         from classes.models import Sesi
 

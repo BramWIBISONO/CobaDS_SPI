@@ -1,0 +1,75 @@
+{% extends "base.html" %}{% load ui %}
+{% block title %}Final project · {{ s.nama }}{% endblock %}
+{% block content %}
+{% pageheader title="Final project selesai" subtitle="Ajukan untuk disetujui Manager / Admin - sertifikat & Student Report dibuat otomatis setelah disetujui" icon="certificate" %}{% endpageheader %}
+
+<div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem]">
+<form method="post" class="space-y-5" novalidate
+      x-data="{ isi: [], baca() { this.isi = [...this.$el.querySelectorAll('[data-nilai]')].map(i => i.value.trim() === '' ? NaN : Number(i.value)).filter(v => !isNaN(v) && v >= 0 && v <= 100); },
+                get rata() { return this.isi.length === 4 ? Math.round(this.isi.reduce((a, b) => a + b, 0) / 4 * 10) / 10 : null; },
+                get predikat() { const r = this.rata; return r === null ? '' : r >= 90 ? 'Sangat Baik' : r >= 80 ? 'Baik' : r >= {{ lulus_min }} ? 'Cukup' : 'Perlu bimbingan'; } }"
+      x-init="baca()" @input="baca()">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="callout callout-danger" role="alert"><i class="ti ti-alert-circle" aria-hidden="true"></i><div>{% for e in form.non_field_errors %}<p>{{ e }}</p>{% endfor %}</div></div>{% endif %}
+
+  <section class="form-section">
+    <h2 class="t-section mb-4">1 · Project</h2>
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div class="sm:col-span-2">{% include "components/field.html" with field=form.judul %}</div>
+      {% include "components/field.html" with field=form.tgl_selesai %}
+      {% include "components/field.html" with field=form.link %}
+      <div class="sm:col-span-2">{% include "components/field.html" with field=form.deskripsi %}</div>
+    </div>
+  </section>
+
+  <section class="form-section">
+    <div class="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+      <h2 class="t-section">2 · Nilai rubrik (0-100)</h2>
+      <p class="text-sm text-muted">Lulus bila rata-rata ≥ {{ lulus_min }}</p>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2">{% for f in rubrik %}{% include "components/field.html" with field=f %}{% endfor %}</div>
+    <div class="mt-4 flex flex-wrap items-center gap-4 rounded-xl bg-subtle px-4 py-3" aria-live="polite">
+      <div><p class="text-xs text-muted">Rata-rata</p><p class="text-2xl font-semibold tabular-nums text-ink" x-text="rata === null ? '—' : rata.toLocaleString('id-ID')">—</p></div>
+      <span class="status-badge" :class="rata === null ? 'st-netral' : rata >= {{ lulus_min }} ? 'st-baik' : 'st-kritis'"><span class="dot" aria-hidden="true"></span><span x-text="predikat || 'isi 4 nilai'">isi 4 nilai</span></span>
+      <p class="text-xs text-muted" x-show="rata !== null && rata < {{ lulus_min }}" x-cloak>Di bawah batas lulus - Manager / Admin tidak bisa menyetujui.</p>
+    </div>
+  </section>
+
+  <section class="form-section">
+    <h2 class="t-section mb-4">3 · Umpan balik untuk Student Report</h2>
+    <div class="grid gap-4 sm:grid-cols-2">
+      {% include "components/field.html" with field=form.kekuatan %}
+      {% include "components/field.html" with field=form.perlu_ditingkatkan %}
+      <div class="sm:col-span-2">{% include "components/field.html" with field=form.catatan %}</div>
+      {% include "components/field.html" with field=form.rekomendasi %}
+    </div>
+  </section>
+
+  <div class="form-actions">
+    <button class="btn btn-primary"><i class="ti ti-send" aria-hidden="true"></i>Ajukan untuk persetujuan</button>
+    <a href="{% url 'students:detail' s.std %}" class="btn btn-ghost">Batal</a>
+  </div>
+</form>
+
+<aside class="space-y-4">
+  <div class="card p-5">
+    <div class="flex items-center gap-3"><span class="avatar avatar-lg {{ s.nama|avatar_tone }}" aria-hidden="true">{{ s.nama|initials }}</span>
+      <div class="min-w-0"><p class="truncate font-semibold text-ink">{{ s.nama }}</p><p class="text-xs text-muted">{{ s.std }}</p></div></div>
+    <dl class="mt-4 text-sm">
+      <div class="stat-row"><dt>Level yang diselesaikan</dt><dd class="font-semibold">{{ level|default:"—" }}</dd></div>
+      <div class="stat-row"><dt>Kelas</dt><dd>{{ s.kode_in|default:s.kode_read|default:"—" }}</dd></div>
+      <div class="stat-row"><dt>Guru</dt><dd>{{ s.guru_in|default:s.guru|default:"—" }}</dd></div>
+    </dl>
+  </div>
+  <div class="card p-5">
+    <h2 class="text-sm font-semibold text-ink">Setelah disetujui</h2>
+    <ol class="mt-2 space-y-2 text-[0.8125rem] text-ink-2">
+      <li class="flex gap-2"><i class="ti ti-hash mt-0.5 text-brand-600" aria-hidden="true"></i><span>Nomor sertifikat dibuat (lanjutan nomor SPI level ini)</span></li>
+      <li class="flex gap-2"><i class="ti ti-certificate mt-0.5 text-brand-600" aria-hidden="true"></i><span>{% if template %}Sertifikat dibuat dari template <strong>{{ template.judul }}</strong> (PDF & JPG){% else %}Template sertifikat level ini belum tersedia - nomor tetap tercatat, file dibuat saat template ditambahkan{% endif %}</span></li>
+      <li class="flex gap-2"><i class="ti ti-file-description mt-0.5 text-brand-600" aria-hidden="true"></i><span>Student Report siap cetak untuk orang tua</span></li>
+      <li class="flex gap-2"><i class="ti ti-history mt-0.5 text-brand-600" aria-hidden="true"></i><span>Tercatat di riwayat akademik & Audit Log</span></li>
+    </ol>
+  </div>
+</aside>
+</div>
+{% endblock %}

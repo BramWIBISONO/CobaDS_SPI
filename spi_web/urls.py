@@ -10,4 +10,5 @@ urlpatterns = [
     path("impor/", include("importer.urls")),
     path("cabang/", include("branches.urls")),
     path("manajemen/", include("management.urls")),
+    path("akademik/", include("akademik.urls")),
 ]

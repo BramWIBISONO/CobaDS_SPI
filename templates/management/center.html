@@ -65,7 +65,7 @@
   {% if cabang %}
   <section aria-labelledby="cabang-title">
     <h2 id="cabang-title" class="mb-3 font-semibold text-ink">Cabang mana yang sehat</h2>
-    <div class="table-wrap"><table class="data-table">
+    <div class="table-wrap min-w-0 max-w-full"><table class="data-table">
       <thead><tr><th>Cabang</th><th class="num">Business</th><th class="num">Student</th><th class="num">Financial</th><th class="num">Operational</th><th class="num">Data</th><th class="num">Murid aktif</th></tr></thead>
       <tbody>{% for c in cabang %}<tr><td class="font-medium">{{ c.b.name }}<span class="cell-sub">{{ c.b.code }}</span></td>
         {% if c.kosong %}<td colspan="6" class="text-muted">Belum ada data murid.</td>{% else %}

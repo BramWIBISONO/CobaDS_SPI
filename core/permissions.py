@@ -44,6 +44,8 @@ PERMISSIONS = {
     "management.view": Cap.MANAGEMENT,           # Management Center, Business/Operational/Data Health, Lifecycle, laporan manajemen
     "management.finance": Cap.FINANCE_CONTROL,   # Finance Control, pratinjau & cetak Nota SPP
     "nota.issue": Cap.FINANCE_VERIFY,            # terbitkan nomor Nota SPP (NOTA_LOG)
+    "project.submit": Cap.ACADEMIC_WRITE,        # ajukan final project murid (nilai rubrik, umpan balik)
+    "project.approve": Cap.MANAGEMENT,           # setujui / tolak final project -> sertifikat & Student Report otomatis
 }
 
 
