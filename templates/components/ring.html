@@ -1,0 +1,10 @@
+{% load l10n %}{% comment %}Cincin progres: pct (0-100 atau kosong), size px (bawaan 64), color (warna CSS), label (teks di tengah; bawaan pct%).{% endcomment %}{% localize off %}
+{% with s=size|default:64 c=color|default:"#176df8" %}
+<span class="pring" style="width: {{ s }}px; height: {{ s }}px" role="img" aria-label="{{ aria|default:"Progres" }} {% if pct is not None and pct != '' %}{{ pct }}%{% else %}tidak ada data{% endif %}">
+  <svg width="{{ s }}" height="{{ s }}" viewBox="0 0 36 36" aria-hidden="true">
+    <circle cx="18" cy="18" r="15.5" fill="none" stroke="#e7ecf7" stroke-width="4"/>
+    {% if pct is not None and pct != "" %}<circle cx="18" cy="18" r="15.5" fill="none" stroke="{{ c }}" stroke-width="4" stroke-linecap="round" pathLength="100" stroke-dasharray="{{ pct }} 100"/>{% endif %}
+  </svg>
+  <span class="pring-label" aria-hidden="true">{% if pct is not None and pct != "" %}{{ pct }}%{% else %}—{% endif %}</span>
+</span>
+{% endwith %}{% endlocalize %}

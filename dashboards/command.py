@@ -37,6 +37,16 @@ def _status_counts(data):
     return Counter(fold(v) for v in semua_status_sekarang(data).values())
 
 
+def _week_strip(branch, today):
+    """Senin-Minggu minggu ini dengan jumlah sesi per hari (widget kalender di Beranda)."""
+    from classes.models import Sesi
+
+    monday = today - datetime.timedelta(days=today.weekday())
+    counts = Counter(Sesi.objects.for_branch(branch).filter(tgl__range=(monday, monday + datetime.timedelta(days=6)))
+                     .values_list("tgl", flat=True))
+    return [{"date": d, "count": counts[d], "is_today": d == today} for d in (monday + datetime.timedelta(days=i) for i in range(7))]
+
+
 def _today_sessions(branch, today, now_time):
     from classes.models import Kehadiran, Sesi
 
@@ -202,4 +212,5 @@ def command_center(request, data, h, perms):
         "finance": _finance(data) if "finance.view" in perms else None,
         "activity": _activity(branch, "audit.view" in perms),
         "followups": fus,
+        "week": _week_strip(branch, today) if "session.view" in perms else [],
     }

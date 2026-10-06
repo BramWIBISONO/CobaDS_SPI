@@ -1,4 +1,6 @@
+@layer theme, base, components, refresh, utilities;
 @import "tailwindcss";
+@import "./refresh.css";
 @source "../templates";
 @source "../core/templates";
 @source "../accounts/templates";
@@ -45,9 +47,13 @@
   --color-accent-50: #fff8e0;
   --color-accent-400: #ffc928;
   --color-accent-700: #8a6100;
+  --color-violet-50: #f2f0ff;
+  --color-violet-100: #e5e1ff;
+  --color-violet-500: #6d5df2;
+  --color-violet-700: #4a3cc0;
 
   /* Netral (satu keluarga abu-abu dingin) */
-  --color-canvas: #f4f6fa;
+  --color-canvas: #eef2fb;
   --color-surface: #ffffff;
   --color-subtle: #f8f9fc;
   --color-line: #e7eaf1;
@@ -81,15 +87,17 @@
   /* Radius: makin dalam makin kecil */
   --radius-sm: 6px;
   --radius-md: 8px;
-  --radius-lg: 10px;
-  --radius-xl: 14px;
-  --radius-2xl: 18px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 22px;
+  --radius-3xl: 28px;
 
   /* Bayangan: sangat lembut, diwarnai navy */
-  --shadow-xs: 0 1px 2px rgb(15 26 51 / 0.05);
-  --shadow-sm: 0 1px 2px rgb(15 26 51 / 0.04), 0 1px 3px rgb(15 26 51 / 0.05);
-  --shadow-md: 0 2px 4px -2px rgb(15 26 51 / 0.05), 0 6px 16px -4px rgb(15 26 51 / 0.08);
-  --shadow-lg: 0 4px 8px -4px rgb(15 26 51 / 0.06), 0 18px 40px -12px rgb(15 26 51 / 0.18);
+  --shadow-xs: 0 1px 2px rgb(28 52 120 / 0.05);
+  --shadow-sm: 0 1px 2px rgb(28 52 120 / 0.04), 0 6px 18px -8px rgb(28 52 120 / 0.12);
+  --shadow-md: 0 2px 6px -2px rgb(28 52 120 / 0.06), 0 14px 32px -12px rgb(28 52 120 / 0.20);
+  --shadow-lg: 0 6px 12px -6px rgb(28 52 120 / 0.08), 0 28px 56px -18px rgb(28 52 120 / 0.28);
+  --shadow-brand: 0 10px 22px -10px rgb(23 109 248 / 0.65);
 
   --ease-out: cubic-bezier(0.22, 0.8, 0.24, 1);
 }
@@ -510,6 +518,7 @@
   .scrollbar-none { scrollbar-width: none; }
   .scrollbar-none::-webkit-scrollbar { display: none; }
 }
+
 
 @keyframes skeleton { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
 @keyframes toast-in { from { opacity: 0; transform: translateY(6px) scale(0.98); } to { opacity: 1; transform: none; } }

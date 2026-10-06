@@ -3,21 +3,24 @@
 {% block content %}
 {% url 'dashboards:laporan' as laporan_url %}
 
-{# 1. Konteks halaman #}
-<section class="mb-7 flex flex-wrap items-end justify-between gap-4">
-  <div class="min-w-0">
-    <p class="t-meta flex flex-wrap items-center gap-x-2 gap-y-1">
-      <span class="inline-flex items-center gap-1.5"><i class="ti ti-calendar" aria-hidden="true"></i>{{ cc.now|date:"l, j F Y" }}</span>
-      <span class="text-faint" aria-hidden="true">·</span>
-      <span class="inline-flex items-center gap-1.5"><i class="ti ti-building" aria-hidden="true"></i>{{ current_branch.name }}{% if current_branch.city %}, {{ current_branch.city }}{% endif %}</span>
-    </p>
-    <h1 class="t-page mt-2">{{ cc.greeting }}{% if cc.first_name %}, {{ cc.first_name }}{% endif %}</h1>
-    <p class="page-sub">{{ cc.facts|join:" · "|capfirst }}.</p>
-  </div>
-  <div class="page-actions">
-    {% if cc.sessions_url %}<a href="{{ cc.sessions_url }}" class="btn btn-secondary"><i class="ti ti-calendar-event" aria-hidden="true"></i>Kalender sesi</a>{% endif %}
-    <a href="{{ laporan_url }}" class="btn btn-secondary"><i class="ti ti-chart-bar" aria-hidden="true"></i>Laporan</a>
-    {% if perm.student_create %}<a href="{% url 'students:create' %}" class="btn btn-primary"><i class="ti ti-user-plus" aria-hidden="true"></i>Murid baru</a>{% endif %}
+{# 1. Konteks halaman: banner sapaan #}
+<section class="hero mb-6">
+  <div class="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
+    <div class="min-w-0">
+      <div class="flex flex-wrap gap-2">
+        <span class="hero-chip"><i class="ti ti-calendar" aria-hidden="true"></i>{{ cc.now|date:"l, j F Y" }}</span>
+        <span class="hero-chip"><i class="ti ti-building" aria-hidden="true"></i>{{ current_branch.name }}{% if current_branch.city %}, {{ current_branch.city }}{% endif %}</span>
+      </div>
+      <h1 class="mt-4 text-[1.75rem] font-semibold leading-tight tracking-[-0.025em] text-white sm:text-[2.125rem]">{{ cc.greeting }}{% if cc.first_name %}, {{ cc.first_name }}{% endif %}</h1>
+      <p class="mt-2 max-w-xl text-[0.9375rem] text-white">{{ cc.facts|join:" · "|capfirst }}.</p>
+      <div class="mt-6 flex flex-wrap gap-2">
+        {% if cc.actions %}<a href="#aksi-title" class="btn btn-light"><i class="ti ti-checklist" aria-hidden="true"></i>Lihat {{ cc.actions|length }} tindakan</a>{% endif %}
+        {% if cc.sessions_url %}<a href="{{ cc.sessions_url }}" class="btn btn-glass"><i class="ti ti-calendar-event" aria-hidden="true"></i>Kalender sesi</a>{% endif %}
+        <a href="{{ laporan_url }}" class="btn btn-glass"><i class="ti ti-chart-bar" aria-hidden="true"></i>Laporan</a>
+        {% if perm.student_create %}<a href="{% url 'students:create' %}" class="btn btn-glass"><i class="ti ti-user-plus" aria-hidden="true"></i>Murid baru</a>{% endif %}
+      </div>
+    </div>
+    <div class="hidden lg:block">{% include "components/illustration.html" with cls="h-auto w-full drop-shadow-sm" %}</div>
   </div>
 </section>
 
@@ -62,6 +65,17 @@
         <p class="card-sub">{% if cc.today_total %}{{ cc.today_total }} sesi · {{ cc.today_done }} dikonfirmasi{% if cc.today_late %} · {{ cc.today_late }} menunggu absensi{% endif %}{% else %}Belum ada sesi terjadwal{% endif %}</p></div>
       {% if cc.sessions_url %}<a href="{{ cc.sessions_url }}?tampilan=hari" class="btn btn-ghost btn-sm">Kalender<i class="ti ti-arrow-right" aria-hidden="true"></i></a>{% endif %}
     </div>
+    {% if cc.week %}
+    <div class="border-b border-[#eef1f7] px-4 py-3 sm:px-5">
+      <div class="week-strip" role="list" aria-label="Sesi minggu ini">
+        {% for d in cc.week %}
+          <a role="listitem" href="{{ cc.sessions_url }}?tampilan=hari&tanggal={{ d.date|date:'Y-m-d' }}" class="week-day {% if d.is_today %}is-today{% endif %}" {% if d.is_today %}aria-current="date"{% endif %}
+             aria-label="{{ d.date|date:'l j F' }}: {{ d.count }} sesi">
+            <span class="dow">{{ d.date|date:"D" }}</span><span class="dom">{{ d.date|date:"j" }}</span><span class="cnt">{% if d.count %}{{ d.count }}{% endif %}</span></a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
     <div class="flex-1 px-2 py-2 sm:px-3">
       {% if cc.today_sessions %}
         <ul>
@@ -87,21 +101,21 @@
   </section>
 </div>
 
-{# 4. Angka kunci #}
+{# 4. Angka kunci (warna per makna) #}
 <h2 class="sr-only">Angka kunci</h2>
 <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-  {% include "components/kpi_card.html" with icon="users" label="Murid aktif (sekarang)" value=h.aktif|angka sub=h.sub_aktif href=laporan_url link_text="Laporan murid" %}
+  {% include "components/tile.html" with tone="blue" icon="users" label="Murid aktif (sekarang)" value=h.aktif|angka sub=h.sub_aktif href=laporan_url link_text="Laporan murid" %}
   {% if cc.sessions_url %}
-    {% include "components/kpi_card.html" with icon="calendar-event" label="Sesi hari ini" value=cc.today_total|angka sub=cc.kpi.sessions_sub href=cc.sessions_url link_text="Buka kalender" %}
+    {% include "components/tile.html" with tone="violet" icon="calendar-event" label="Sesi hari ini" value=cc.today_total|angka sub=cc.kpi.sessions_sub href=cc.sessions_url link_text="Buka kalender" %}
   {% else %}
-    {% include "components/kpi_card.html" with icon="school" label="Kelas aktif" value=h.kelas|angka sub=h.sub_kelas %}
+    {% include "components/tile.html" with tone="violet" icon="school" label="Kelas aktif" value=h.kelas|angka sub=h.sub_kelas %}
   {% endif %}
   {% if cc.attendance %}
-    {% include "components/kpi_card.html" with icon="user-check" label="Kehadiran 30 hari" value=cc.kpi.att_value sub=cc.kpi.att_sub %}
+    {% include "components/tile.html" with tone="green" icon="user-check" label="Kehadiran 30 hari" value=cc.kpi.att_value sub=cc.kpi.att_sub %}
   {% else %}
-    {% include "components/kpi_card.html" with icon="user-off" label="Murid OFF" value=h.off|angka sub=h.sub_off %}
+    {% include "components/tile.html" with tone="rose" icon="user-off" label="Murid OFF" value=h.off|angka sub=h.sub_off %}
   {% endif %}
-  {% include "components/kpi_card.html" with icon="cash" label=spp_label value=h.spp|rp sub=h.sub_spp href=laporan_url link_text="Laporan SPP" %}
+  {% include "components/tile.html" with tone="amber" icon="cash" label=spp_label value=h.spp|rp sub=h.sub_spp href=laporan_url link_text="Laporan SPP" %}
 </div>
 
 <div class="mt-5 grid gap-5 lg:grid-cols-12">
@@ -130,8 +144,11 @@
         <p class="mt-3 text-xs text-muted">{{ h.sub_off }}</p>
       </div>
       <div>
-        <p class="t-meta">Kelas aktif</p>
-        <p class="mt-1 text-2xl font-semibold tracking-[-0.02em] text-ink tabular-nums">{{ cc.kelas.aktif|angka }} <span class="text-sm font-normal text-muted">kelas</span></p>
+        <div class="flex items-center gap-4">
+          {% include "components/ring.html" with pct=cc.kelas.filled|pct_of:cc.kelas.seats size=64 color="#6d5df2" aria="Keterisian kursi" %}
+          <div><p class="t-meta">Kelas aktif</p>
+            <p class="mt-1 text-2xl font-semibold tracking-[-0.02em] text-ink tabular-nums">{{ cc.kelas.aktif|angka }} <span class="text-sm font-normal text-muted">kelas</span></p></div>
+        </div>
         {% with k=cc.kelas %}
         <div class="mt-3">
           <div class="flex items-center justify-between text-xs text-muted"><span>Keterisian kursi</span><span class="tabular-nums">{{ k.filled|angka }} / {{ k.seats|angka }}</span></div>

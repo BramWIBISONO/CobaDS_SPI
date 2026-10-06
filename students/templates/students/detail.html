@@ -6,10 +6,11 @@
 
 {# Header profil: identitas, status, konteks, aksi cepat #}
 <section class="card mb-6 overflow-hidden">
-  <div class="flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-start lg:justify-between">
-    <div class="flex min-w-0 items-start gap-4 sm:gap-5">
-      <span class="avatar avatar-xl {{ s.nama|avatar_tone }}" aria-hidden="true">{{ s.nama|initials }}</span>
-      <div class="min-w-0">
+  <div class="cover" aria-hidden="true"></div>
+  <div class="flex flex-col gap-4 px-5 pb-5 sm:px-6 sm:pb-6 lg:flex-row lg:items-start lg:justify-between">
+    <div class="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:gap-5">
+      <span class="avatar avatar-xl relative -mt-11 ring-4 ring-surface {{ s.nama|avatar_tone }}" style="width: 5.5rem; height: 5.5rem" aria-hidden="true">{{ s.nama|initials }}</span>
+      <div class="min-w-0 sm:pt-4">
         <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5">
           <h1 class="t-page break-words">{{ s.nama|default:s.std }}</h1>
           {% include "components/status_badge.html" with status=status %}
@@ -25,7 +26,7 @@
         </ul>
       </div>
     </div>
-    <div class="flex flex-wrap gap-2 lg:justify-end">
+    <div class="flex flex-wrap gap-2 lg:justify-end lg:pt-4">
       {% if perm.followup_manage %}<a href="{% url 'students:followup_create' %}?std={{ s.std }}" class="btn btn-primary"><i class="ti ti-phone-plus" aria-hidden="true"></i>Follow-up</a>{% endif %}
       {% if perm.student_status %}<a href="{% url 'students:status' s.std %}" class="btn btn-secondary"><i class="ti ti-activity" aria-hidden="true"></i>Ubah status</a>{% endif %}
       {% if perm.student_edit %}

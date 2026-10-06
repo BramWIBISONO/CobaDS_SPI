@@ -11,22 +11,23 @@
 </head>
 <body class="min-h-full bg-canvas">
 <div class="grid min-h-dvh lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
-  <aside class="relative hidden flex-col justify-between overflow-hidden bg-brand-900 p-10 text-white lg:flex xl:p-14">
-    <img src="{% static 'img/spi-mark.png' %}" alt="" class="pointer-events-none absolute -bottom-24 -right-24 w-[26rem] opacity-[0.07]">
+  <aside class="relative m-3 hidden flex-col justify-between overflow-hidden rounded-[28px] p-10 text-white shadow-md lg:flex xl:p-12" style="background: linear-gradient(140deg, #0b2f8a 0%, #1366ec 45%, #6a55ea 100%)">
+    <img src="{% static 'img/spi-mark.png' %}" alt="" class="pointer-events-none absolute -right-24 -top-24 w-[22rem] opacity-[0.08]">
     <div class="flex items-center gap-3">
       <img src="{% static 'img/spi-mark.png' %}" alt="" class="h-9 w-9">
-      <div class="leading-tight"><p class="font-semibold">SPI Super App</p><p class="text-xs text-white/60">Sekolah Programming Indonesia</p></div>
+      <div class="leading-tight"><p class="font-semibold">SPI Super App</p><p class="text-xs text-white">Sekolah Programming Indonesia</p></div>
     </div>
     <div class="relative max-w-md">
-      <p class="t-eyebrow text-accent-400">Pusat kendali operasional</p>
+      <p class="t-eyebrow text-accent-400" style="color: var(--color-accent-400)">Pusat kendali operasional</p>
       <p class="mt-4 text-[2rem] font-semibold leading-[1.15] tracking-[-0.025em]">Murid, kelas, sesi, dan SPP dalam satu tempat kerja.</p>
-      <ul class="mt-8 space-y-4 text-sm text-white/75">
+      <ul class="mt-8 space-y-4 text-sm text-white">
         <li class="flex gap-3"><i class="ti ti-checklist mt-0.5 text-lg text-accent-400" aria-hidden="true"></i>Pekerjaan yang perlu tindakan tampil lebih dulu setiap pagi.</li>
         <li class="flex gap-3"><i class="ti ti-calendar-check mt-0.5 text-lg text-accent-400" aria-hidden="true"></i>Guru membuka jadwal, mencatat kehadiran, selesai dalam beberapa klik.</li>
         <li class="flex gap-3"><i class="ti ti-shield-check mt-0.5 text-lg text-accent-400" aria-hidden="true"></i>Data tiap cabang terpisah; setiap perubahan tercatat di jejak audit.</li>
       </ul>
+      {% include "components/illustration.html" with cls="mt-10 h-auto w-full max-w-sm" %}
     </div>
-    <p class="relative text-xs text-white/45">© {% now "Y" %} Sekolah Programming Indonesia</p>
+    <p class="relative text-xs text-white">© {% now "Y" %} Sekolah Programming Indonesia</p>
   </aside>
   <main class="flex items-center justify-center px-4 py-10 sm:px-8">
     <div class="w-full max-w-[25rem]">

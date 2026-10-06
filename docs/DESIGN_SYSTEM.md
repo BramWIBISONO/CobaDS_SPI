@@ -43,6 +43,15 @@ gaya sendiri per halaman.
 - Kehadiran: `.att-options/.att-opt` (tombol besar Hadir/Terlambat/Izin/Tidak hadir).
 - Keuangan (fondasi): `.money`, `.money-lg`, `.pay-paid|partial|pending|overdue|void`.
 
+## Visual refresh v2 (lebih hidup)
+Sumber: `assets/refresh.css` (lapisan CSS `refresh`, di antara `components` dan `utilities`).
+- Latar lavender-biru dengan gradasi lembut; kartu 22px, banner 28px; bayangan kebiruan "melayang"; sidebar mengambang (desktop).
+- Item menu aktif = pil biru penuh; topbar transparan dengan pencarian & tombol ikon berbentuk pil.
+- `.hero` (banner sapaan bergradien + `components/illustration.html`, ilustrasi SVG buatan sendiri), tombol `.btn-light` / `.btn-glass`.
+- `components/tile.html` = kartu angka pastel; warna mengikuti MAKNA: biru murid, ungu sesi, hijau kehadiran, kuning keuangan, merah masalah.
+- `components/ring.html` (cincin progres `.pring`), `.week-strip` (widget minggu), `.cover` (sampul profil), `.class-band` (pita kartu kelas per tipe).
+- Teks di atas gradien selalu putih penuh (4.6-5.1:1); jangan memakai putih transparan untuk teks.
+
 ## Aksesibilitas (WCAG 2.1 AA)
 - Kontras: teks kecil >= 4.5:1 (token di atas), garis isian >= 3:1, fokus keyboard = garis biru 2px (`:focus-visible`).
 - Layar sentuh (`pointer: coarse`): tombol, menu, isian, pilihan kehadiran minimal 44px; chip & tombol kecil 40px.

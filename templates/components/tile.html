@@ -1,0 +1,10 @@
+{% comment %}Kartu angka pastel (Beranda): tone = blue|violet|green|amber|rose menurut MAKNA (murid, sesi, kehadiran, keuangan, masalah).{% endcomment %}
+<div class="tile tile-{{ tone|default:'blue' }}">
+  <div class="tile-head">
+    <p class="tile-label">{{ label }}</p>
+    <span class="tile-icon"><i class="ti ti-{{ icon }}" aria-hidden="true"></i></span>
+  </div>
+  <p class="tile-value">{{ value }}</p>
+  {% if sub %}<p class="tile-sub">{{ sub }}</p>{% endif %}
+  {% if href %}<a href="{{ href }}" class="tile-link">{{ link_text|default:"Buka" }} <i class="ti ti-arrow-right" aria-hidden="true"></i></a>{% endif %}
+</div>

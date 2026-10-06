@@ -22,7 +22,7 @@ def test_design_tokens_and_components_are_built():
     for token in ("Inter Variable", "--color-canvas", "--color-brand-500", "--color-ink", "--color-line", "--shadow-sm", "--radius-xl"):
         assert token in css, token
     for component in (".btn-primary", ".field", ".card", ".kpi", ".status-badge", ".data-table", ".tabs", ".segmented", ".avatar",
-                      ".menu", ".toast", ".empty", ".skeleton", ".app-sidebar", ".app-topbar", ".cal-event", ".action-item", ".pay-overdue"):
+                      ".menu", ".toast", ".empty", ".skeleton", ".app-sidebar", ".app-topbar", ".cal-event", ".action-item", ".pay-overdue", ".hero", ".tile-violet", ".pring", ".week-strip", ".cover", ".class-band"):
         assert component in css, component
     assert ".tone-spp" not in css and "Plus Jakarta Sans" not in css
 
