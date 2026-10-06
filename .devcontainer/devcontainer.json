@@ -1,0 +1,15 @@
+{
+  "name": "SPI Super App",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": { "label": "SPI Super App", "onAutoForward": "openBrowser" }
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "postAttachCommand": "bash .devcontainer/start.sh",
+  "customizations": {
+    "vscode": { "extensions": ["ms-python.python", "batisteo.vscode-django"] }
+  }
+}

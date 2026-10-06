@@ -3,6 +3,21 @@
 Aplikasi web SPI yang mengikuti aplikasi Excel v4 (`..\APP\*.xlsm`): tabel, ID, aturan, dan alur yang sama, dengan antarmuka web.
 Spesifikasi: `docs/superpowers/specs/2026-09-30-spi-web-design.md` · rencana: `docs/superpowers/plans/`.
 
+## Jalankan langsung di GitHub (Codespaces)
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/BramWIBISONO/CobaDS_SPI?quickstart=1)
+
+1. Klik tombol di atas (atau **Code → Codespaces → Create codespace on main**). Tunggu ±3-5 menit pertama kali:
+   Python, PostgreSQL, database, dan akun demo disiapkan otomatis (`.devcontainer/`).
+2. Aplikasi terbuka sendiri di tab baru (port 8000). Bila tidak: tab **Ports** → baris *SPI Super App* → ikon bola dunia.
+3. Di halaman Masuk klik akun **Demo Super Admin**. Data masih kosong: **Cabang** → buat cabang (mis. `SPI-JKT`),
+   lalu **Impor Data** → unggah workbook Excel. Setelah itu akun demo per peran cabang ikut aktif saat Codespace dibuka lagi.
+4. Hentikan Codespace bila selesai (**Code → Codespaces → … → Stop**) agar kuota gratis tidak habis. Data tetap tersimpan
+   selama Codespace tidak dihapus.
+
+Alamat Codespace bersifat privat (hanya akun GitHub Anda). Untuk dibuka orang lain: tab **Ports** → klik kanan → *Port Visibility → Public*
+(jangan lakukan bila sudah ada data murid asli). Jangan commit workbook Excel ke repo ini - repo ini publik; simpan di folder `data/` (diabaikan Git).
+
 ## Status
 
 Tahap 1A (fondasi) selesai: 34 tabel Excel v4 sebagai model per cabang (kolom rumus tidak disimpan), login dengan verifikasi email,
