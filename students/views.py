@@ -8,6 +8,7 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.formats import date_format
 from django.views.decorators.http import require_POST
 
 from core.permissions import has_perm, require_perm
@@ -19,9 +20,10 @@ from .forms import (ClassForm, FollowUpForm, FollowUpUpdateForm, NoteForm, Paren
                     StudentEditForm, TeacherForm, off_categories)
 from .models import FollowUp, ParentMaster, StudentMaster
 
-TABS = [("ringkasan", "Ringkasan", "id-badge-2"), ("status", "Status & OFF", "activity"), ("kelas", "Kelas", "school"),
-        ("kehadiran", "Kehadiran", "calendar-check"), ("akademik", "Akademik", "book"), ("keuangan", "SPP & Pembayaran", "cash"), ("followup", "Follow-up", "phone-call"),
-        ("catatan", "Catatan", "notes"), ("riwayat", "Riwayat", "history")]
+TABS = [("ringkasan", "Ringkasan", "id-badge-2"), ("akademik", "Akademik", "book"), ("kehadiran", "Kehadiran", "calendar-check"),
+        ("keuangan", "Keuangan", "cash"), ("orangtua", "Orang tua", "users-group"), ("catatan", "Catatan", "notes"),
+        ("followup", "Follow-up", "phone-call"), ("kelas", "Kelas", "school"), ("status", "Status", "activity"),
+        ("riwayat", "Aktivitas", "history")]
 
 
 def _student_or_404(request, std):
@@ -59,6 +61,7 @@ def student_list(request):
     rows = queries.sort_rows(queries.filter_rows(all_rows, f), key, desc)
     page = paginate(request, rows)
     ctx = {"page": page, "f": f, "opsi": queries.filter_options(all_rows), "total": len(all_rows), "found": len(rows),
+           "status_counts": queries.status_counts(all_rows),
            "n_filters": sum(1 for k, v in f.items() if k != "q" and v),
            "crumbs": [("Beranda", reverse("core:home")), ("Murid", None)]}
     template = "students/_student_table.html" if request.htmx and not request.htmx.history_restore_request else "students/list.html"
@@ -171,7 +174,7 @@ def student_status(request, std):
         except ValidationError as exc:
             _form_errors(form, exc)
         else:
-            messages.success(request, f"Status {s.nama} -> {services.STATUS_LABEL[ev.status]} (efektif {ev.tgl:%d %b %Y}) tersimpan.")
+            messages.success(request, f"Status {s.nama} -> {services.STATUS_LABEL[ev.status]} (efektif {date_format(ev.tgl, 'j M Y')}) tersimpan.")
             return redirect(reverse("students:detail", args=[std]) + "?tab=status")
     return render(request, "students/status_form.html", {
         "form": form, "student": s, "now": queries.profile(request.branch, s, timezone.localdate(), False)["status"],

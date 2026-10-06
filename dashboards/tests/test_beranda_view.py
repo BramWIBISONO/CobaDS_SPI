@@ -13,13 +13,13 @@ def murid(branch, other_branch):
 
 
 @pytest.mark.django_db
-def test_home_shows_colored_cards_with_excel_texts(client, branch, make_user, murid):
+def test_home_is_a_command_center_with_excel_texts(client, branch, make_user, murid):
     client.force_login(make_user("cso@spi.test", role="CSO", branch=branch))
     body = client.get("/").content.decode()
-    assert "Murid aktif (sekarang)" in body and "tone-murid" in body and "tone-spp" in body and "tone-kelas" in body
-    assert "cuti 1  ·  pending 0  ·  status v4 (INPUT CENTER)" in body
-    assert body.count("kpi-soon") == 3 and "buku kas belum ada" in body
-    assert reverse("dashboards:cari") in body
+    assert "Murid aktif (sekarang)" in body and "cuti 1  ·  pending 0  ·  status v4 (INPUT CENTER)" in body
+    assert "buku kas belum ada" in body and "Perlu tindakan" in body and "Jadwal hari ini" in body and "Aktivitas terbaru" in body
+    assert "tone-" not in body and "kpi-soon" not in body                     # tidak ada lagi kartu warna per topik / "menyusul"
+    assert reverse("core:search") in body                                       # pencarian global di topbar
 
 
 @pytest.mark.django_db

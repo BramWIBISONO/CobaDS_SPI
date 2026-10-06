@@ -1,97 +1,189 @@
-{% load static %}<!doctype html>
-<html lang="id" class="h-full bg-slate-50">
+{% load static ui %}<!doctype html>
+<html lang="id" class="h-full">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}SPI Management{% endblock %}{% if current_branch %} · {{ current_branch.name }}{% endif %}</title>
-  <link rel="icon" href="{% static 'img/spi-logo.png' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <title>{% block title %}SPI Super App{% endblock %}{% if current_branch %} · {{ current_branch.name }}{% endif %}</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32.png' %}">
+  <link rel="apple-touch-icon" href="{% static 'img/spi-mark.png' %}">
+  <link rel="preload" href="{% static 'vendor/fonts/inter-latin-wght-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
   <link rel="stylesheet" href="{% static 'vendor/tabler/tabler-icons.min.css' %}">
+  <script>try { if (localStorage.getItem("spi.sidebar") === "collapsed") document.documentElement.classList.add("sb-collapsed"); } catch (e) {}</script>
   <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
-  <script src="{% static 'vendor/alpine.min.js' %}" defer></script>
   <script src="{% static 'js/app.js' %}" defer></script>
+  <script src="{% static 'vendor/alpine.min.js' %}" defer></script>
   {% block extra_head %}{% endblock %}
 </head>
-<body class="h-full text-slate-800 antialiased" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+<body class="min-h-full" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-3 focus:z-[80] focus:rounded-lg focus:bg-surface focus:px-4 focus:py-2 focus:shadow-lg">Lewati ke konten</a>
 <div id="loading-bar" class="loading-bar" aria-hidden="true"></div>
-<div x-data="{ open: false }" class="min-h-full">
-  <div x-show="open" x-cloak class="fixed inset-0 z-20 bg-slate-900/40 lg:hidden" @click="open = false"></div>
-  <aside class="fixed inset-y-0 left-0 z-30 flex w-64 -translate-x-full flex-col bg-brand-900 text-white transition-transform lg:translate-x-0"
-         :class="open && 'translate-x-0'" aria-label="Menu utama">
-    <div class="flex h-16 shrink-0 items-center gap-3 border-b border-white/10 px-5">
-      <img src="{% static 'img/spi-logo.png' %}" alt="SPI" class="h-8 w-8 rounded bg-white object-contain p-0.5">
-      <div class="leading-tight"><p class="text-sm font-semibold">SPI Super App</p>
-        <p class="text-xs text-blue-200/80">{{ current_branch.name|default:"Pilih cabang" }}</p></div>
+
+<div x-data="{ drawer: false, search: false }" @keydown.escape.window="drawer = false; search = false">
+  <div x-show="drawer" x-cloak x-transition.opacity class="fixed inset-0 bg-ink/40 backdrop-blur-[2px] lg:hidden" style="z-index: var(--z-overlay)" @click="drawer = false"></div>
+
+  {# ------------------------------------------------------------------ sidebar #}
+  <aside class="app-sidebar" :class="drawer && 'is-open'" aria-label="Menu utama">
+    <div class="sb-brand">
+      <a href="{% url 'core:home' %}" class="flex min-w-0 items-center gap-3" title="SPI Super App">
+        <img src="{% static 'img/spi-mark.png' %}" alt="" class="sb-mark">
+        <span class="sb-hide min-w-0 leading-tight"><span class="block text-[0.9375rem] font-semibold tracking-[-0.01em] text-ink">SPI Super App</span>
+          <span class="block truncate text-xs text-muted">Sekolah Programming Indonesia</span></span>
+      </a>
+      <button type="button" class="icon-btn sb-hide ml-auto hidden text-lg lg:grid" onclick="SPI.toggleSidebar()" aria-label="Ciutkan menu" title="Ciutkan menu">
+        <i class="ti ti-layout-sidebar-left-collapse" aria-hidden="true"></i></button>
+      <button type="button" class="icon-btn ml-auto lg:hidden" @click="drawer = false" aria-label="Tutup menu"><i class="ti ti-x" aria-hidden="true"></i></button>
     </div>
-    <nav class="flex-1 space-y-5 overflow-y-auto px-3 py-4">
+
+    {% if current_branch or allowed_branches %}
+    <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+      <button type="button" class="sb-workspace" @click="open = !open" :aria-expanded="open.toString()" aria-haspopup="true"
+              {% if allowed_branches|length < 2 %}disabled{% endif %} title="{{ current_branch.name|default:'Pilih cabang' }}">
+        <span class="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-brand-900 text-[0.6875rem] font-bold tracking-wide text-accent-400">{{ current_branch.code|default:"SPI"|slice:"-3:" }}</span>
+        <span class="sb-hide min-w-0 flex-1 leading-tight"><span class="block truncate text-[0.8125rem] font-semibold text-ink">{{ current_branch.name|default:"Pilih cabang" }}</span>
+          <span class="block truncate text-[0.6875rem] text-muted">{% if current_branch.city %}{{ current_branch.city }} · {% endif %}{{ role_label|default:"cabang aktif" }}</span></span>
+        {% if allowed_branches|length > 1 %}<i class="ti ti-selector sb-hide text-base text-faint" aria-hidden="true"></i>{% endif %}
+      </button>
+      {% if allowed_branches|length > 1 %}
+      <div class="menu left-3 right-3 mt-1" x-show="open" x-cloak x-transition.origin.top>
+        <p class="menu-label">Pindah cabang</p>
+        {% for b in allowed_branches %}
+          <form method="post" action="{% url 'core:switch_branch' %}">{% csrf_token %}
+            <input type="hidden" name="branch" value="{{ b.pk }}"><input type="hidden" name="next" value="{{ request.get_full_path }}">
+            <button class="menu-item"><i class="ti ti-building" aria-hidden="true"></i><span class="flex-1 truncate">{{ b.name }}</span>
+              {% if current_branch and b.pk == current_branch.pk %}<i class="ti ti-check text-brand-600" aria-hidden="true"></i>{% endif %}</button>
+          </form>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <nav class="sb-nav" aria-label="Navigasi">
       {% for group in nav %}
-        <div>
-          {% if group.label %}<p class="px-3 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-blue-200/60">{{ group.label }}</p>{% endif %}
+        <div class="sb-group">
+          {% if group.label %}<p class="sb-group-label">{{ group.label }}</p>{% endif %}
           <ul class="space-y-0.5">
             {% for item in group.items %}
-              <li><a href="{{ item.href }}" {% if item.active %}aria-current="page"{% endif %}
-                     class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm {% if item.active %}bg-white/15 font-semibold text-white{% else %}text-blue-100 hover:bg-white/10{% endif %}">
-                <i class="ti ti-{{ item.icon }} text-lg" aria-hidden="true"></i><span>{{ item.label }}</span></a></li>
+              <li><a href="{{ item.href }}" class="sb-link {% if item.active %}is-active{% endif %}" {% if item.active %}aria-current="page"{% endif %} title="{{ item.label }}">
+                <i class="ti ti-{{ item.icon }}" aria-hidden="true"></i><span class="sb-hide truncate">{{ item.label }}</span>
+                {% if item.badge %}<span class="sb-badge is-alert" aria-label="{{ item.badge }} perlu tindakan">{{ item.badge }}</span>{% endif %}</a></li>
             {% endfor %}
           </ul>
         </div>
       {% endfor %}
     </nav>
-  </aside>
-  <div class="lg:pl-64">
-    <header class="sticky top-0 z-10 flex h-16 items-center gap-2 border-b border-slate-200 bg-white/90 px-3 backdrop-blur sm:gap-3 sm:px-4 lg:px-8">
-      <button type="button" class="rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden" @click="open = true" aria-label="Buka menu">
-        <i class="ti ti-menu-2 text-xl" aria-hidden="true"></i></button>
-      {% if allowed_branches|length > 1 %}
-        <form method="post" action="{% url 'core:switch_branch' %}" class="min-w-0">{% csrf_token %}
-          <input type="hidden" name="next" value="{{ request.get_full_path }}">
-          <select name="branch" onchange="this.form.submit()" aria-label="Cabang aktif"
-                  class="max-w-[9.5rem] truncate rounded-lg border border-slate-300 bg-white py-1.5 pl-3 pr-8 text-sm font-semibold text-slate-800 sm:max-w-none">
-            {% if not current_branch %}<option value="">Pilih cabang…</option>{% endif %}
-            {% for b in allowed_branches %}<option value="{{ b.pk }}" {% if current_branch and b.pk == current_branch.pk %}selected{% endif %}>{{ b.name }}</option>{% endfor %}
-          </select>
-        </form>
-      {% elif current_branch %}
-        <span class="truncate text-sm font-semibold text-slate-800">{{ current_branch.name }}</span>
-      {% endif %}
-      <div class="ml-auto flex items-center gap-1 sm:gap-3">
-        {% if current_branch %}
-          <a href="{% url 'core:notifikasi' %}" class="relative rounded-lg p-2 text-slate-600 hover:bg-slate-100" data-notif-count="{{ notif_count }}"
-             aria-label="Notifikasi{% if notif_count %} ({{ notif_count }} belum dibaca){% endif %}">
-            <i class="ti ti-bell text-xl" aria-hidden="true"></i>
-            {% if notif_count %}<span class="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white">{{ notif_count }}</span>{% endif %}
-          </a>
-        {% endif %}
-        <div class="hidden text-right text-sm leading-tight sm:block">
-          <p class="font-medium text-slate-800">{{ user.display_name }}</p>
-          {% if role_label %}<p class="text-xs text-slate-500">{{ role_label }}</p>{% endif %}
-        </div>
+
+    <div class="sb-footer relative" x-data="{ open: false }" @click.outside="open = false">
+      <div class="menu bottom-full left-3 right-3 mb-2" x-show="open" x-cloak x-transition.origin.bottom>
+        <div class="px-2.5 py-2"><p class="truncate text-sm font-semibold text-ink">{{ user.display_name }}</p><p class="truncate text-xs text-muted">{{ user.email }}</p></div>
+        <div class="menu-sep"></div>
+        {% if current_branch %}<a href="{% url 'core:notifikasi' %}" class="menu-item"><i class="ti ti-bell" aria-hidden="true"></i>Notifikasi{% if notif_count %}<span class="ml-auto sb-badge is-alert">{{ notif_count }}</span>{% endif %}</a>{% endif %}
         <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}
-          <button class="btn btn-secondary px-3" aria-label="Keluar"><i class="ti ti-logout" aria-hidden="true"></i><span class="hidden sm:inline">Keluar</span></button></form>
+          <button class="menu-item danger"><i class="ti ti-logout" aria-hidden="true"></i>Keluar</button></form>
+      </div>
+      <button type="button" class="sb-user" @click="open = !open" :aria-expanded="open.toString()" aria-haspopup="true" title="{{ user.display_name }}">
+        <span class="avatar avatar-sm {{ user.display_name|avatar_tone }}" aria-hidden="true">{{ user.display_name|initials }}</span>
+        <span class="sb-hide min-w-0 flex-1 leading-tight"><span class="block truncate text-[0.8125rem] font-semibold text-ink">{{ user.display_name }}</span>
+          <span class="block truncate text-xs text-muted">{{ role_label|default:"Pengguna" }}</span></span>
+        <i class="ti ti-dots-vertical sb-hide text-base text-faint" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="sb-link mt-1 w-full" onclick="SPI.toggleSidebar()" aria-label="Lebarkan menu" title="Lebarkan menu" data-sb-expand>
+        <i class="ti ti-layout-sidebar-left-expand" aria-hidden="true"></i></button>
+    </div>
+  </aside>
+
+  {# ------------------------------------------------------------------ area kerja #}
+  <div class="app-main">
+    <header class="app-topbar">
+      <button type="button" class="icon-btn -ml-1 lg:hidden" @click="drawer = true" aria-label="Buka menu"><i class="ti ti-menu-2" aria-hidden="true"></i></button>
+      <a href="{% url 'core:home' %}" class="flex items-center gap-2 lg:hidden" aria-label="Beranda">
+        <img src="{% static 'img/spi-mark.png' %}" alt="" class="h-7 w-7"><span class="hidden text-sm font-semibold text-ink min-[420px]:inline">{% block mobile_title %}{{ nav_current.label|default:"SPI" }}{% endblock %}</span></a>
+
+      <nav aria-label="Lokasi" class="crumbs hidden lg:flex">
+        {% if crumbs %}
+          {% for label, url in crumbs %}
+            {% if not forloop.first %}<i class="ti ti-chevron-right sep" aria-hidden="true"></i>{% endif %}
+            {% if url %}<a href="{{ url }}">{{ label }}</a>{% else %}<span aria-current="page">{{ label }}</span>{% endif %}
+          {% endfor %}
+        {% elif nav_current %}
+          {% if nav_current.href != "/" %}<a href="{% url 'core:home' %}">Beranda</a><i class="ti ti-chevron-right sep" aria-hidden="true"></i>{% endif %}
+          <span aria-current="page">{{ nav_current.label }}</span>
+        {% else %}<span aria-current="page">{% block crumb_title %}SPI Super App{% endblock %}</span>{% endif %}
+      </nav>
+
+      <div class="ml-auto flex items-center gap-1.5 sm:gap-2">
+        {% if perm.student_view %}
+        <div class="global-search" :class="search && 'fixed! inset-x-0! top-0! block! max-w-none! border-b border-line bg-surface p-3 shadow-lg'" style="z-index: var(--z-menu)"
+             x-data="{ open: false }" @click.outside="open = false" @keydown.escape="open = false; $refs.q.blur()">
+          <form action="{% url 'students:list' %}" method="get" role="search" class="input-icon" @submit="if ($refs.q.value.trim().length < 2) $event.preventDefault()">
+            <i class="ti ti-search" aria-hidden="true"></i>
+            <label for="global-q" class="sr-only">Cari murid, orang tua, kelas, guru</label>
+            <input id="global-q" x-ref="q" type="search" name="q" class="field" placeholder="Cari murid, kelas, guru…" autocomplete="off"
+                   data-global-search hx-get="{% url 'core:search' %}" hx-trigger="input changed delay:250ms, focus once" hx-target="#search-results"
+                   hx-sync="this:replace" @focus="open = true" @input="open = true" aria-controls="search-results" aria-autocomplete="list">
+            <span class="pointer-events-none absolute right-2.5 top-1/2 hidden -translate-y-1/2 items-center gap-0.5 md:flex" aria-hidden="true"><span class="kbd">Ctrl</span><span class="kbd">K</span></span>
+          </form>
+          <div id="search-results" class="search-panel" x-show="open" x-cloak role="listbox" aria-label="Hasil pencarian"></div>
+          <button type="button" class="btn btn-ghost btn-sm mt-2 w-full md:hidden" x-show="search" x-cloak @click="search = false">Tutup pencarian</button>
+        </div>
+        <button type="button" class="icon-btn md:hidden" @click="search = true; $nextTick(() => document.getElementById('global-q').focus())" aria-label="Cari"><i class="ti ti-search" aria-hidden="true"></i></button>
+        {% endif %}
+
+        {% if quick_actions %}
+        <div class="relative" x-data="{ open: false }" @click.outside="open = false" @keydown.escape="open = false">
+          <button type="button" class="btn btn-primary btn-sm max-sm:w-8 max-sm:px-0" @click="open = !open" :aria-expanded="open.toString()" aria-haspopup="true" aria-label="Tambah data baru">
+            <i class="ti ti-plus" aria-hidden="true"></i><span class="hidden sm:inline">Tambah</span><i class="ti ti-chevron-down hidden text-sm opacity-80 sm:inline" aria-hidden="true"></i></button>
+          <div class="menu right-0" x-show="open" x-cloak x-transition.origin.top.right role="menu">
+            <p class="menu-label">Buat baru</p>
+            {% for a in quick_actions %}<a href="{{ a.href }}" class="menu-item" role="menuitem"><i class="ti ti-{{ a.icon }}" aria-hidden="true"></i>{{ a.label }}</a>{% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        {% if current_branch %}
+        <a href="{% url 'core:notifikasi' %}" class="icon-btn" data-notif-count="{{ notif_count }}"
+           aria-label="Notifikasi{% if notif_count %} ({{ notif_count }} belum dibaca){% endif %}" title="Notifikasi">
+          <i class="ti ti-bell" aria-hidden="true"></i>{% if notif_count %}<span class="notif-dot">{{ notif_count }}</span>{% endif %}</a>
+        {% endif %}
+
+        <div class="relative lg:hidden" x-data="{ open: false }" @click.outside="open = false">
+          <button type="button" class="grid h-9 w-9 place-items-center rounded-full" @click="open = !open" aria-label="Akun {{ user.display_name }}" :aria-expanded="open.toString()">
+            <span class="avatar avatar-sm {{ user.display_name|avatar_tone }}" aria-hidden="true">{{ user.display_name|initials }}</span></button>
+          <div class="menu right-0" x-show="open" x-cloak x-transition.origin.top.right>
+            <div class="px-2.5 py-2"><p class="truncate text-sm font-semibold text-ink">{{ user.display_name }}</p><p class="truncate text-xs text-muted">{{ role_label|default:user.email }}</p></div>
+            <div class="menu-sep"></div>
+            <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button class="menu-item danger"><i class="ti ti-logout" aria-hidden="true"></i>Keluar</button></form>
+          </div>
+        </div>
       </div>
     </header>
-    <main class="mx-auto max-w-7xl px-4 py-6 lg:px-8">
+
+    <main id="main" class="page" tabindex="-1">
       {% block content %}{% endblock %}
     </main>
   </div>
 </div>
-<div id="toasts" class="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex flex-col items-center gap-2 px-4 sm:items-end sm:px-6" aria-live="polite">
+
+<div id="toasts" class="pointer-events-none fixed inset-x-0 bottom-4 flex flex-col items-center gap-2 px-4 sm:inset-x-auto sm:right-6 sm:items-end" style="z-index: var(--z-toast)" aria-live="polite">
   {% for m in messages %}
-    <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 8000)" x-transition.opacity
+    <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 7000)" x-transition.opacity.duration.200ms
          class="toast toast-{{ m.tags|default:'info' }}" role="status">
-      <i class="ti ti-{% if m.tags == 'error' %}alert-circle{% elif m.tags == 'success' %}circle-check{% elif m.tags == 'warning' %}alert-triangle{% else %}info-circle{% endif %} text-lg" aria-hidden="true"></i>
+      <i class="ti ti-{% if m.tags == 'error' %}alert-circle{% elif m.tags == 'success' %}circle-check{% elif m.tags == 'warning' %}alert-triangle{% else %}info-circle{% endif %}" aria-hidden="true"></i>
       <span class="flex-1">{{ m }}</span>
-      <button type="button" class="opacity-60 hover:opacity-100" @click="show = false" aria-label="Tutup"><i class="ti ti-x" aria-hidden="true"></i></button>
+      <button type="button" class="-mr-1 grid h-6 w-6 place-items-center rounded-md text-faint hover:bg-subtle hover:text-ink" @click="show = false" aria-label="Tutup"><i class="ti ti-x" aria-hidden="true"></i></button>
     </div>
   {% endfor %}
 </div>
+
 <dialog id="confirm-dialog" class="confirm-dialog" aria-labelledby="confirm-title">
-  <form method="dialog" class="p-5">
-    <div class="flex items-start gap-3">
-      <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-red-50 text-xl text-red-600"><i class="ti ti-alert-triangle" aria-hidden="true"></i></span>
-      <div><p id="confirm-title" class="font-bold text-slate-900">Konfirmasi</p><p class="confirm-text mt-1 text-sm text-slate-600"></p></div>
+  <form method="dialog" class="p-6">
+    <div class="flex items-start gap-4">
+      <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-danger-50 text-xl text-danger-600"><i class="ti ti-alert-triangle" aria-hidden="true"></i></span>
+      <div><p id="confirm-title" class="text-[0.9375rem] font-semibold text-ink">Konfirmasi tindakan</p><p class="confirm-text mt-1 text-sm text-muted"></p></div>
     </div>
-    <div class="mt-5 flex justify-end gap-2">
+    <div class="mt-6 flex justify-end gap-2">
       <button value="cancel" class="btn btn-secondary">Batal</button>
       <button value="ok" class="btn btn-danger confirm-ok">Ya, lanjutkan</button>
     </div>

@@ -106,3 +106,32 @@ def is_wide(bound_field):
 def pairs(value):
     """'a|A,b|B' -> [('a', 'A'), ('b', 'B')] untuk pilihan tetap di template."""
     return [tuple(item.split("|", 1)) for item in str(value).split(",") if "|" in item]
+
+
+@register.filter
+def initials(name):
+    """'Ani Wijaya' -> 'AW', 'budi' -> 'BU', kosong -> '?' (avatar tanpa foto)."""
+    words = [w for w in str(name or "").replace("(", " ").replace(")", " ").split() if w[:1].isalnum()]
+    if not words:
+        return "?"
+    if len(words) == 1:
+        return words[0][:2].upper()
+    return (words[0][0] + words[-1][0]).upper()
+
+
+@register.filter
+def avatar_tone(name):
+    """Warna avatar tetap per nama (6 nada lembut): av-0 … av-5."""
+    return f"av-{sum(ord(c) for c in str(name or '')) % 6}"
+
+
+@register.filter
+def pct_of(value, total):
+    """Persen bilangan bulat 0..100 untuk bilah progres (aman bila total kosong / nol)."""
+    try:
+        v, t = float(value), float(total)
+    except (TypeError, ValueError):
+        return 0
+    if t <= 0:
+        return 0
+    return max(0, min(100, round(v * 100 / t)))

@@ -1,13 +1,18 @@
 {% extends "base.html" %}
 {% block title %}Pilih cabang{% endblock %}
 {% block content %}
-<div class="mx-auto max-w-lg card p-6">
-  <h1 class="text-lg font-semibold">Pilih cabang</h1>
-  <p class="mt-1 text-sm text-slate-500">Anda punya akses ke beberapa cabang. Data setiap cabang terpisah.</p>
-  <ul class="mt-4 space-y-2">{% for b in branches %}
-    <li><form method="post" action="{% url 'core:switch_branch' %}">{% csrf_token %}<input type="hidden" name="branch" value="{{ b.pk }}">
-      <button class="w-full rounded-lg border border-slate-200 px-4 py-3 text-left hover:border-brand-500 hover:bg-brand-50">
-        <span class="font-semibold">{{ b.name }}</span> <span class="text-sm text-slate-500">{{ b.code }}</span></button></form></li>
-  {% endfor %}</ul>
+<div class="mx-auto max-w-lg pt-6">
+  <div class="card card-pad">
+    <span class="grid h-11 w-11 place-items-center rounded-xl bg-brand-50 text-xl text-brand-600"><i class="ti ti-building" aria-hidden="true"></i></span>
+    <h1 class="t-page mt-4 text-xl">Pilih cabang</h1>
+    <p class="mt-1 text-sm text-muted">Anda punya akses ke beberapa cabang. Data setiap cabang terpisah.</p>
+    <ul class="mt-5 space-y-2">{% for b in branches %}
+      <li><form method="post" action="{% url 'core:switch_branch' %}">{% csrf_token %}<input type="hidden" name="branch" value="{{ b.pk }}">
+        <button class="flex w-full items-center gap-3 rounded-xl border border-line px-4 py-3 text-left transition hover:border-brand-200 hover:bg-brand-25">
+          <span class="grid h-9 w-9 place-items-center rounded-lg bg-brand-900 text-[0.6875rem] font-bold text-accent-400">{{ b.code|slice:"-3:" }}</span>
+          <span class="min-w-0 flex-1"><span class="block font-medium text-ink">{{ b.name }}</span><span class="block text-xs text-muted">{{ b.code }}{% if b.city %} · {{ b.city }}{% endif %}</span></span>
+          <i class="ti ti-chevron-right text-faint" aria-hidden="true"></i></button></form></li>
+    {% endfor %}</ul>
+  </div>
 </div>
 {% endblock %}

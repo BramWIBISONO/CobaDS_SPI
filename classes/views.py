@@ -7,6 +7,7 @@ from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.formats import date_format
 from django.views.decorators.http import require_POST
 
 from core.permissions import has_perm, require_perm
@@ -18,7 +19,7 @@ from students import services as student_services
 from students.forms import teacher_choices
 from students.views import _form_errors
 
-from . import services
+from . import calendar, services
 from .forms import AddMemberForm, AssignTeacherForm, ClassCreateForm, ClassEditForm, GenerateForm, SlotForm
 from .models import ClassMaster, ClassMembers, ClassSchedule, Kehadiran, Sesi
 
@@ -37,6 +38,8 @@ def class_list(request):
     data = BranchData(request.branch, timezone.localdate())
     g = request.GET
     f = {"q": g.get("q", "")[:40], "status": g.get("status", "aktif"), "tipe": g.get("tipe", ""), "guru": g.get("guru", "")}
+    view = "tabel" if g.get("tampilan") == "tabel" else "kartu"
+    schedule = services.schedule_summary(request.branch, data.today)
     rows = []
     for k in daftar_kelas(data):
         c = k.row
@@ -51,7 +54,8 @@ def class_list(request):
             continue
         if f["tipe"] and fold(c.tipe) != fold(f["tipe"]) or f["guru"] and fold(c.guru) != fold(f["guru"]):
             continue
-        rows.append({"k": k, "kode": c.code, "aktif": k.aktif, "kursi": k.kursi_kosong, "guru": c.guru or ""})
+        rows.append({"k": k, "kode": c.code, "aktif": k.aktif, "kursi": k.kursi_kosong, "guru": c.guru or "",
+                     "slots": schedule.get(fold(c.code), [])})
     key, desc = sort_key(request, CLASS_SORTS, "kode")
     rows.sort(key=lambda r: (r[CLASS_SORTS[key]], r["kode"]), reverse=desc)
     gurus = sorted({k.row.guru for k in daftar_kelas(data) if k.row.guru}, key=fold)
@@ -60,7 +64,8 @@ def class_list(request):
                "penuh": sum(1 for k in daftar_kelas(data) if k.status_kapasitas == "FULL"),
                "melebihi": sum(1 for k in daftar_kelas(data) if k.status_kapasitas == "OVER CAPACITY")}
     return render(request, "classes/list.html", {
-        "page": paginate(request, rows), "f": f, "found": len(rows), "gurus": gurus, "tipes": list(services.TYPE_LETTER),
+        "page": paginate(request, rows, per_page=24 if view == "kartu" else 25), "f": f, "found": len(rows), "gurus": gurus,
+        "tipes": list(services.TYPE_LETTER), "view": view,
         "summary": summary, "crumbs": [("Beranda", reverse("core:home")), ("Kelas", None)]})
 
 
@@ -172,7 +177,7 @@ def end_slot(request, sid):
     except (ValueError, ValidationError) as exc:
         messages.error(request, " ".join(getattr(exc, "messages", ["Tanggal akhir tidak sah."])))
     else:
-        messages.success(request, f"Slot {sid} berakhir {until:%d %b %Y}.")
+        messages.success(request, f"Slot {sid} berakhir {date_format(until, 'j M Y')}.")
     return redirect("classes:detail", code=slot.code) if slot.code else redirect("classes:list")
 
 
@@ -191,22 +196,45 @@ def close_class(request, code):
 
 # ------------------------------------------------------------------ sesi & kehadiran
 
-def _week(request):
-    try:
-        d = datetime.date.fromisoformat(request.GET.get("minggu", ""))
-    except ValueError:
-        d = timezone.localdate()
-    return d - datetime.timedelta(days=d.weekday())
+WEEK_LANES = 2                         # kolom hari di tampilan minggu sempit: 1 sesi + penanda "+N" per gugus bersamaan
+CAL_VIEWS = {"hari": "Hari", "minggu": "Minggu", "bulan": "Bulan", "tertunda": "Belum dikonfirmasi"}
+
+
+def _anchor(request):
+    """Tanggal acuan kalender: ?tanggal= (atau ?minggu= lama), selain itu hari ini."""
+    for key in ("tanggal", "minggu"):
+        try:
+            return datetime.date.fromisoformat(request.GET.get(key, ""))
+        except ValueError:
+            continue
+    return timezone.localdate()
 
 
 @require_perm("session.view")
 def session_list(request):
-    monday = _week(request)
-    sunday = monday + datetime.timedelta(days=6)
+    """Kalender sesi: tampilan hari / minggu / bulan, dan daftar sesi lampau yang belum dikonfirmasi."""
+    now = timezone.localtime()
+    today = now.date()
     g = request.GET
+    view = g.get("tampilan", "minggu") if g.get("tampilan") in CAL_VIEWS else "minggu"
+    anchor = _anchor(request)
+    if view == "hari":
+        start = end = anchor
+        prev, nxt = anchor - datetime.timedelta(days=1), anchor + datetime.timedelta(days=1)
+    elif view == "bulan":
+        start, end = calendar.month_bounds(anchor)
+        prev, nxt = calendar.shift_month(anchor, -1), calendar.shift_month(anchor, 1)
+    else:
+        start = anchor - datetime.timedelta(days=anchor.weekday())
+        end = start + datetime.timedelta(days=6)
+        prev, nxt = start - datetime.timedelta(days=7), start + datetime.timedelta(days=7)
     f = {"guru": g.get("guru", ""), "kode": g.get("kode", ""), "status": g.get("status", "")}
-    qs = Sesi.objects.for_branch(request.branch).filter(tgl__range=(monday, sunday)).order_by("tgl", "mulai", "sid")
-    if f["status"]:
+    qs = Sesi.objects.for_branch(request.branch)
+    if view == "tertunda":
+        qs = qs.filter(status="SCHEDULED", tgl__lt=today).order_by("-tgl", "mulai", "sid")
+    else:
+        qs = qs.filter(tgl__range=(start, end)).order_by("tgl", "mulai", "sid")
+    if f["status"] and view != "tertunda":
         qs = qs.filter(status=f["status"])
     if f["kode"]:
         qs = qs.filter(kode__iexact=f["kode"])
@@ -216,16 +244,36 @@ def session_list(request):
         a = att.setdefault(r.sid, [0, 0])
         a[0] += 1
         a[1] += r.status in Kehadiran.PRESENT
-    days = []
-    for i in range(7):
-        d = monday + datetime.timedelta(days=i)
-        days.append({"date": d, "name": services.DAYS[i], "items": [{"s": s, "att": att.get(s.sid)} for s in rows if as_date(s.tgl) == d]})
-    pending = Sesi.objects.for_branch(request.branch).filter(status="SCHEDULED", tgl__lt=timezone.localdate()).count()
+
+    def item(s):
+        late = s.status == "SCHEDULED" and (as_date(s.tgl) < today or (as_date(s.tgl) == today and s.selesai and s.selesai <= now.time()))
+        return {"s": s, "att": att.get(s.sid), "type": calendar.session_type(s), "late": late}
+
+    by_day = calendar.group_by_day(rows)
+    lo, hi = calendar.hour_range(rows)
+    days, weeks = [], []
+    if view in ("hari", "minggu"):
+        n = 1 if view == "hari" else 7
+        for i in range(n):
+            d = start + datetime.timedelta(days=i)
+            items = [item(s) for s in by_day.get(d, [])]
+            day_url = f"{reverse('classes:sessions')}?tampilan=hari&tanggal={d:%Y-%m-%d}"
+            blocks, untimed = calendar.lay_out_day(items, lo, max_lanes=WEEK_LANES if view == "minggu" else None, day=d, day_url=day_url)
+            days.append({"date": d, "name": services.DAYS[d.weekday()], "items": items, "blocks": blocks, "untimed": untimed,
+                         "is_today": d == today, "now": calendar.now_offset(d, now, lo, hi)})
+    elif view == "bulan":
+        weeks = calendar.month_weeks(anchor, {d: [item(s) for s in v] for d, v in by_day.items()}, today)
+    agenda = [{"date": d, "is_today": d == today, "items": [item(s) for s in v]} for d, v in sorted(by_day.items(), reverse=view == "tertunda")]
+    pending = Sesi.objects.for_branch(request.branch).filter(status="SCHEDULED", tgl__lt=today).count()
+    keep = {k: v for k, v in f.items() if v}
     return render(request, "classes/sessions.html", {
-        "days": days, "monday": monday, "sunday": sunday, "prev": monday - datetime.timedelta(days=7),
-        "next": monday + datetime.timedelta(days=7), "f": f, "statuses": services.SESSION_STATUSES, "pending": pending,
+        "view": view, "views": CAL_VIEWS, "anchor": anchor, "start": start, "end": end, "prev": prev, "next": nxt, "today": today,
+        "keep": keep, "days": days, "weeks": weeks, "agenda": agenda, "total": len(rows),
+        "hours": [{"h": h, "top": (h - lo) * calendar.HOUR_PX} for h in range(lo, hi + 1)], "grid_h": (hi - lo) * calendar.HOUR_PX,
+        "f": f, "statuses": services.SESSION_STATUSES, "pending": pending,
+        "monday": start, "sunday": end,
         "gurus": sorted({s.guru for s in Sesi.objects.for_branch(request.branch).only("guru") if s.guru}, key=fold),
-        "gen_form": GenerateForm(branch=request.branch, initial={"start": monday, "end": sunday}),
+        "gen_form": GenerateForm(branch=request.branch, initial={"start": start, "end": end}),
         "crumbs": [("Beranda", reverse("core:home")), ("Sesi & Kehadiran", None)]})
 
 
@@ -270,7 +318,7 @@ def session_detail(request, sid):
         except ValidationError as exc:
             messages.error(request, " ".join(exc.messages))
         else:
-            messages.success(request, f"Sesi {ses.kode or ses.kelas} {ses.tgl:%d %b} tersimpan.")
+            messages.success(request, f"Sesi {ses.kode or ses.kelas} {date_format(as_date(ses.tgl), 'j M')} tersimpan.")
             return redirect("classes:session", sid=sid)
     back = reverse("classes:my_sessions") if not staff_view else reverse("classes:sessions") + f"?minggu={as_date(ses.tgl):%Y-%m-%d}"
     return render(request, "classes/session_detail.html", {
@@ -278,7 +326,7 @@ def session_detail(request, sid):
         "statuses": services.SESSION_STATUSES, "can_record": can_record, "staff_manage": staff_manage,
         "teachers": teacher_choices(request.branch)[1:] if staff_manage else [],
         "closed": student_services.period_status(request.branch, as_date(ses.tgl)) == "CLOSED",
-        "crumbs": [("Jadwal Saya" if not staff_view else "Sesi & Kehadiran", back), (f"{ses.kode or ses.kelas} · {ses.tgl:%d %b %Y}", None)]})
+        "crumbs": [("Jadwal Saya" if not staff_view else "Sesi & Kehadiran", back), (f"{ses.kode or ses.kelas} · {date_format(as_date(ses.tgl), 'j M Y')}", None)]})
 
 
 @require_perm("session.own")

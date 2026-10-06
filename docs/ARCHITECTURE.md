@@ -17,7 +17,7 @@ Workbook Excel di `..\APP` hanya acuan (data historis, aturan bisnis yang sudah 
 | A7 | Status murid: `ACTIVE`, `ON LEAVE`, `OFF`, `PENDING`, `ALUMNI/INACTIVE` (selesai/lulus). Perubahan status selalu lewat event (`STATUS_EVENT`) — tidak pernah menimpa kolom. | Riwayat status lengkap; mesin status Wave 1 (`status_sekarang`, status akhir periode) tetap berlaku. | Status sekarang = event terakhir ≤ hari ini, lalu status awal, lalu PENDING. |
 | A8 | Periode operasional (BULAN BARU / TUTUP BULAN) menghasilkan tagihan SPP dan sesi dari jadwal resmi, tidak pernah dobel (ID deterministik `TAG-yyyymm-STD`, `SES-yyyymmdd-<slot>`). | Aturan v4 yang sudah disetujui pemilik. | Periode CLOSED menolak perubahan sesi/status/kehadiran. |
 | A9 | Tabel baru: `Kehadiran` (per murid per sesi, unik), `CatatanMurid`, `Notifikasi`, `SecurityEvent` (masuk/keluar/gagal). | Konsep yang tidak ada di v4. | — |
-| A10 | Front-end: Django template + HTMX + Alpine, komponen bersama (`templates/components/`), Chart.js hanya di halaman bergrafik. | Progressive enhancement, JS minimal. | Semua aksi juga jalan tanpa JS (form biasa). |
+| A10 | Front-end: Django template + HTMX + Alpine, komponen bersama (`templates/components/`) dan design system tunggal (`docs/DESIGN_SYSTEM.md`, `/ui-kit/`), Chart.js hanya di halaman bergrafik. | Progressive enhancement, JS minimal. | Semua aksi juga jalan tanpa JS (form biasa). |
 
 ## 2. Domain dan tabel
 

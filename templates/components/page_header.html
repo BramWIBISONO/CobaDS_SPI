@@ -1,22 +1,23 @@
-<div class="mb-6">
-  {% if crumbs %}
-    <nav aria-label="Breadcrumb" class="mb-2 text-xs text-slate-500">
-      <ol class="flex flex-wrap items-center gap-1">
-        {% for label, url in crumbs %}
-          <li class="flex items-center gap-1">{% if not forloop.first %}<i class="ti ti-chevron-right text-[10px] text-slate-400" aria-hidden="true"></i>{% endif %}
-            {% if url %}<a href="{{ url }}" class="hover:text-brand-700 hover:underline">{{ label }}</a>{% else %}<span class="font-semibold text-slate-700" aria-current="page">{{ label }}</span>{% endif %}</li>
-        {% endfor %}
-      </ol>
-    </nav>
-  {% endif %}
-  <div class="flex flex-wrap items-end justify-between gap-3">
-    <div class="flex min-w-0 items-center gap-3">
-      {% if icon %}<span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-50 text-2xl text-brand-700"><i class="ti ti-{{ icon }}" aria-hidden="true"></i></span>{% endif %}
+{% comment %}Header halaman: judul jelas, subjudul singkat, aksi di kanan. Breadcrumb lengkap tampil di topbar (desktop);
+di layar kecil diganti tautan "kembali" ke halaman induk.{% endcomment %}
+<div class="page-header">
+  <div class="min-w-0 flex-[1_1_18rem]">
+    {% if crumbs %}
+      <nav aria-label="Breadcrumb" class="lg:hidden">
+        {% for label, url in crumbs %}{% if url and forloop.revcounter == 2 %}
+          <a href="{{ url }}" class="back-link"><i class="ti ti-chevron-left" aria-hidden="true"></i>{{ label }}</a>
+        {% endif %}{% endfor %}
+      </nav>
+    {% endif %}
+    <div class="flex min-w-0 items-center gap-3.5">
+      {% if icon %}<span class="hidden h-11 w-11 shrink-0 place-items-center rounded-xl border border-line bg-surface text-[1.375rem] text-brand-600 shadow-xs sm:grid"><i class="ti ti-{{ icon }}" aria-hidden="true"></i></span>{% endif %}
       <div class="min-w-0">
-        <h1 class="truncate text-2xl font-extrabold text-slate-900">{{ title }}</h1>
-        {% if subtitle %}<p class="text-sm text-slate-500">{{ subtitle }}</p>{% endif %}
+        <h1 class="t-page flex flex-wrap items-center gap-x-3 gap-y-1"><span class="min-w-0 break-words">{{ title }}</span>
+          {% if count is not None and count != "" %}<span class="rounded-full border border-line bg-surface px-2.5 py-0.5 text-sm font-medium text-muted tabular-nums">{{ count }}</span>{% endif %}
+          {% if badge %}{{ badge }}{% endif %}</h1>
+        {% if subtitle %}<p class="page-sub">{{ subtitle }}</p>{% endif %}
       </div>
     </div>
-    {% if actions %}<div class="flex flex-wrap items-center gap-2">{{ actions }}</div>{% endif %}
   </div>
+  {% if actions %}<div class="page-actions">{{ actions }}</div>{% endif %}
 </div>

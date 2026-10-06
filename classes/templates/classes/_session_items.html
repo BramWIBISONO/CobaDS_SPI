@@ -1,12 +1,15 @@
 {% if items %}
-<ul class="divide-y divide-slate-100 text-sm">
+<ul class="divide-y divide-line">
   {% for s in items %}
-    <li class="flex items-center justify-between gap-2 py-2">
-      <a href="{% url 'classes:session' s.sid %}" class="min-w-0 hover:underline">
-        <span class="font-semibold text-slate-900">{{ s.tgl|date:"D, d M" }}</span>
-        <span class="text-slate-500">{{ s.mulai|time:"H:i" }}{% if s.kode %} · {{ s.kode }}{% elif s.kelas %} · {{ s.kelas }}{% endif %}{% if show_teacher %} · {{ s.guru }}{% endif %}</span></a>
+    <li><a href="{% url 'classes:session' s.sid %}" class="group flex items-center gap-3 py-2.5">
+      <span class="flex w-11 shrink-0 flex-col items-center rounded-lg bg-subtle py-1.5 leading-none">
+        <span class="text-[0.625rem] font-semibold uppercase tracking-wide text-faint">{{ s.tgl|date:"D" }}</span>
+        <span class="mt-1 text-sm font-semibold text-ink tabular-nums">{{ s.tgl|date:"j" }}</span></span>
+      <span class="min-w-0 flex-1">
+        <span class="block truncate text-sm font-medium text-ink group-hover:text-brand-700">{{ s.kode|default:s.kelas|default:"(tanpa kode)" }}</span>
+        <span class="block truncate text-xs text-muted tabular-nums">{{ s.tgl|date:"d M" }} · {{ s.mulai|time:"H:i" }}{% if s.selesai %}–{{ s.selesai|time:"H:i" }}{% endif %}{% if show_teacher %} · {{ s.guru }}{% endif %}{% if s.ruang %} · {{ s.ruang }}{% endif %}</span></span>
       {% include "components/status_badge.html" with status=s.status %}
-    </li>
+    </a></li>
   {% endfor %}
 </ul>
-{% else %}<p class="text-sm text-slate-500">{{ empty }}</p>{% endif %}
+{% else %}<p class="py-3 text-sm text-muted">{{ empty }}</p>{% endif %}

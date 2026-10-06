@@ -1,13 +1,13 @@
 {% if items %}
-<ul class="divide-y divide-slate-100">
+<ul class="divide-y divide-line">
   {% for f in items %}
-    <li class="flex flex-wrap items-center justify-between gap-2 py-2.5">
+    <li class="flex flex-wrap items-center justify-between gap-3 py-3">
       <div class="min-w-0">
-        <a href="{% url 'students:followup_detail' f.fid %}" class="font-semibold text-slate-900 hover:text-brand-700 hover:underline">{{ f.jenis }} · {{ f.aksi|default:"tindak lanjut belum diisi" }}</a>
-        <p class="text-xs text-slate-500">{{ f.fid }} · {{ f.status|default:"Terbuka" }}{% if f.next %} · jatuh tempo {{ f.next|date:"d M Y" }}{% endif %}{% if f.pic %} · {{ f.pic }}{% endif %}</p>
+        <a href="{% url 'students:followup_detail' f.fid %}" class="text-sm font-medium text-ink hover:text-brand-700">{{ f.jenis }} · {{ f.aksi|default:"tindak lanjut belum diisi" }}</a>
+        <p class="mt-0.5 text-xs text-muted">{{ f.fid }} · {{ f.status|default:"Terbuka" }}{% if f.next %} · jatuh tempo {{ f.next|date:"d M Y" }}{% endif %}{% if f.pic %} · {{ f.pic }}{% endif %}</p>
       </div>
       <span class="status-badge {% if f.prioritas == 'MENDESAK' %}st-kritis{% elif f.prioritas == 'TINGGI' %}st-serius{% else %}st-netral{% endif %}">{{ f.prioritas|default:"NORMAL" }}</span>
     </li>
   {% endfor %}
 </ul>
-{% else %}<p class="text-sm text-slate-500">Tidak ada follow-up.</p>{% endif %}
+{% else %}<p class="py-3 text-sm text-muted">Tidak ada follow-up.</p>{% endif %}

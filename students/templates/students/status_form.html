@@ -2,10 +2,10 @@
 {% block title %}Ubah status · {{ student.nama }}{% endblock %}
 {% block content %}
 {% pageheader title="Ubah status murid" subtitle=student.nama icon="activity" %}{% endpageheader %}
-<form method="post" class="max-w-3xl space-y-4" novalidate x-data="{ st: '{{ form.status.value|default:'ACTIVE'|escapejs }}' }">{% csrf_token %}
+<form method="post" class="max-w-3xl space-y-5" novalidate x-data="{ st: '{{ form.status.value|default:'ACTIVE'|escapejs }}' }">{% csrf_token %}
   {% if form.non_field_errors %}<div class="form-error" role="alert">{% for e in form.non_field_errors %}<p>{{ e }}</p>{% endfor %}</div>{% endif %}
   <section class="form-section">
-    <p class="mb-4 text-sm text-slate-600">Status sekarang: {% include "components/status_badge.html" with status=now %}
+    <p class="mb-5 flex flex-wrap items-center gap-2 text-sm text-muted">Status sekarang: {% include "components/status_badge.html" with status=now %}
       — perubahan dicatat sebagai riwayat (tidak menimpa status lama).</p>
     <div class="form-grid">
       <div>
@@ -28,9 +28,9 @@
       <div x-show="st === 'OFF' || st === 'ON LEAVE'" x-cloak class="sm:col-span-2">{% with field=form.buat_followup %}{% include "components/field.html" %}{% endwith %}</div>
     </div>
   </section>
-  <div class="flex flex-wrap gap-2">
+  <div class="form-actions">
     <button class="btn btn-primary" data-confirm="Simpan perubahan status {{ student.nama }}? Riwayat status akan bertambah satu baris."><i class="ti ti-device-floppy" aria-hidden="true"></i>Simpan status</button>
-    <a href="{% url 'students:detail' student.std %}?tab=status" class="btn btn-secondary">Batal</a>
+    <a href="{% url 'students:detail' student.std %}?tab=status" class="btn btn-ghost">Batal</a>
   </div>
 </form>
 {% endblock %}

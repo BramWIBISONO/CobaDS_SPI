@@ -1,0 +1,27 @@
+{% load ui spi %}{% if not q or q|length < 2 %}
+<div class="flex items-center gap-3 px-3 py-3 text-sm text-muted"><i class="ti ti-keyboard text-lg text-faint" aria-hidden="true"></i>
+  <span>Ketik minimal 2 huruf: nama murid, Student ID, orang tua, kode kelas, atau guru.</span></div>
+{% elif not groups %}
+<div class="empty py-8">
+  <span class="empty-icon"><i class="ti ti-search-off" aria-hidden="true"></i></span>
+  <p class="empty-title">Tidak ada hasil untuk “{{ q }}”</p>
+  <p class="empty-text">Periksa ejaan, atau cari dengan Student ID (mis. STD-000123).</p>
+</div>
+{% else %}
+  {% for g in groups %}
+    <p class="menu-label flex items-center gap-1.5">{{ g.label }}</p>
+    <ul>
+      {% for it in g.items %}
+        <li><a href="{{ it.url }}" class="search-hit" role="option">
+          {% if it.avatar %}<span class="avatar avatar-sm {{ it.title|avatar_tone }}" aria-hidden="true">{{ it.title|initials }}</span>
+          {% else %}<span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-subtle text-base text-muted"><i class="ti ti-{{ it.icon }}" aria-hidden="true"></i></span>{% endif %}
+          <span class="min-w-0 flex-1"><span class="block truncate font-medium text-ink">{{ it.title }}</span>
+            {% if it.sub %}<span class="block truncate text-xs text-muted">{{ it.sub }}</span>{% endif %}</span>
+          {% if it.status %}{% include "components/status_badge.html" with status=it.status %}{% endif %}
+        </a></li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+  {% if all_url %}<div class="menu-sep"></div>
+  <a href="{{ all_url }}" class="search-hit text-brand-700"><i class="ti ti-list-search text-lg" aria-hidden="true"></i><span class="font-medium">Lihat semua murid untuk “{{ q }}”</span></a>{% endif %}
+{% endif %}

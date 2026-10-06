@@ -102,3 +102,18 @@ def test_teacher_pages(client, jkt, make_user):
     assert "P001" in client.get(reverse("masterdata:teacher", args=["TCH-001"])).content.decode()
     r = client.post(reverse("masterdata:teacher_create"), {"name": "Ms. Rina", "status": "ACTIVE"})
     assert r.status_code == 302 and TeacherMaster.objects.filter(branch=jkt, name="Ms. Rina").exists()
+
+
+@pytest.mark.django_db
+def test_week_view_caps_visible_lanes_with_overflow_marker(client, jkt, make_user):
+    """Tampilan minggu: kolom sempit, maksimal 2 jalur (1 sesi + penanda '+N'); tampilan hari menampilkan semuanya."""
+    monday = TODAY - datetime.timedelta(days=TODAY.weekday())
+    for i, (code, guru) in enumerate((("P001", "Mr. Bram"), ("G010", "Ms. Linda"), ("F002", "Mr. Fritz"), ("G001", "Mr. Dimas")), start=1):
+        Sesi.objects.create(branch=jkt, row_no=i, sid=f"SES-{monday:%Y%m%d}-T{i}", tgl=monday, hari="SENIN", mulai=datetime.time(15, 0),
+                            selesai=datetime.time(16, 0), kode=code, guru=guru, status="SCHEDULED")
+    login(client, jkt, make_user)
+    body = client.get(reverse("classes:sessions"), {"tampilan": "minggu", "tanggal": monday.isoformat()}).content.decode()
+    assert "is-overflow" in body and ">+3<" in body
+    assert f"tampilan=hari&amp;tanggal={monday:%Y-%m-%d}" in body or f"tampilan=hari&tanggal={monday:%Y-%m-%d}" in body
+    day = client.get(reverse("classes:sessions"), {"tampilan": "hari", "tanggal": monday.isoformat()}).content.decode()
+    assert "is-overflow" not in day and all(f"SES-{monday:%Y%m%d}-T{i}" in day for i in range(1, 5))

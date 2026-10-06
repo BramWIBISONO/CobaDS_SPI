@@ -2,28 +2,28 @@
 {% block title %}Kelas, guru & program · {{ student.nama }}{% endblock %}
 {% block content %}
 {% pageheader title="Kelas, guru & program" subtitle=student.nama icon="arrows-exchange" %}{% endpageheader %}
-<p class="mb-4 text-sm text-slate-600">Sekarang: kelas <strong>{{ d.kode|default:"—" }}</strong> · guru <strong>{{ d.guru|default:"—" }}</strong> ·
+<p class="callout callout-neutral mb-5 block">Sekarang: kelas <strong>{{ d.kode|default:"—" }}</strong> · guru <strong>{{ d.guru|default:"—" }}</strong> ·
   {{ d.program|default:"—" }} {{ d.level|default:"" }}. Setiap perubahan tercatat di riwayat.</p>
-<div class="grid gap-4 lg:grid-cols-3">
+<div class="grid gap-5 lg:grid-cols-3">
   <form method="post" class="form-section space-y-3" novalidate>{% csrf_token %}<input type="hidden" name="action" value="kelas">
-    <h2><i class="ti ti-school" aria-hidden="true"></i> Pindah kelas</h2>
+    <h2 class="flex items-center gap-2"><i class="ti ti-school text-brand-600" aria-hidden="true"></i>Pindah kelas</h2>
     {% if forms.kelas.non_field_errors %}<div class="form-error" role="alert">{% for e in forms.kelas.non_field_errors %}<p>{{ e }}</p>{% endfor %}</div>{% endif %}
     {% for field in forms.kelas %}{% include "components/field.html" %}{% endfor %}
-    <p class="text-xs text-slate-500">Keanggotaan kelas lama ditutup, guru mengikuti guru kelas baru. Kapasitas diperiksa.</p>
-    <button class="btn btn-primary w-full">Pindahkan</button>
+    <p class="text-xs text-muted">Keanggotaan kelas lama ditutup, guru mengikuti guru kelas baru. Kapasitas diperiksa.</p>
+    <button class="btn btn-primary btn-block">Pindahkan</button>
   </form>
   <form method="post" class="form-section space-y-3" novalidate>{% csrf_token %}<input type="hidden" name="action" value="guru">
-    <h2><i class="ti ti-user-star" aria-hidden="true"></i> Ganti guru</h2>
+    <h2 class="flex items-center gap-2"><i class="ti ti-user-star text-brand-600" aria-hidden="true"></i>Ganti guru</h2>
     {% if forms.guru.non_field_errors %}<div class="form-error" role="alert">{% for e in forms.guru.non_field_errors %}<p>{{ e }}</p>{% endfor %}</div>{% endif %}
     {% for field in forms.guru %}{% include "components/field.html" %}{% endfor %}
-    <button class="btn btn-primary w-full">Simpan guru</button>
+    <button class="btn btn-primary btn-block">Simpan guru</button>
   </form>
   <form method="post" class="form-section space-y-3" novalidate>{% csrf_token %}<input type="hidden" name="action" value="program">
-    <h2><i class="ti ti-book" aria-hidden="true"></i> Program & level</h2>
+    <h2 class="flex items-center gap-2"><i class="ti ti-book text-brand-600" aria-hidden="true"></i>Program & level</h2>
     {% if forms.program.non_field_errors %}<div class="form-error" role="alert">{% for e in forms.program.non_field_errors %}<p>{{ e }}</p>{% endfor %}</div>{% endif %}
     {% for field in forms.program %}{% include "components/field.html" %}{% endfor %}
-    <button class="btn btn-primary w-full">Simpan program</button>
+    <button class="btn btn-primary btn-block">Simpan program</button>
   </form>
 </div>
-<a href="{% url 'students:detail' student.std %}?tab=kelas" class="btn btn-secondary mt-4">Kembali ke profil</a>
+<a href="{% url 'students:detail' student.std %}?tab=kelas" class="btn btn-ghost mt-5"><i class="ti ti-arrow-left" aria-hidden="true"></i>Kembali ke profil</a>
 {% endblock %}

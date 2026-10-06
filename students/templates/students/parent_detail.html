@@ -1,54 +1,110 @@
 {% extends "base.html" %}{% load ui spi %}
 {% block title %}{{ p.nama }} · Orang Tua{% endblock %}
 {% block content %}
-{% pageheader title=p.nama|default:p.pid subtitle=p.pid icon="users-group" %}
-  {% if perm.parent_edit %}<a href="{% url 'students:parent_edit' p.pid %}" class="btn btn-secondary"><i class="ti ti-edit" aria-hidden="true"></i>Ubah data</a>{% endif %}
-{% endpageheader %}
-<div class="grid gap-4 lg:grid-cols-3">
-  <section class="card p-5">
-    <h2 class="section-title">Data & kontak</h2>
-    <dl class="space-y-3 text-sm">
-      <div><dt class="field-label">Hubungan</dt><dd>{{ p.hub|default:"—" }}</dd></div>
-      <div><dt class="field-label">Preferensi komunikasi</dt><dd>{{ p.pref|default:"—" }}</dd></div>
-      {% if contacts %}
-        <div><dt class="field-label">WhatsApp</dt><dd>{{ p.wa|default:"—" }}</dd></div>
-        <div><dt class="field-label">Email</dt><dd>{{ p.email|default:"—" }}</dd></div>
-        <div><dt class="field-label">Alamat</dt><dd class="whitespace-pre-line">{{ p.alamat|default:"—" }}</dd></div>
-        <div><dt class="field-label">Referensi pembayaran / VA</dt><dd>{{ p.va|default:"—" }}</dd></div>
-        <div><dt class="field-label">Kontak darurat</dt><dd>{{ p.kontak_darurat|default:"—" }}{% if p.telp_darurat %} · {{ p.telp_darurat }}{% endif %}</dd></div>
-      {% else %}<p class="text-xs text-slate-400">Kontak hanya untuk peran yang berwenang.</p>{% endif %}
-    </dl>
-  </section>
-  <section class="card p-5 lg:col-span-2">
-    <h2 class="section-title">Anak ({{ children|length }})</h2>
-    {% if children %}
-    <div class="overflow-x-auto"><table class="data-table"><thead><tr><th>Nama</th><th>Status</th><th>Kelas</th><th>Guru</th><th>Program</th></tr></thead><tbody>
-      {% for c in children %}<tr><td class="font-semibold"><a href="{% url 'students:detail' c.std %}" class="text-brand-700 hover:underline">{{ c.nama }}</a></td>
-        <td>{% include "components/status_badge.html" with status=c.status %}</td><td>{{ c.kode|default:"—" }}</td><td>{{ c.guru|default:"—" }}</td><td>{{ c.level|default:c.program|default:"—" }}</td></tr>{% endfor %}
-    </tbody></table></div>
-    {% else %}<p class="text-sm text-slate-500">Belum ada anak terhubung.</p>{% endif %}
-    {% if perm.parent_edit %}
-    <form method="post" action="{% url 'students:parent_link' p.pid %}" class="mt-4 flex flex-wrap items-end gap-2">{% csrf_token %}
-      <div><label class="field-label" for="link-std">Hubungkan anak (Student ID)</label><input id="link-std" name="std" class="field" placeholder="STD-000123" required></div>
-      <button class="btn btn-secondary"><i class="ti ti-link" aria-hidden="true"></i>Hubungkan</button>
-    </form>
+<a href="{% url 'students:parents' %}" class="back-link"><i class="ti ti-chevron-left" aria-hidden="true"></i>Orang Tua</a>
+
+<section class="card mb-6">
+  <div class="flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
+    <div class="flex min-w-0 items-center gap-4 sm:gap-5">
+      <span class="avatar avatar-xl {{ p.nama|avatar_tone }}" aria-hidden="true">{{ p.nama|initials }}</span>
+      <div class="min-w-0">
+        <h1 class="t-page break-words">{{ p.nama|default:p.pid }}</h1>
+        <p class="mt-1 text-sm text-muted"><span class="tabular-nums">{{ p.pid }}</span>{% if p.hub %} · {{ p.hub }}{% endif %} · {{ children|length }} anak di SPI</p>
+        {% if contacts %}
+        <ul class="mt-3 flex flex-wrap gap-2 text-[0.8125rem]">
+          {% if p.wa %}<li class="chip pointer-events-none"><i class="ti ti-brand-whatsapp text-success-600" aria-hidden="true"></i>{{ p.wa }}</li>{% endif %}
+          {% if p.email %}<li class="chip pointer-events-none max-w-full"><i class="ti ti-mail text-faint" aria-hidden="true"></i><span class="truncate">{{ p.email }}</span></li>{% endif %}
+          {% if p.pref %}<li class="chip pointer-events-none"><i class="ti ti-message-circle text-faint" aria-hidden="true"></i>lebih suka {{ p.pref }}</li>{% endif %}
+        </ul>
+        {% endif %}
+      </div>
+    </div>
+    {% if perm.parent_edit %}<div class="flex flex-wrap gap-2"><a href="{% url 'students:parent_edit' p.pid %}" class="btn btn-secondary"><i class="ti ti-edit" aria-hidden="true"></i>Ubah data</a></div>{% endif %}
+  </div>
+</section>
+
+<div class="grid gap-5 lg:grid-cols-3">
+  <div class="space-y-5 lg:col-span-2">
+    <section>
+      <div class="section-head"><h2 class="t-section">Anak ({{ children|length }})</h2></div>
+      {% if children %}
+        <div class="grid gap-3 sm:grid-cols-2">
+          {% for c in children %}
+            <a href="{% url 'students:detail' c.std %}" class="card card-link flex items-start gap-4 p-4">
+              <span class="avatar avatar-lg {{ c.nama|avatar_tone }}" aria-hidden="true">{{ c.nama|initials }}</span>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-start justify-between gap-2"><p class="truncate font-semibold text-ink">{{ c.nama }}</p>{% include "components/status_badge.html" with status=c.status %}</div>
+                <p class="text-xs text-muted tabular-nums">{{ c.std }}</p>
+                <dl class="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5 text-[0.8125rem]">
+                  <div><dt class="text-xs text-muted">Program</dt><dd class="truncate font-medium text-ink">{{ c.level|default:c.program|default:"—" }}</dd></div>
+                  <div><dt class="text-xs text-muted">Kelas</dt><dd class="truncate font-medium text-ink">{{ c.kode|default:"—" }}</dd></div>
+                  <div class="col-span-2"><dt class="text-xs text-muted">Guru</dt><dd class="truncate font-medium text-ink">{{ c.guru|default:"—" }}</dd></div>
+                </dl>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        {% include "components/empty_state.html" with icon="mood-kid" title="Belum ada anak terhubung" text="Hubungkan anak dengan Student ID di bawah." %}
+      {% endif %}
+      {% if perm.parent_edit %}
+      <form method="post" action="{% url 'students:parent_link' p.pid %}" class="mt-3 flex flex-wrap items-end gap-2">{% csrf_token %}
+        <div class="min-w-0 flex-1 sm:max-w-xs"><label class="field-label" for="link-std">Hubungkan anak (Student ID)</label><input id="link-std" name="std" class="field" placeholder="STD-000123" required></div>
+        <button class="btn btn-secondary"><i class="ti ti-link" aria-hidden="true"></i>Hubungkan</button>
+      </form>
+      {% endif %}
+    </section>
+
+    <section class="card">
+      <div class="card-header"><div><h2 class="card-title">Komunikasi</h2><p class="card-sub">Catatan telepon, pesan, dan pertemuan · terbaru di atas</p></div></div>
+      <div class="card-body">
+        {% if perm.parent_edit %}
+        <form method="post" action="{% url 'students:parent_note' p.pid %}" class="mb-5 flex flex-col gap-2 sm:flex-row">{% csrf_token %}
+          <label class="sr-only" for="komunikasi">Catatan komunikasi baru</label>
+          <input id="komunikasi" name="teks" class="field" placeholder="mis. Telepon 5 Okt: minta jadwal Sabtu" required>
+          <button class="btn btn-primary shrink-0"><i class="ti ti-message-plus" aria-hidden="true"></i>Simpan</button>
+        </form>
+        {% endif %}
+        {% if communications %}<ol class="timeline">{% for line in communications %}
+          <li><span class="timeline-dot"><i class="ti ti-message" aria-hidden="true"></i></span><p class="text-sm text-ink-2">{{ line }}</p></li>
+        {% endfor %}</ol>
+        {% else %}<p class="text-sm text-muted">Belum ada catatan komunikasi.</p>{% endif %}
+      </div>
+    </section>
+  </div>
+
+  <div class="space-y-5">
+    <section class="card">
+      <div class="card-header"><h2 class="card-title">Kontak & data</h2></div>
+      <div class="card-body">
+        <dl class="dl-list">
+          <div><dt>Hubungan</dt><dd>{{ p.hub|default:"—" }}</dd></div>
+          <div><dt>Preferensi komunikasi</dt><dd>{{ p.pref|default:"—" }}</dd></div>
+          {% if contacts %}
+            <div><dt>WhatsApp</dt><dd>{{ p.wa|default:"—" }}</dd></div>
+            <div><dt>Email</dt><dd class="break-all">{{ p.email|default:"—" }}</dd></div>
+            <div><dt>Referensi bayar / VA</dt><dd>{{ p.va|default:"—" }}</dd></div>
+            <div><dt>Alamat</dt><dd class="whitespace-pre-line">{{ p.alamat|default:"—" }}</dd></div>
+          {% endif %}
+        </dl>
+        {% if not contacts %}<p class="mt-3 text-xs text-muted"><i class="ti ti-lock" aria-hidden="true"></i> Kontak hanya untuk peran yang berwenang.</p>{% endif %}
+      </div>
+    </section>
+    {% if contacts %}
+    <section class="card">
+      <div class="card-header"><h2 class="card-title flex items-center gap-2"><i class="ti ti-urgent text-danger-600" aria-hidden="true"></i>Kontak darurat</h2></div>
+      <div class="card-body">
+        {% if p.kontak_darurat or p.telp_darurat %}
+          <p class="font-medium text-ink">{{ p.kontak_darurat|default:"(nama belum diisi)" }}</p>
+          <p class="mt-0.5 text-sm text-muted">{{ p.telp_darurat|default:"nomor belum diisi" }}</p>
+        {% else %}<p class="text-sm text-muted">Belum diisi.{% if perm.parent_edit %} <a href="{% url 'students:parent_edit' p.pid %}" class="link">Lengkapi</a>{% endif %}</p>{% endif %}
+      </div>
+    </section>
     {% endif %}
-  </section>
-  <section class="card p-5 lg:col-span-2">
-    <h2 class="section-title">Catatan komunikasi</h2>
-    {% if perm.parent_edit %}
-    <form method="post" action="{% url 'students:parent_note' p.pid %}" class="mb-4 flex flex-col gap-2 sm:flex-row">{% csrf_token %}
-      <label class="sr-only" for="komunikasi">Catatan komunikasi baru</label>
-      <input id="komunikasi" name="teks" class="field" placeholder="mis. Telepon 5 Okt: minta jadwal sabtu" required>
-      <button class="btn btn-primary shrink-0">Simpan</button>
-    </form>
-    {% endif %}
-    {% if communications %}<ul class="space-y-2 text-sm">{% for line in communications %}<li class="rounded-lg bg-slate-50 px-3 py-2">{{ line }}</li>{% endfor %}</ul>
-    {% else %}<p class="text-sm text-slate-500">Belum ada catatan komunikasi.</p>{% endif %}
-  </section>
-  <section class="card p-5">
-    <h2 class="section-title">Follow-up anak</h2>
-    {% include "students/_followup_items.html" with items=followups %}
-  </section>
+    <section class="card">
+      <div class="card-header"><h2 class="card-title">Follow-up anak</h2></div>
+      <div class="card-body py-1">{% include "students/_followup_items.html" with items=followups %}</div>
+    </section>
+  </div>
 </div>
 {% endblock %}

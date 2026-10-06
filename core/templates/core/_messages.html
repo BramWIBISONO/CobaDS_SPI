@@ -1,3 +1,4 @@
-{% if messages %}<div class="mb-4 space-y-2">{% for m in messages %}
-  <div class="rounded-lg border px-4 py-3 text-sm {% if m.tags == 'error' %}border-red-200 bg-red-50 text-red-800{% elif m.tags == 'success' %}border-emerald-200 bg-emerald-50 text-emerald-800{% elif m.tags == 'warning' %}border-amber-200 bg-amber-50 text-amber-900{% else %}border-blue-200 bg-blue-50 text-blue-800{% endif %}">{{ m }}</div>
+{% if messages %}<div class="mb-5 space-y-2">{% for m in messages %}
+  <div class="callout {% if m.tags == 'error' %}callout-danger{% elif m.tags == 'warning' %}callout-warning{% elif m.tags == 'success' %}border-success-100 bg-success-50 text-success-700{% else %}callout-info{% endif %}" role="status">
+    <i class="ti ti-{% if m.tags == 'error' %}alert-circle{% elif m.tags == 'success' %}circle-check{% elif m.tags == 'warning' %}alert-triangle{% else %}info-circle{% endif %}" aria-hidden="true"></i><p>{{ m }}</p></div>
 {% endfor %}</div>{% endif %}

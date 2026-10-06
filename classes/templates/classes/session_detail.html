@@ -1,44 +1,77 @@
-{% extends "base.html" %}{% load ui %}
+{% extends "base.html" %}{% load ui spi %}
 {% block title %}Sesi {{ ses.kode|default:ses.kelas }}{% endblock %}
 {% block content %}
-{% pageheader title=ses.kode|default:ses.kelas|default:"Sesi" subtitle=ses.hari|title|add:", "|add:ses.sid icon="calendar-event" %}{% endpageheader %}
-<div class="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-  <div class="card p-4"><p class="field-label">Tanggal & jam</p><p class="font-semibold">{{ ses.tgl|date:"d M Y" }}</p><p class="text-sm text-slate-500">{{ ses.mulai|time:"H:i" }}–{{ ses.selesai|time:"H:i" }}</p></div>
-  <div class="card p-4"><p class="field-label">Guru</p><p class="font-semibold">{{ ses.guru|default:"—" }}</p><p class="text-sm text-slate-500">{{ ses.ruang|default:"" }}</p></div>
-  <div class="card p-4"><p class="field-label">Status</p><p class="mt-1">{% include "components/status_badge.html" with status=ses.status %}</p></div>
-  <div class="card p-4"><p class="field-label">Dikonfirmasi</p><p class="text-sm">{{ ses.konf_oleh|default:"belum" }}</p><p class="text-xs text-slate-500">{{ ses.konf_pada|date:"d M Y H:i" }}</p></div>
-</div>
-{% if closed %}<div class="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600"><i class="ti ti-lock" aria-hidden="true"></i> Periode sesi ini sudah CLOSED - tidak bisa diubah.</div>{% endif %}
-<form method="post" class="space-y-4">{% csrf_token %}
-  <section class="card p-5">
-    <h2 class="section-title">Kehadiran murid ({{ members|length }})</h2>
+{% with back=crumbs.0 %}<a href="{{ back.1 }}" class="back-link"><i class="ti ti-chevron-left" aria-hidden="true"></i>{{ back.0 }}</a>{% endwith %}
+
+<section class="card mb-5">
+  <div class="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+    <div class="flex min-w-0 items-center gap-4">
+      <span class="session-time h-16 w-16 py-0"><span class="text-[0.6875rem] font-semibold uppercase text-faint">{{ ses.tgl|date:"D" }}</span><span class="text-xl font-semibold text-ink tabular-nums">{{ ses.tgl|date:"j" }}</span></span>
+      <div class="min-w-0">
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-1"><h1 class="t-page">{{ ses.kode|default:ses.kelas|default:"Sesi" }}</h1>{% include "components/status_badge.html" with status=ses.status %}</div>
+        <p class="mt-1 text-sm text-muted"><span class="tabular-nums">{{ ses.tgl|date:"l, j F Y" }} · {{ ses.mulai|time:"H:i" }}–{{ ses.selesai|time:"H:i" }}</span> · {{ ses.guru|default:"guru belum ada" }}{% if ses.ruang %} · {{ ses.ruang }}{% endif %}</p>
+        <p class="mt-0.5 text-xs text-faint">{{ ses.sid }}{% if ses.konf_oleh %} · dikonfirmasi {{ ses.konf_oleh }} {{ ses.konf_pada|date:"d M Y H:i" }}{% endif %}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if closed %}<div class="callout callout-neutral mb-5"><i class="ti ti-lock" aria-hidden="true"></i><p>Periode sesi ini sudah CLOSED - kehadiran dan status tidak bisa diubah.</p></div>{% endif %}
+
+<form method="post" class="space-y-5" x-data="{ marked: 0, total: {{ members|length }}, count() { this.marked = this.$root.querySelectorAll('.att-opt input:checked').length }, all(v) { this.$root.querySelectorAll('.att-opt input[value=' + v + ']').forEach(i => { const name = i.name; if (!this.$root.querySelector('input[name=\'' + name + '\']:checked')) i.checked = true }); this.count() } }"
+      x-init="count()" @change="count()">{% csrf_token %}
+  <section class="card">
+    <div class="card-header">
+      <div><h2 class="card-title">Kehadiran murid</h2>
+        <p class="card-sub"><span x-text="marked">0</span> dari {{ members|length }} murid sudah ditandai</p></div>
+      {% if members and can_record and not closed %}
+        <button type="button" class="btn btn-secondary btn-sm" @click="all('HADIR')"><i class="ti ti-checks" aria-hidden="true"></i>Sisanya hadir</button>
+      {% endif %}
+    </div>
     {% if members %}
-      <ul class="divide-y divide-slate-100">
+      <div class="px-5 pt-3 sm:px-6"><div class="progress" aria-hidden="true"><span :style="'width:' + (total ? Math.round(marked * 100 / total) : 0) + '%'"></span></div></div>
+      <ul class="divide-y divide-line px-5 sm:px-6">
         {% for m in members %}
-          <li class="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
-            <p class="font-semibold text-slate-900">{{ m.nama }} <span class="text-xs font-normal text-slate-400">{{ m.std }}</span></p>
-            <fieldset class="flex flex-wrap gap-1.5" {% if not can_record or closed %}disabled{% endif %}>
+          <li class="att-row">
+            <div class="flex min-w-0 items-center gap-3">
+              <span class="avatar avatar-sm {{ m.nama|avatar_tone }}" aria-hidden="true">{{ m.nama|initials }}</span>
+              <div class="min-w-0"><p class="truncate text-sm font-medium text-ink">{{ m.nama }}</p><p class="text-xs text-muted tabular-nums">{{ m.std }}</p></div>
+            </div>
+            <fieldset class="att-options" {% if not can_record or closed %}disabled{% endif %}>
               <legend class="sr-only">Kehadiran {{ m.nama }}</legend>
               {% for v, lab in choices %}
-                <label class="cursor-pointer"><input type="radio" class="peer sr-only" name="att_{{ m.std }}" value="{{ v }}" {% if m.status == v %}checked{% endif %}>
-                  <span class="chip peer-checked:border-brand-600 peer-checked:bg-brand-50 peer-checked:text-brand-700 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-500/40">{{ lab }}</span></label>
+                <label class="att-opt"><input type="radio" class="sr-only" name="att_{{ m.std }}" value="{{ v }}" {% if m.status == v %}checked{% endif %}>
+                  <span class="att-{{ v }}"><i class="ti ti-{% if v == 'HADIR' %}check{% elif v == 'TERLAMBAT' %}clock{% elif v == 'IZIN' %}mail-opened{% else %}x{% endif %}" aria-hidden="true"></i>{{ lab }}</span></label>
               {% endfor %}
             </fieldset>
           </li>
         {% endfor %}
       </ul>
-    {% else %}<p class="text-sm text-slate-500">{% if ses.kode %}Tidak ada murid aktif di kelas {{ ses.kode }} pada tanggal ini.{% else %}Slot jadwal ini belum terhubung ke kode kelas - kehadiran per murid tidak bisa dicatat.{% endif %}</p>{% endif %}
+    {% else %}
+      <div class="card-body"><p class="text-sm text-muted">{% if ses.kode %}Tidak ada murid aktif di kelas {{ ses.kode }} pada tanggal ini.{% else %}Slot jadwal ini belum terhubung ke kode kelas - kehadiran per murid tidak bisa dicatat.{% endif %}</p></div>
+    {% endif %}
   </section>
-  <section class="card grid gap-4 p-5 sm:grid-cols-2">
-    <div><label class="field-label" for="st">Status sesi</label>
-      <select id="st" name="status" class="field" {% if not can_record or closed %}disabled{% endif %}>
-        {% for s in statuses %}<option value="{{ s }}" {% if ses.status == s or ses.status == "SCHEDULED" and s == "REALIZED" %}selected{% endif %}>{{ s }}</option>{% endfor %}</select></div>
-    {% if staff_manage %}<div><label class="field-label" for="gp">Guru pengganti (bila ada)</label>
-      <select id="gp" name="guru_pengganti" class="field" {% if closed %}disabled{% endif %}><option value="">—</option>{% for v, lab in teachers %}<option value="{{ v }}">{{ lab }}</option>{% endfor %}</select></div>{% endif %}
-    <div class="sm:col-span-2"><label class="field-label" for="cat">Catatan pembelajaran</label>
-      <textarea id="cat" name="catatan" rows="3" class="field" placeholder="Materi, kemajuan, hal yang perlu diperhatikan" {% if not can_record or closed %}disabled{% endif %}></textarea>
-      {% if ses.catatan %}<p class="mt-2 whitespace-pre-line rounded-lg bg-slate-50 p-3 text-sm text-slate-700">{{ ses.catatan }}</p>{% endif %}</div>
+
+  <section class="card">
+    <div class="card-header"><h2 class="card-title">Realisasi & catatan</h2></div>
+    <div class="card-body grid gap-4 sm:grid-cols-2">
+      <div><label class="field-label" for="st">Status sesi</label>
+        <select id="st" name="status" class="field" {% if not can_record or closed %}disabled{% endif %}>
+          {% for s in statuses %}<option value="{{ s }}" {% if ses.status == s or ses.status == "SCHEDULED" and s == "REALIZED" %}selected{% endif %}>{{ s|label_status }}</option>{% endfor %}</select>
+        <p class="field-hint">Disimpan sebagai “Terlaksana” kecuali Anda memilih lain.</p></div>
+      {% if staff_manage %}<div><label class="field-label" for="gp">Guru pengganti (bila ada)</label>
+        <select id="gp" name="guru_pengganti" class="field" {% if closed %}disabled{% endif %}><option value="">—</option>{% for v, lab in teachers %}<option value="{{ v }}">{{ lab }}</option>{% endfor %}</select></div>{% endif %}
+      <div class="sm:col-span-2"><label class="field-label" for="cat">Catatan pembelajaran</label>
+        <textarea id="cat" name="catatan" rows="3" class="field" placeholder="Materi, kemajuan, hal yang perlu diperhatikan" {% if not can_record or closed %}disabled{% endif %}></textarea>
+        {% if ses.catatan %}<p class="well mt-3 whitespace-pre-line text-sm text-ink-2">{{ ses.catatan }}</p>{% endif %}</div>
+    </div>
   </section>
-  {% if can_record and not closed %}<button class="btn btn-primary"><i class="ti ti-device-floppy" aria-hidden="true"></i>Simpan & konfirmasi sesi</button>{% endif %}
+
+  {% if can_record and not closed %}
+  <div class="form-actions">
+    <button class="btn btn-primary btn-lg"><i class="ti ti-device-floppy" aria-hidden="true"></i>Simpan & konfirmasi sesi</button>
+    <p class="text-[0.8125rem] text-muted"><span x-text="marked">0</span>/{{ members|length }} murid ditandai</p>
+  </div>
+  {% endif %}
 </form>
 {% endblock %}

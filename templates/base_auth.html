@@ -1,23 +1,43 @@
 {% load static %}<!doctype html>
-<html lang="id" class="h-full bg-slate-50">
+<html lang="id" class="h-full">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Masuk{% endblock %} · SPI Management</title>
-  <link rel="icon" href="{% static 'img/spi-logo.png' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{% block title %}Masuk{% endblock %} · SPI Super App</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32.png' %}">
+  <link rel="preload" href="{% static 'vendor/fonts/inter-latin-wght-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
   <link rel="stylesheet" href="{% static 'vendor/tabler/tabler-icons.min.css' %}">
 </head>
-<body class="flex min-h-full items-center justify-center bg-gradient-to-br from-brand-900 via-brand-700 to-brand-500 px-4 py-10 text-slate-800">
-  <div class="w-full max-w-md">
-    <div class="mb-6 flex items-center justify-center gap-3 text-white">
-      <img src="{% static 'img/spi-logo.png' %}" alt="SPI" class="h-12 w-12 rounded-lg bg-white object-contain p-1">
-      <div><p class="text-lg font-semibold leading-tight">SPI Management</p><p class="text-sm text-blue-100">Murid · Kelas · SPP · Akademik</p></div>
+<body class="min-h-full bg-canvas">
+<div class="grid min-h-dvh lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
+  <aside class="relative hidden flex-col justify-between overflow-hidden bg-brand-900 p-10 text-white lg:flex xl:p-14">
+    <img src="{% static 'img/spi-mark.png' %}" alt="" class="pointer-events-none absolute -bottom-24 -right-24 w-[26rem] opacity-[0.07]">
+    <div class="flex items-center gap-3">
+      <img src="{% static 'img/spi-mark.png' %}" alt="" class="h-9 w-9">
+      <div class="leading-tight"><p class="font-semibold">SPI Super App</p><p class="text-xs text-white/60">Sekolah Programming Indonesia</p></div>
     </div>
-    <div class="card p-6 sm:p-8">
+    <div class="relative max-w-md">
+      <p class="t-eyebrow text-accent-400">Pusat kendali operasional</p>
+      <p class="mt-4 text-[2rem] font-semibold leading-[1.15] tracking-[-0.025em]">Murid, kelas, sesi, dan SPP dalam satu tempat kerja.</p>
+      <ul class="mt-8 space-y-4 text-sm text-white/75">
+        <li class="flex gap-3"><i class="ti ti-checklist mt-0.5 text-lg text-accent-400" aria-hidden="true"></i>Pekerjaan yang perlu tindakan tampil lebih dulu setiap pagi.</li>
+        <li class="flex gap-3"><i class="ti ti-calendar-check mt-0.5 text-lg text-accent-400" aria-hidden="true"></i>Guru membuka jadwal, mencatat kehadiran, selesai dalam beberapa klik.</li>
+        <li class="flex gap-3"><i class="ti ti-shield-check mt-0.5 text-lg text-accent-400" aria-hidden="true"></i>Data tiap cabang terpisah; setiap perubahan tercatat di jejak audit.</li>
+      </ul>
+    </div>
+    <p class="relative text-xs text-white/45">© {% now "Y" %} Sekolah Programming Indonesia</p>
+  </aside>
+  <main class="flex items-center justify-center px-4 py-10 sm:px-8">
+    <div class="w-full max-w-[25rem]">
+      <div class="mb-8 flex items-center gap-3 lg:hidden">
+        <img src="{% static 'img/spi-mark.png' %}" alt="" class="h-9 w-9">
+        <div class="leading-tight"><p class="font-semibold text-ink">SPI Super App</p><p class="text-xs text-muted">Sekolah Programming Indonesia</p></div>
+      </div>
       {% include "core/_messages.html" %}
       {% block content %}{% endblock %}
     </div>
-  </div>
+  </main>
+</div>
 </body>
 </html>

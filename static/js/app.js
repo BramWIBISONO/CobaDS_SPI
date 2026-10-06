@@ -1,6 +1,7 @@
 /* Perilaku umum aplikasi (progressive enhancement - semua aksi tetap jalan tanpa JS):
    - form / tombol dengan data-confirm="..." meminta konfirmasi lewat dialog sebelum dikirim
-   - bilah muat di atas halaman saat permintaan HTMX berjalan; pesan jelas bila server / jaringan gagal */
+   - bilah muat di atas halaman saat permintaan HTMX berjalan; pesan jelas bila server / jaringan gagal
+   - sidebar dapat diciutkan (diingat per peramban); Ctrl+K atau "/" membuka pencarian global */
 (function () {
   const dialog = () => document.getElementById("confirm-dialog");
 
@@ -32,17 +33,65 @@
     });
   });
 
+  const ICONS = { success: "circle-check", error: "alert-circle", warning: "alert-triangle", info: "info-circle" };
+
   function toast(text, kind) {
     const box = document.getElementById("toasts");
     if (!box) return;
+    kind = ICONS[kind] ? kind : "error";
     const el = document.createElement("div");
-    el.className = "toast toast-" + (kind || "error");
+    el.className = "toast toast-" + kind;
     el.setAttribute("role", "status");
-    el.textContent = text;
+    const icon = document.createElement("i");
+    icon.className = "ti ti-" + ICONS[kind];
+    icon.setAttribute("aria-hidden", "true");
+    const span = document.createElement("span");
+    span.className = "flex-1";
+    span.textContent = text;
+    el.append(icon, span);
     box.appendChild(el);
-    setTimeout(() => el.remove(), 8000);
+    setTimeout(() => el.remove(), 7000);
   }
+
+  function toggleSidebar() {
+    const collapsed = document.documentElement.classList.toggle("sb-collapsed");
+    try { localStorage.setItem("spi.sidebar", collapsed ? "collapsed" : "expanded"); } catch (e) { /* mode privat: tidak diingat */ }
+  }
+
   window.SPIToast = toast;
+  window.SPI = { toast, toggleSidebar };
+
+  /* Pencarian global: Ctrl/Cmd+K atau "/" (di luar kolom isian); panah atas/bawah menelusuri hasil */
+  document.addEventListener("keydown", (e) => {
+    const input = document.querySelector("[data-global-search]");
+    if (!input) return;
+    const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName) || document.activeElement.isContentEditable;
+    if (((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") || (e.key === "/" && !typing)) {
+      e.preventDefault();
+      if (input.offsetParent === null) {
+        const opener = document.querySelector("[aria-label='Cari']");
+        if (opener) opener.click();
+      }
+      input.focus();
+      input.select();
+      return;
+    }
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+    const hits = Array.from(document.querySelectorAll("#search-results .search-hit"));
+    if (!hits.length || !(document.activeElement === input || hits.includes(document.activeElement))) return;
+    e.preventDefault();
+    const i = hits.indexOf(document.activeElement);
+    const next = e.key === "ArrowDown" ? (i + 1) % hits.length : i <= 0 ? -1 : i - 1;
+    (next < 0 ? input : hits[next]).focus();
+  });
+
+  /* Menu <details data-menu>: tutup bila klik di luar / Esc, dan hanya satu yang terbuka */
+  document.addEventListener("click", (e) => {
+    document.querySelectorAll("details[data-menu][open]").forEach((d) => { if (!d.contains(e.target)) d.removeAttribute("open"); });
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") document.querySelectorAll("details[data-menu][open]").forEach((d) => d.removeAttribute("open"));
+  });
 
   let pending = 0;
   const bar = () => document.getElementById("loading-bar");

@@ -1,21 +1,23 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load ui %}
 {% block title %}Notifikasi{% endblock %}
 {% block content %}
-{% include "components/page_header.html" with title="Notifikasi" subtitle="Pekerjaan dan peringatan untuk Anda di cabang ini" icon="bell" %}
+{% pageheader title="Notifikasi" subtitle="Pekerjaan dan peringatan untuk Anda di cabang ini" icon="bell" %}
+  {% if items %}<form method="post" action="{% url 'core:notifikasi_baca_semua' %}">{% csrf_token %}
+    <button class="btn btn-secondary"><i class="ti ti-checks" aria-hidden="true"></i>Tandai semua dibaca</button></form>{% endif %}
+{% endpageheader %}
 {% if items %}
-  <form method="post" action="{% url 'core:notifikasi_baca_semua' %}" class="mb-3">{% csrf_token %}
-    <button class="btn btn-secondary"><i class="ti ti-checks" aria-hidden="true"></i>Tandai semua sudah dibaca</button></form>
-  <ul class="card divide-y divide-slate-100">
+  <ul class="card max-w-3xl divide-y divide-line overflow-hidden">
     {% for n in items %}
-      <li class="flex items-start gap-3 p-4 {% if not n.read_at %}bg-brand-50/60{% endif %}">
-        <i class="ti ti-{% if n.read_at %}bell{% else %}bell-ringing{% endif %} mt-0.5 text-lg text-brand-600" aria-hidden="true"></i>
+      <li class="flex items-start gap-4 px-5 py-4 {% if not n.read_at %}bg-brand-25{% endif %}">
+        <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl {% if n.read_at %}bg-subtle text-faint{% else %}bg-brand-50 text-brand-600{% endif %}">
+          <i class="ti ti-{% if n.read_at %}bell{% else %}bell-ringing{% endif %} text-lg" aria-hidden="true"></i></span>
         <div class="min-w-0 flex-1">
-          <p class="font-semibold text-slate-900">{{ n.title }}</p>
-          {% if n.body %}<p class="text-sm text-slate-600">{{ n.body }}</p>{% endif %}
-          <p class="mt-1 text-xs text-slate-400">{{ n.created_at|date:"d M Y H:i" }}</p>
+          <p class="flex items-center gap-2 text-sm font-semibold text-ink">{% if not n.read_at %}<span class="h-2 w-2 rounded-full bg-brand-500" aria-label="belum dibaca"></span>{% endif %}{{ n.title }}</p>
+          {% if n.body %}<p class="mt-0.5 text-sm text-muted">{{ n.body }}</p>{% endif %}
+          <p class="mt-1 text-xs text-faint">{{ n.created_at|date:"d M Y H:i" }}</p>
         </div>
         <form method="post" action="{% url 'core:notifikasi_baca' n.pk %}">{% csrf_token %}
-          <button class="chip">{% if n.url %}Buka{% else %}Tandai dibaca{% endif %}</button></form>
+          <button class="btn {% if n.url %}btn-secondary{% else %}btn-ghost{% endif %} btn-sm">{% if n.url %}Buka<i class="ti ti-arrow-right" aria-hidden="true"></i>{% else %}Tandai dibaca{% endif %}</button></form>
       </li>
     {% endfor %}
   </ul>

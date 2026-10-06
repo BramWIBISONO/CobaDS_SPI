@@ -1,4 +1,6 @@
 """Format angka Indonesia dan warna status untuk templat dasbor."""
+from decimal import Decimal
+
 from django import template
 
 from dashboards.calc.base import fixed, fold
@@ -18,7 +20,7 @@ IKON = {"baik": "circle-check", "perhatian": "alert-circle", "serius": "alert-tr
 
 
 def _is_number(v):
-    return isinstance(v, (int, float)) and not isinstance(v, bool)
+    return isinstance(v, (int, float, Decimal)) and not isinstance(v, bool)
 
 
 @register.filter
@@ -43,3 +45,14 @@ def tone_status(status):
 @register.filter
 def ikon_status(status):
     return IKON[tone_status(status)]
+
+
+LABEL = {"active": "Aktif", "on leave": "Cuti", "off": "OFF", "pending": "Pending", "alumni/inactive": "Alumni",
+         "scheduled": "Terjadwal", "realized": "Terlaksana", "make-up": "Pengganti", "cancelled": "Batal",
+         "hadir": "Hadir", "terlambat": "Terlambat", "izin": "Izin", "absen": "Tidak hadir", "inactive": "Tidak aktif"}
+
+
+@register.filter
+def label_status(status):
+    """Teks status yang ramah dibaca (nilai asli tetap disimpan & tampil sebagai judul/tooltip)."""
+    return LABEL.get(fold(status), status)

@@ -152,6 +152,11 @@ def branch_data(request):
 
 
 def beranda_context(request):
-    h = beranda(branch_data(request))
+    from core.permissions import perms_for_caps
+
+    from .command import command_center
+
+    data = branch_data(request)
+    h = beranda(data)
     spp_label = f"SPP diterima {label(h['spp_bulan'])} (Rp)" if h["spp_bulan"] else "SPP diterima (Rp)"
-    return {"h": h, "spp_label": spp_label}
+    return {"h": h, "spp_label": spp_label, "cc": command_center(request, data, h, perms_for_caps(request.caps))}

@@ -33,7 +33,7 @@ def teacher_list(request):
     rows = [r for r in services.teacher_rows(request.branch, timezone.localdate()) if not status or fold(r["t"].status) == fold(status)]
     rows.sort(key=lambda r: (-r["aktif"], fold(r["t"].name)))
     return render(request, "masterdata/teachers.html", {
-        "page": paginate(request, rows), "status": status, "found": len(rows),
+        "page": paginate(request, rows), "status": status, "found": len(rows), "max_aktif": max((r["aktif"] for r in rows), default=0),
         "crumbs": [("Beranda", reverse("core:home")), ("Guru", None)]})
 
 

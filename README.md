@@ -13,6 +13,12 @@ tahap 2 (operasional: form, SPP, kelas, akademik, OFF), tahap 3 (manajemen, admi
 Dasbor gelombang 1 selesai: sistem desain gaya B (kartu berwarna per topik), Beranda dan Laporan Murid & SPP dengan angka sama
 persis dengan HOME / DASHBOARD Excel, dan akun demo per peran untuk dicoba di laptop.
 
+UI/UX overhaul (Okt 2026): satu design system netral dengan biru SPI (Inter, token warna/radius/bayangan, komponen bersama) -
+lihat `docs/DESIGN_SYSTEM.md` dan halaman UI Kit (`/ui-kit/`). Beranda menjadi Command Center (perlu tindakan, jadwal hari ini,
+angka kunci, akademik, keuangan, aktivitas); kerangka aplikasi dengan sidebar yang bisa diciutkan / laci di ponsel, pencarian
+global (Ctrl+K), tombol Tambah sesuai izin; modul Murid, Orang Tua, Kelas, Guru, Sesi (kalender Hari / Minggu / Bulan / Tertunda),
+Jadwal Saya & absensi guru didesain ulang dan diuji di 390 / 768 / 1440 px.
+
 ## Dasbor (gelombang 1)
 
 - **Beranda** (`/`): situasi sekarang seperti HOME Excel (murid aktif, SPP bulan buku kas terakhir, OFF, kelas, masalah kritis,
@@ -23,7 +29,7 @@ persis dengan HOME / DASHBOARD Excel, dan akun demo per peran untuk dicoba di la
   dan menulis `dashboards/tests/golden/jkt_golden.json`; `.venv/Scripts/python -m pytest -m slow dashboards` membandingkan tanpa
   toleransi.
 - Akun demo untuk dicoba di laptop: `docs/AKUN_DEMO.md`.
-- Aset tampilan lokal: `npm run vendor` (htmx, Alpine, Chart.js, Plus Jakarta Sans, Tabler Icons) lalu `npm run build:css`.
+- Aset tampilan lokal: `npm run vendor` (htmx, Alpine, Chart.js, Inter, Tabler Icons) lalu `npm run build:css`.
 
 ## Menyiapkan (Windows, Git Bash, dari folder `app web`)
 

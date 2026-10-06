@@ -1,43 +1,84 @@
 {% extends "base.html" %}{% load ui spi %}
 {% block title %}Kelas{% endblock %}
 {% block content %}
-{% pageheader title="Kelas" subtitle="Kapasitas, murid aktif dan kursi kosong per kelas" icon="school" %}
+{% pageheader title="Kelas" count=found subtitle="Kapasitas, murid aktif, jadwal, dan guru setiap kelas" icon="school" %}
   {% if perm.class_manage %}<a href="{% url 'classes:create' %}" class="btn btn-primary"><i class="ti ti-plus" aria-hidden="true"></i>Kelas baru</a>{% endif %}
 {% endpageheader %}
-<div class="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-  <div class="kpi tone-kelas min-h-0"><p class="kpi-label">Kelas aktif</p><p class="kpi-value">{{ summary.aktif|angka }}</p></div>
-  <div class="kpi tone-spp min-h-0"><p class="kpi-label">Kursi kosong</p><p class="kpi-value">{{ summary.kursi|angka }}</p><p class="kpi-sub">kelas Partner & Group aktif</p></div>
-  <div class="kpi tone-off min-h-0"><p class="kpi-label">Penuh</p><p class="kpi-value">{{ summary.penuh|angka }}</p></div>
-  <div class="kpi tone-kritis min-h-0"><p class="kpi-label">Melebihi kapasitas</p><p class="kpi-value">{{ summary.melebihi|angka }}</p></div>
+
+<div class="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+  <div class="kpi kpi-compact"><div class="kpi-head"><p class="kpi-label">Kelas aktif</p><span class="kpi-icon"><i class="ti ti-school" aria-hidden="true"></i></span></div><p class="kpi-value">{{ summary.aktif|angka }}</p></div>
+  <div class="kpi kpi-compact"><div class="kpi-head"><p class="kpi-label">Kursi kosong</p><span class="kpi-icon"><i class="ti ti-armchair" aria-hidden="true"></i></span></div><p class="kpi-value">{{ summary.kursi|angka }}</p><p class="kpi-sub">kelas Partner & Group aktif</p></div>
+  <div class="kpi kpi-compact"><div class="kpi-head"><p class="kpi-label">Penuh</p><span class="kpi-icon"><i class="ti ti-users" aria-hidden="true"></i></span></div><p class="kpi-value">{{ summary.penuh|angka }}</p></div>
+  <div class="kpi kpi-compact {% if summary.melebihi %}kpi-warning{% endif %}"><div class="kpi-head"><p class="kpi-label">Melebihi kapasitas</p><span class="kpi-icon"><i class="ti ti-users-minus" aria-hidden="true"></i></span></div><p class="kpi-value">{{ summary.melebihi|angka }}</p></div>
 </div>
-<form method="get" class="filter-bar lg:grid-cols-5" role="search">
-  <div><label class="field-label" for="cq">Kode kelas</label><input id="cq" type="search" name="q" value="{{ f.q }}" class="field"></div>
-  <div><label class="field-label" for="cs">Status</label><select id="cs" name="status" class="field" onchange="this.form.submit()">
-    {% for v, lab in "aktif|Berjalan (aktif, cuti, baru),semua|Semua,ACTIVE|Aktif,CUTI|Semua murid cuti,INACTIVE|Tidak aktif,UNKNOWN|Belum ada murid"|pairs %}<option value="{{ v }}" {% if f.status == v %}selected{% endif %}>{{ lab }}</option>{% endfor %}</select></div>
-  <div><label class="field-label" for="ct">Tipe</label><select id="ct" name="tipe" class="field" onchange="this.form.submit()"><option value="">Semua</option>
-    {% for t in tipes %}<option {% if f.tipe == t %}selected{% endif %}>{{ t }}</option>{% endfor %}</select></div>
-  <div><label class="field-label" for="cg">Guru</label><select id="cg" name="guru" class="field" onchange="this.form.submit()"><option value="">Semua</option>
-    {% for g in gurus %}<option {% if f.guru == g %}selected{% endif %}>{{ g }}</option>{% endfor %}</select></div>
-  <div class="flex items-end gap-2"><button class="btn btn-primary">Cari</button><a href="{% url 'classes:list' %}" class="btn btn-secondary">Atur ulang</a></div>
+
+<form method="get" class="mb-4 flex flex-wrap items-center gap-2" role="search">
+  <input type="hidden" name="tampilan" value="{{ view }}">
+  <div class="input-icon min-w-0 flex-1 sm:max-w-[14rem]"><i class="ti ti-search" aria-hidden="true"></i>
+    <label class="sr-only" for="cq">Kode kelas</label><input id="cq" type="search" name="q" value="{{ f.q }}" class="field" placeholder="Kode kelas…"></div>
+  <label class="sr-only" for="cs">Status</label>
+  <select id="cs" name="status" class="field w-auto" onchange="this.form.submit()">
+    {% for v, lab in "aktif|Kelas berjalan,semua|Semua status,ACTIVE|Aktif,CUTI|Semua murid cuti,INACTIVE|Tidak aktif,UNKNOWN|Belum ada murid"|pairs %}<option value="{{ v }}" {% if f.status == v %}selected{% endif %}>{{ lab }}</option>{% endfor %}</select>
+  <label class="sr-only" for="ct">Tipe</label>
+  <select id="ct" name="tipe" class="field w-auto" onchange="this.form.submit()"><option value="">Semua tipe</option>
+    {% for t in tipes %}<option {% if f.tipe == t %}selected{% endif %}>{{ t }}</option>{% endfor %}</select>
+  <label class="sr-only" for="cg">Guru</label>
+  <select id="cg" name="guru" class="field w-auto" onchange="this.form.submit()"><option value="">Semua guru</option>
+    {% for g in gurus %}<option {% if f.guru == g %}selected{% endif %}>{{ g }}</option>{% endfor %}</select>
+  <noscript><button class="btn btn-primary">Cari</button></noscript>
+  {% if f.q or f.tipe or f.guru or f.status != "aktif" %}<a href="{% url 'classes:list' %}?tampilan={{ view }}" class="btn btn-ghost"><i class="ti ti-x" aria-hidden="true"></i>Atur ulang</a>{% endif %}
+  <div class="segmented ml-auto" role="group" aria-label="Tampilan">
+    <a href="{% qs request tampilan='kartu' page=None %}" {% if view == "kartu" %}aria-current="page"{% endif %}><i class="ti ti-layout-grid" aria-hidden="true"></i><span class="hidden sm:inline">Kartu</span></a>
+    <a href="{% qs request tampilan='tabel' page=None %}" {% if view == "tabel" %}aria-current="page"{% endif %}><i class="ti ti-list" aria-hidden="true"></i><span class="hidden sm:inline">Tabel</span></a>
+  </div>
 </form>
+
 {% if page.object_list %}
-<p class="mb-2 text-sm text-slate-600"><strong>{{ found }}</strong> kelas</p>
-<div class="table-wrap overflow-x-auto">
-  <table class="data-table">
-    <thead><tr>{% sort_th request "kode" "Kelas" %}<th>Tipe</th><th>Program / level</th>{% sort_th request "guru" "Guru" %}{% sort_th request "aktif" "Aktif / kapasitas" "num" %}<th class="num">Cuti</th>{% sort_th request "kursi" "Kursi kosong" "num" %}<th>Status</th></tr></thead>
-    <tbody>
-      {% for r in page.object_list %}{% with k=r.k %}
-        <tr>
-          <td class="font-semibold"><a href="{% url 'classes:detail' k.row.code %}" class="text-slate-900 hover:text-brand-700 hover:underline">{{ k.row.code }}</a></td>
-          <td>{{ k.row.tipe|default:"—" }}</td><td>{{ k.row.level|default:k.row.program|default:"—" }}</td><td>{{ k.row.guru|default:"—" }}</td>
-          <td class="num">{{ k.aktif }} / {{ k.kapasitas|angka|default:"—" }}</td><td class="num">{{ k.cuti }}</td><td class="num">{{ k.kursi_kosong|angka }}</td>
-          <td><span class="status-badge {% if k.status_kapasitas == 'OVER CAPACITY' %}st-kritis{% elif k.status_kapasitas == 'FULL' %}st-perhatian{% elif k.status_kelas == 'ACTIVE' %}st-baik{% else %}st-netral{% endif %}">{{ k.status_kelas }}{% if k.status_kelas == "ACTIVE" %} · {{ k.status_kapasitas }}{% endif %}</span></td>
-        </tr>
-      {% endwith %}{% endfor %}
-    </tbody>
-  </table>
-</div>
-{% include "components/pagination.html" %}
+  {% if view == "kartu" %}
+  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+    {% for r in page.object_list %}{% with k=r.k %}
+      <a href="{% url 'classes:detail' k.row.code %}" class="card card-link flex flex-col p-5">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex min-w-0 items-center gap-3">
+            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-sm font-bold ev-{{ k.row.code|slice:':1'|upper }}" style="background: var(--ev-bg); color: var(--ev-fg)">{{ k.row.code|slice:":1"|upper }}</span>
+            <div class="min-w-0"><p class="truncate text-[0.9375rem] font-semibold text-ink">{{ k.row.code }}</p>
+              <p class="truncate text-xs text-muted">{{ k.row.tipe|default:"tipe —" }} · {{ k.row.level|default:k.row.program|default:"program —" }}</p></div>
+          </div>
+          <span class="status-badge {% if k.status_kapasitas == 'OVER CAPACITY' %}st-kritis{% elif k.status_kapasitas == 'FULL' %}st-perhatian{% elif k.status_kelas == 'ACTIVE' %}st-baik{% else %}st-netral{% endif %}"><span class="dot" aria-hidden="true"></span>{% if k.status_kapasitas == 'OVER CAPACITY' %}Melebihi{% elif k.status_kapasitas == 'FULL' %}Penuh{% elif k.status_kelas == 'ACTIVE' %}Aktif{% elif k.status_kelas == 'CUTI' %}Cuti{% elif k.status_kelas == 'INACTIVE' %}Tidak aktif{% else %}Belum ada murid{% endif %}</span>
+        </div>
+        <div class="mt-4 flex items-center gap-2 text-[0.8125rem] text-ink-2"><i class="ti ti-user-star text-faint" aria-hidden="true"></i><span class="truncate">{{ k.row.guru|default:"Guru belum ada" }}</span></div>
+        <div class="mt-1.5 flex items-start gap-2 text-[0.8125rem] text-ink-2"><i class="ti ti-calendar-time mt-0.5 text-faint" aria-hidden="true"></i>
+          <span class="min-w-0">{% for d, a, b in r.slots %}<span class="whitespace-nowrap">{{ d }} {{ a|time:"H:i" }}</span>{% if not forloop.last %}<span class="text-faint"> · </span>{% endif %}{% empty %}<span class="text-muted">Jadwal belum ada</span>{% endfor %}</span></div>
+        <div class="mt-auto pt-4">
+          <div class="flex items-center justify-between text-xs text-muted"><span>Murid aktif{% if k.cuti %} · {{ k.cuti }} cuti{% endif %}</span>
+            <span class="font-semibold tabular-nums text-ink">{{ k.aktif }}<span class="font-normal text-muted"> / {{ k.kapasitas|angka|default:"—" }}</span></span></div>
+          <div class="progress mt-1.5 {% if k.status_kapasitas == 'OVER CAPACITY' %}is-danger{% elif k.status_kapasitas == 'FULL' %}is-warning{% endif %}"><span style="width: {{ k.aktif|pct_of:k.kapasitas }}%"></span></div>
+        </div>
+      </a>
+    {% endwith %}{% endfor %}
+  </div>
+  {% if page.paginator.num_pages > 1 %}<div class="table-wrap mt-4 overflow-x-auto">{% include "components/pagination.html" %}</div>{% endif %}
+  {% else %}
+  <div class="table-wrap overflow-x-auto">
+    <table class="data-table">
+      <thead><tr>{% sort_th request "kode" "Kelas" %}<th>Program / level</th>{% sort_th request "guru" "Guru" %}<th>Jadwal</th>{% sort_th request "aktif" "Aktif / kapasitas" %}<th class="num">Cuti</th>{% sort_th request "kursi" "Kursi kosong" "num" %}<th>Status</th></tr></thead>
+      <tbody>
+        {% for r in page.object_list %}{% with k=r.k %}
+          <tr>
+            <td class="primary"><a href="{% url 'classes:detail' k.row.code %}" class="row-link">{{ k.row.code }}</a><span class="cell-sub">{{ k.row.tipe|default:"—" }}</span></td>
+            <td>{{ k.row.level|default:k.row.program|default:"—" }}</td><td>{{ k.row.guru|default:"—" }}</td>
+            <td class="text-[0.8125rem]">{% for d, a, b in r.slots %}{{ d }} {{ a|time:"H:i" }}{% if not forloop.last %} · {% endif %}{% empty %}<span class="text-faint">—</span>{% endfor %}</td>
+            <td><div class="flex w-36 items-center gap-2"><div class="progress flex-1 {% if k.status_kapasitas == 'OVER CAPACITY' %}is-danger{% elif k.status_kapasitas == 'FULL' %}is-warning{% endif %}"><span style="width: {{ k.aktif|pct_of:k.kapasitas }}%"></span></div>
+              <span class="text-xs tabular-nums">{{ k.aktif }} / {{ k.kapasitas|angka|default:"—" }}</span></div></td>
+            <td class="num">{{ k.cuti }}</td><td class="num">{{ k.kursi_kosong|angka }}</td>
+            <td><span class="status-badge {% if k.status_kapasitas == 'OVER CAPACITY' %}st-kritis{% elif k.status_kapasitas == 'FULL' %}st-perhatian{% elif k.status_kelas == 'ACTIVE' %}st-baik{% else %}st-netral{% endif %}" title="{{ k.status_kelas }} · {{ k.status_kapasitas }}"><span class="dot" aria-hidden="true"></span>{{ k.status_kelas }}{% if k.status_kelas == "ACTIVE" %} · {{ k.status_kapasitas }}{% endif %}</span></td>
+          </tr>
+        {% endwith %}{% endfor %}
+      </tbody>
+    </table>
+    {% include "components/pagination.html" %}
+  </div>
+  {% endif %}
 {% else %}
   {% include "components/empty_state.html" with icon="school-off" title="Tidak ada kelas di saringan ini" text="Ubah saringan atau buat kelas baru." %}
 {% endif %}

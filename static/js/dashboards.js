@@ -2,7 +2,7 @@
    Batang tipis berujung bulat 4px, garis 2px, grid samar, tooltip angka Indonesia; klik batang = tautan saringan di tabel. */
 (function () {
   const fmt = new Intl.NumberFormat("id-ID");
-  const ink = "#475569", grid = "#e2e8f0";
+  const ink = "#66728b", grid = "#eef1f6";
   const charts = new WeakMap();
 
   function config(spec) {
@@ -40,7 +40,11 @@
 
   function init(root) {
     if (!window.Chart) return;
-    Chart.defaults.font.family = '"Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif';
+    Chart.defaults.font.family = '"Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif';
+    Chart.defaults.font.size = 12;
+    Chart.defaults.plugins.tooltip.backgroundColor = "#0f1a33";
+    Chart.defaults.plugins.tooltip.padding = 10;
+    Chart.defaults.plugins.tooltip.cornerRadius = 8;
     (root || document).querySelectorAll("canvas[data-chart]").forEach((canvas) => {
       const el = document.getElementById(canvas.dataset.chart);
       if (!el) return;

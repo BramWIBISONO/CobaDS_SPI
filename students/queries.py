@@ -55,6 +55,15 @@ def sort_rows(rows, key, desc):
     return sorted(rows, key=lambda r: (r[field] is None, r[field] or blank_last, fold(r["nama"])), reverse=desc)
 
 
+def status_counts(rows):
+    """Jumlah murid per status sekarang (untuk penyaring cepat di daftar murid)."""
+    counts = {s: 0 for s in STATUS_LABEL}
+    for r in rows:
+        if r["status"] in counts:
+            counts[r["status"]] += 1
+    return counts
+
+
 def filter_options(rows):
     def distinct(k):
         return sorted({r[k] for r in rows if r[k]}, key=fold)

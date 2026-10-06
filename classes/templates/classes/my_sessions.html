@@ -1,33 +1,56 @@
-{% extends "base.html" %}{% load ui %}
+{% extends "base.html" %}{% load ui spi %}
 {% block title %}Jadwal Saya{% endblock %}
 {% block content %}
-{% pageheader title="Jadwal Saya" subtitle="Kelas hari ini, catat kehadiran & catatan belajar, lalu konfirmasi sesi" icon="calendar-user" %}{% endpageheader %}
+<section class="mb-6">
+  <p class="t-meta flex items-center gap-1.5"><i class="ti ti-calendar" aria-hidden="true"></i>{{ today|date:"l, j F Y" }}</p>
+  <h1 class="t-page mt-2">Jadwal Saya</h1>
+  <p class="page-sub">{% if has_name %}{{ today_items|length }} sesi hari ini{% if pending %} · {{ pending|length }} sesi lampau perlu dikonfirmasi{% endif %}. Buka sesi, catat kehadiran, lalu simpan.{% else %}Jadwal tampil setelah nama guru Anda diatur.{% endif %}</p>
+</section>
+
 {% if not has_name %}
   {% include "components/empty_state.html" with icon="user-question" title="Nama guru Anda belum diatur" text="Minta Branch Admin mengisi 'Nama guru' di Pengguna & Akses agar jadwal Anda tampil di sini." %}
 {% else %}
-<div class="grid gap-4 lg:grid-cols-3">
-  <section class="card p-5 lg:col-span-2">
-    <h2 class="section-title"><i class="ti ti-sun" aria-hidden="true"></i>Hari ini · {{ today|date:"l, d M Y" }}</h2>
-    {% if today_items %}<ul class="space-y-2">{% for s in today_items %}
-      <li><a href="{% url 'classes:session' s.sid %}" class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 p-3 hover:border-brand-500 hover:bg-brand-50/40">
-        <div><p class="text-lg font-bold tabular-nums text-slate-900">{{ s.mulai|time:"H:i" }}–{{ s.selesai|time:"H:i" }}</p>
-          <p class="text-sm text-slate-600">{{ s.kode|default:s.kelas }} · {{ s.ruang|default:"" }}</p></div>
-        <span class="flex items-center gap-2">{% include "components/status_badge.html" with status=s.status %}<i class="ti ti-chevron-right text-slate-400" aria-hidden="true"></i></span></a></li>
-    {% endfor %}</ul>
-    {% else %}<p class="text-sm text-slate-500">Tidak ada kelas hari ini.</p>{% endif %}
-  </section>
-  <section class="card p-5">
-    <h2 class="section-title"><i class="ti ti-alert-triangle" aria-hidden="true"></i>Belum dikonfirmasi</h2>
-    {% include "classes/_session_items.html" with items=pending empty="Semua sesi lampau sudah dikonfirmasi." %}
-  </section>
-  <section class="card p-5 lg:col-span-2">
-    <h2 class="section-title">14 hari ke depan</h2>
-    {% include "classes/_session_items.html" with items=upcoming empty="Belum ada sesi terjadwal." %}
-  </section>
-  <section class="card p-5">
-    <h2 class="section-title">Terakhir selesai</h2>
-    {% include "classes/_session_items.html" with items=done empty="Belum ada." %}
-  </section>
+<div class="grid gap-5 lg:grid-cols-3">
+  <div class="space-y-5 lg:col-span-2">
+    <section aria-labelledby="hari-ini">
+      <h2 id="hari-ini" class="t-section mb-3">Hari ini</h2>
+      {% if today_items %}
+        <ul class="space-y-3">
+          {% for s in today_items %}
+            <li class="session-card">
+              <span class="session-time"><span class="text-base font-semibold text-ink tabular-nums">{{ s.mulai|time:"H:i" }}</span><span class="text-xs text-muted tabular-nums">{{ s.selesai|time:"H:i" }}</span></span>
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-[0.9375rem] font-semibold text-ink">{{ s.kode|default:s.kelas }}</p>
+                <p class="truncate text-[0.8125rem] text-muted">{{ s.ruang|default:"ruang belum diisi" }} · {{ s.hari|title }}</p>
+                <div class="mt-2">{% include "components/status_badge.html" with status=s.status %}</div>
+              </div>
+              <a href="{% url 'classes:session' s.sid %}" class="btn {% if s.status == 'SCHEDULED' %}btn-primary{% else %}btn-secondary{% endif %} shrink-0">
+                {% if s.status == "SCHEDULED" %}<i class="ti ti-clipboard-check" aria-hidden="true"></i>Absensi{% else %}Lihat{% endif %}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        {% include "components/empty_state.html" with icon="mug" title="Tidak ada kelas hari ini" text="Sesi berikutnya ada di daftar 14 hari ke depan." %}
+      {% endif %}
+    </section>
+
+    <section class="card" aria-labelledby="ke-depan">
+      <div class="card-header"><h2 id="ke-depan" class="card-title">14 hari ke depan</h2></div>
+      <div class="card-body py-1">{% include "classes/_session_items.html" with items=upcoming empty="Belum ada sesi terjadwal." %}</div>
+    </section>
+  </div>
+
+  <div class="space-y-5">
+    <section class="card {% if pending %}border-warning-100{% endif %}" aria-labelledby="tertunda">
+      <div class="card-header"><div><h2 id="tertunda" class="card-title flex items-center gap-2">{% if pending %}<i class="ti ti-alert-triangle text-warning-600" aria-hidden="true"></i>{% endif %}Belum dikonfirmasi</h2>
+        <p class="card-sub">Sesi lampau yang absensinya belum disimpan</p></div></div>
+      <div class="card-body py-1">{% include "classes/_session_items.html" with items=pending empty="Semua sesi lampau sudah dikonfirmasi." %}</div>
+    </section>
+    <section class="card" aria-labelledby="selesai">
+      <div class="card-header"><h2 id="selesai" class="card-title">Terakhir selesai</h2></div>
+      <div class="card-body py-1">{% include "classes/_session_items.html" with items=done empty="Belum ada." %}</div>
+    </section>
+  </div>
 </div>
 {% endif %}
 {% endblock %}

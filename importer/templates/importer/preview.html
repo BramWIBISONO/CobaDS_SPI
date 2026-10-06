@@ -1,53 +1,53 @@
 {% extends "base.html" %}
 {% block title %}Pratinjau impor{% endblock %}
 {% block content %}
-<a href="{% url 'importer:upload' %}" class="text-sm font-semibold text-brand-600 hover:underline">← Impor Data</a>
+<a href="{% url 'importer:upload' %}" class="mb-3 inline-flex items-center gap-1 text-[0.8125rem] font-medium text-muted hover:text-ink"><i class="ti ti-chevron-left" aria-hidden="true"></i>Impor Data</a>
 <div class="mb-6 mt-2 flex flex-wrap items-start justify-between gap-4">
   <div>
-    <h1 class="text-2xl font-semibold text-slate-900">{{ run.original_name }}</h1>
-    <p class="text-sm text-slate-500">ke {{ current_branch.name }} · diunggah {{ run.created_at|date:"d M Y H:i" }} oleh {{ run.created_by.display_name|default:"-" }}
+    <h1 class="t-page break-all">{{ run.original_name }}</h1>
+    <p class="text-sm text-muted">ke {{ current_branch.name }} · diunggah {{ run.created_at|date:"d M Y H:i" }} oleh {{ run.created_by.display_name|default:"-" }}
       · SHA-256 <code class="text-xs">{{ run.sha256|truncatechars:17 }}</code></p>
   </div>
   {% include "importer/_status.html" %}
 </div>
 
 {% if report.fatal %}
-  <div class="rounded-xl border border-red-200 bg-red-50 p-5 text-sm text-red-800">{{ report.fatal }}</div>
+  <div class="callout callout-danger"><i class="ti ti-alert-octagon" aria-hidden="true"></i><p>{{ report.fatal }}</p></div>
 {% else %}
   <div class="mb-6 grid gap-4 sm:grid-cols-3">
-    <div class="card p-4"><p class="text-xs text-slate-500">Unit workbook</p><p class="mt-1 text-lg font-semibold">{{ report.unit|default:"(tidak tercatat)" }}</p></div>
-    <div class="card p-4"><p class="text-xs text-slate-500">Error</p><p class="mt-1 text-lg font-semibold {% if report.errors %}text-red-700{% else %}text-emerald-700{% endif %}">{{ report.errors }}</p></div>
-    <div class="card p-4"><p class="text-xs text-slate-500">Peringatan</p><p class="mt-1 text-lg font-semibold {% if report.warnings %}text-amber-700{% endif %}">{{ report.warnings }}</p></div>
+    <div class="kpi kpi-compact"><p class="kpi-label">Unit workbook</p><p class="mt-1 text-lg font-semibold">{{ report.unit|default:"(tidak tercatat)" }}</p></div>
+    <div class="kpi kpi-compact"><p class="kpi-label">Error</p><p class="mt-1 text-lg font-semibold {% if report.errors %}text-danger-700{% else %}text-success-700{% endif %}">{{ report.errors }}</p></div>
+    <div class="kpi kpi-compact"><p class="kpi-label">Peringatan</p><p class="mt-1 text-lg font-semibold {% if report.warnings %}text-warning-700{% endif %}">{{ report.warnings }}</p></div>
   </div>
 
   {% if run.status == "PREVIEW" and report.ok %}
-    <form method="post" action="{% url 'importer:commit' run.pk %}" class="card mb-6 space-y-3 p-5" x-data="{ busy: false }" @submit="busy = true">{% csrf_token %}
+    <form method="post" action="{% url 'importer:commit' run.pk %}" class="card card-pad mb-6 space-y-4" x-data="{ busy: false }" @submit="busy = true">{% csrf_token %}
       {% if has_data %}
-        <div class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+        <div class="rounded-xl border border-warning-100 bg-warning-50 px-4 py-3 text-sm text-warning-700">
           <strong>{{ current_branch.name }} sudah berisi data.</strong> Menyimpan akan mengganti isi semua tabel cabang ini dengan isi workbook.
           Riwayat Audit Log dan Import Log tidak dihapus.</div>
-        <label class="flex items-center gap-2 text-sm font-medium text-slate-800">
-          <input type="checkbox" name="replace" class="h-4 w-4 rounded border-slate-300"> Ganti semua data cabang ini dengan isi workbook</label>
+        <label class="flex items-center gap-2 text-sm font-medium text-ink">
+          <input type="checkbox" name="replace" class="h-4 w-4 rounded border-line-strong"> Ganti semua data cabang ini dengan isi workbook</label>
       {% endif %}
       <button class="btn btn-primary" :disabled="busy"><span x-show="!busy">Simpan ke database</span><span x-show="busy" x-cloak>Menyimpan…</span></button>
     </form>
   {% elif run.status == "COMMITTED" %}
-    <div class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
+    <div class="mb-6 rounded-xl border border-success-100 bg-success-50 px-4 py-3 text-sm text-success-700">
       Tersimpan {{ run.committed_at|date:"d M Y H:i" }} oleh {{ run.committed_by.display_name|default:"-" }}.</div>
   {% endif %}
 
   <div class="grid gap-6 lg:grid-cols-2">
     <div class="card overflow-hidden">
-      <h2 class="border-b border-slate-200 px-4 py-3 font-semibold">Baris per tabel</h2>
-      <div class="overflow-x-auto"><table class="min-w-full text-sm">
-        <thead class="bg-slate-50 text-left text-xs font-semibold uppercase text-slate-500">
+      <h2 class="card-title border-b border-line px-5 py-4">Baris per tabel</h2>
+      <div class="overflow-x-auto"><table class="data-table compact">
+        <thead>
           <tr><th class="px-4 py-2">Tabel</th><th class="px-4 py-2 text-right">Di workbook</th>
             <th class="px-4 py-2 text-right">{% if run.status == "COMMITTED" %}Disimpan{% else %}Di cabang sekarang{% endif %}</th></tr></thead>
         <tbody>
           {% for g in groups %}
-            <tr class="border-t border-slate-200 bg-slate-50/60"><td colspan="3" class="px-4 py-2 text-xs font-semibold uppercase text-slate-500">{{ g.label }}</td></tr>
+            <tr class="border-t border-line bg-subtle/60"><td colspan="3" class="px-4 py-2 text-xs font-semibold uppercase text-muted">{{ g.label }}</td></tr>
             {% for t in g.tables %}
-              <tr class="border-t border-slate-100"><td class="px-4 py-1.5 font-mono text-xs">{{ t.sheet }}</td>
+              <tr class="border-t border-line"><td class="px-4 py-1.5 font-mono text-xs">{{ t.sheet }}</td>
                 <td class="px-4 py-1.5 text-right tabular-nums">{{ t.new }}</td>
                 <td class="px-4 py-1.5 text-right tabular-nums">{% if run.status == "COMMITTED" %}{{ t.saved|default_if_none:"-" }}{% else %}{{ t.existing }}{% endif %}</td></tr>
             {% endfor %}
@@ -56,24 +56,24 @@
       </table></div>
     </div>
     <div class="card overflow-hidden">
-      <h2 class="border-b border-slate-200 px-4 py-3 font-semibold">Temuan pemeriksaan</h2>
+      <h2 class="card-title border-b border-line px-5 py-4">Temuan pemeriksaan</h2>
       {% if report.issues %}
         <div class="max-h-[40rem] overflow-y-auto">
-          <table class="min-w-full text-sm">
-            <thead class="sticky top-0 bg-slate-50 text-left text-xs font-semibold uppercase text-slate-500">
+          <table class="data-table compact">
+            <thead class="sticky top-0">
               <tr><th class="px-4 py-2">Tingkat</th><th class="px-4 py-2">Tabel</th><th class="px-4 py-2">Baris</th><th class="px-4 py-2">Kolom</th><th class="px-4 py-2">Pesan</th></tr></thead>
-            <tbody class="divide-y divide-slate-100">
+            <tbody class="divide-y divide-line">
               {% for i in report.issues %}
-                <tr><td class="px-4 py-2">{% if i.level == "error" %}<span class="badge bg-red-50 text-red-700">Error</span>{% else %}<span class="badge bg-amber-50 text-amber-800">Peringatan</span>{% endif %}</td>
+                <tr><td class="px-4 py-2">{% if i.level == "error" %}<span class="status-badge st-kritis">Error</span>{% else %}<span class="status-badge st-perhatian">Peringatan</span>{% endif %}</td>
                   <td class="px-4 py-2 font-mono text-xs">{{ i.table }}</td><td class="px-4 py-2 tabular-nums">{{ i.row|default:"-" }}</td>
                   <td class="px-4 py-2">{{ i.field }}</td><td class="px-4 py-2">{{ i.message }}</td></tr>
               {% endfor %}
             </tbody>
           </table>
         </div>
-        {% if report.issues_hidden %}<p class="border-t border-slate-200 px-4 py-2 text-xs text-slate-500">{{ report.issues_hidden }} temuan lain tidak ditampilkan.</p>{% endif %}
+        {% if report.issues_hidden %}<p class="border-t border-line px-4 py-2 text-xs text-muted">{{ report.issues_hidden }} temuan lain tidak ditampilkan.</p>{% endif %}
       {% else %}
-        <p class="px-4 py-6 text-sm text-emerald-700">Tidak ada temuan.</p>
+        <p class="px-4 py-6 text-sm text-success-700">Tidak ada temuan.</p>
       {% endif %}
     </div>
   </div>

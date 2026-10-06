@@ -1,33 +1,37 @@
 {% extends "base.html" %}{% load ui %}
 {% block title %}Orang Tua{% endblock %}
 {% block content %}
-{% pageheader title="Orang Tua" subtitle="Orang tua / wali murid, anak-anaknya, dan kontaknya" icon="users-group" %}
+{% pageheader title="Orang Tua" count=found subtitle="Orang tua / wali murid, anak-anaknya, dan cara menghubunginya" icon="users-group" %}
   {% if perm.parent_edit %}<a href="{% url 'students:parent_create' %}" class="btn btn-primary"><i class="ti ti-user-plus" aria-hidden="true"></i>Tambah orang tua</a>{% endif %}
 {% endpageheader %}
-<form method="get" class="filter-bar lg:grid-cols-3" role="search">
-  <div class="sm:col-span-2"><label class="field-label" for="pq">Cari nama orang tua / anak / Parent ID{% if perm.student_contacts %} / nomor{% endif %}</label>
-    <input id="pq" type="search" name="q" value="{{ q }}" class="field" autocomplete="off"></div>
-  <div class="flex items-end gap-2"><button class="btn btn-primary">Cari</button><a href="{% url 'students:parents' %}" class="btn btn-secondary">Atur ulang</a></div>
+<form method="get" class="mb-4 flex flex-wrap items-center gap-2" role="search">
+  <div class="input-icon min-w-0 flex-1 sm:max-w-md"><i class="ti ti-search" aria-hidden="true"></i>
+    <label class="sr-only" for="pq">Cari nama orang tua / anak / Parent ID{% if perm.student_contacts %} / nomor{% endif %}</label>
+    <input id="pq" type="search" name="q" value="{{ q }}" class="field" autocomplete="off" placeholder="Cari nama orang tua, anak, Parent ID{% if perm.student_contacts %}, nomor{% endif %}…"></div>
+  <button class="btn btn-secondary">Cari</button>
+  {% if q %}<a href="{% url 'students:parents' %}" class="btn btn-ghost"><i class="ti ti-x" aria-hidden="true"></i>Atur ulang</a>{% endif %}
 </form>
 {% if page.object_list %}
-<p class="mb-2 text-sm text-slate-600"><strong>{{ found }}</strong> orang tua</p>
 <div class="table-wrap overflow-x-auto">
   <table class="data-table">
-    <thead><tr><th>Nama</th><th>Parent ID</th><th>Hubungan</th><th>Anak</th>{% if perm.student_contacts %}<th>WhatsApp</th><th>Email</th>{% endif %}</tr></thead>
+    <thead><tr><th>Orang tua</th><th>Hubungan</th><th>Anak</th>{% if perm.student_contacts %}<th>Kontak</th>{% endif %}</tr></thead>
     <tbody>
       {% for r in page.object_list %}
         <tr>
-          <td class="font-semibold"><a href="{% url 'students:parent_detail' r.p.pid %}" class="text-slate-900 hover:text-brand-700 hover:underline">{{ r.p.nama|default:"(tanpa nama)" }}</a></td>
-          <td class="tabular-nums text-slate-500">{{ r.p.pid }}</td>
+          <td class="primary"><a href="{% url 'students:parent_detail' r.p.pid %}" class="flex items-center gap-3">
+            <span class="avatar avatar-sm {{ r.p.nama|avatar_tone }}" aria-hidden="true">{{ r.p.nama|initials }}</span>
+            <span class="min-w-0"><span class="row-link block max-w-[16rem] truncate">{{ r.p.nama|default:"(tanpa nama)" }}</span><span class="cell-sub tabular-nums">{{ r.p.pid }}</span></span></a></td>
           <td>{{ r.p.hub|default:"—" }}</td>
-          <td class="wrap">{% for c in r.children %}<a href="{% url 'students:detail' c.std %}" class="text-brand-700 hover:underline">{{ c.nama }}</a>{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</td>
-          {% if perm.student_contacts %}<td>{{ r.p.wa|default:"—" }}</td><td>{{ r.p.email|default:"—" }}</td>{% endif %}
+          <td class="wrap"><div class="flex max-w-md flex-wrap gap-1.5">{% for c in r.children %}
+            <a href="{% url 'students:detail' c.std %}" class="chip h-7 px-2"><span class="avatar avatar-xs {{ c.nama|avatar_tone }}" aria-hidden="true">{{ c.nama|initials }}</span>{{ c.nama }}</a>
+            {% empty %}<span class="text-faint">—</span>{% endfor %}</div></td>
+          {% if perm.student_contacts %}<td><span class="block">{{ r.p.wa|default:"—" }}</span><span class="cell-sub max-w-[14rem] truncate">{{ r.p.email }}</span></td>{% endif %}
         </tr>
       {% endfor %}
     </tbody>
   </table>
+  {% include "components/pagination.html" %}
 </div>
-{% include "components/pagination.html" %}
 {% else %}
   {% if perm.parent_edit %}{% url 'students:parent_create' as add_url %}{% endif %}
   {% include "components/empty_state.html" with icon="users-group" title="Tidak ada orang tua yang cocok" text="Ubah kata kunci, atau tambahkan orang tua baru." action_url=add_url action_label="Tambah orang tua" action_icon="user-plus" %}

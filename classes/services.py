@@ -259,6 +259,21 @@ def attendance_rate(branch, *, std=None, kode=None, sids=None):
     return {"total": total, "hadir": hadir, "pct": round(hadir * 100 / total) if total else None}
 
 
+DAY_SHORT = {"SENIN": "Sen", "SELASA": "Sel", "RABU": "Rab", "KAMIS": "Kam", "JUMAT": "Jum", "SABTU": "Sab", "MINGGU": "Min"}
+
+
+def schedule_summary(branch, today):
+    """{kode kelas (fold): [('Sen', time mulai, time selesai), ...]} - slot jadwal resmi yang masih berlaku hari ini, urut hari."""
+    out = {}
+    for sl in ClassSchedule.objects.for_branch(branch).exclude(code=""):
+        until = _parse_day(sl.eff_until)
+        day = fold(sl.day).strip().upper()
+        if (until and until < today) or day not in DAY_SHORT:
+            continue
+        out.setdefault(fold(sl.code), []).append((DAYS.index(day), DAY_SHORT[day], sl.start, sl.end))
+    return {k: [(d, a, b) for _i, d, a, b in sorted(v, key=lambda x: (x[0], x[2] or datetime.time.min))] for k, v in out.items()}
+
+
 def teacher_sessions(branch, user):
     """Sesi milik guru (nama guru di keanggotaan cabang) - untuk halaman Jadwal Saya."""
     keys = {teacher_key(n) for n in Membership.objects.filter(user=user, branch=branch).values_list("teacher_name", flat=True) if n}
@@ -269,4 +284,4 @@ def teacher_sessions(branch, user):
 
 
 __all__ = ["create_class", "update_class", "assign_teacher", "close_class", "add_slot", "end_slot", "generate_sessions",
-           "session_members", "record_session", "attendance_rate", "teacher_sessions", "find_by_key"]
+           "session_members", "record_session", "attendance_rate", "teacher_sessions", "find_by_key", "schedule_summary"]

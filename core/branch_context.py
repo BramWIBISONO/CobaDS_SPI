@@ -2,7 +2,7 @@
 from branches.models import Branch
 
 from .capabilities import ROLE_LABELS, caps_for, role_of
-from .nav import nav_for
+from .nav import nav_current, nav_for, quick_actions
 from .notifications import unread_count
 from .permissions import PermSet, perms_for_caps
 
@@ -50,8 +50,10 @@ def branch_context(request):
     user = getattr(request, "user", None)
     if user is None or not user.is_authenticated:
         return {}
+    nav = nav_for(request)
     return {"current_branch": getattr(request, "branch", None), "allowed_branches": list(allowed_branches(user)),
             "role": getattr(request, "role", None), "role_label": ROLE_LABELS.get(getattr(request, "role", None), ""),
-            "caps": getattr(request, "caps", frozenset()), "nav": nav_for(request),
+            "caps": getattr(request, "caps", frozenset()), "nav": nav, "nav_current": nav_current(nav),
+            "quick_actions": quick_actions(request),
             "perm": PermSet(perms_for_caps(getattr(request, "caps", frozenset()))),
             "notif_count": unread_count(user, getattr(request, "branch", None))}

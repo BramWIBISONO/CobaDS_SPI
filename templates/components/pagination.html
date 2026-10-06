@@ -1,10 +1,12 @@
 {% load ui %}{% if page.paginator.num_pages > 1 %}
-<nav class="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm" aria-label="Halaman">
-  <p class="text-slate-500">{{ page.start_index }}–{{ page.end_index }} dari {{ page.paginator.count }}</p>
-  <div class="flex items-center gap-1">
-    {% if page.has_previous %}<a class="chip" href="{% qs request page=page.previous_page_number %}" aria-label="Halaman sebelumnya"><i class="ti ti-chevron-left" aria-hidden="true"></i></a>{% endif %}
-    <span class="px-2 text-slate-600">{{ page.number }} / {{ page.paginator.num_pages }}</span>
-    {% if page.has_next %}<a class="chip" href="{% qs request page=page.next_page_number %}" aria-label="Halaman berikutnya"><i class="ti ti-chevron-right" aria-hidden="true"></i></a>{% endif %}
+<nav class="table-foot" aria-label="Halaman">
+  <p><span class="font-medium text-ink-2 tabular-nums">{{ page.start_index }}–{{ page.end_index }}</span> dari <span class="tabular-nums">{{ page.paginator.count }}</span></p>
+  <div class="flex items-center gap-1.5">
+    {% if page.has_previous %}<a class="btn btn-secondary btn-sm btn-icon" href="{% qs request page=page.previous_page_number %}" aria-label="Halaman sebelumnya"><i class="ti ti-chevron-left" aria-hidden="true"></i></a>
+    {% else %}<span class="btn btn-secondary btn-sm btn-icon" aria-disabled="true"><i class="ti ti-chevron-left" aria-hidden="true"></i></span>{% endif %}
+    <span class="px-2 tabular-nums">Halaman {{ page.number }} / {{ page.paginator.num_pages }}</span>
+    {% if page.has_next %}<a class="btn btn-secondary btn-sm btn-icon" href="{% qs request page=page.next_page_number %}" aria-label="Halaman berikutnya"><i class="ti ti-chevron-right" aria-hidden="true"></i></a>
+    {% else %}<span class="btn btn-secondary btn-sm btn-icon" aria-disabled="true"><i class="ti ti-chevron-right" aria-hidden="true"></i></span>{% endif %}
   </div>
 </nav>
-{% elif page.paginator.count %}<p class="mt-3 text-sm text-slate-500">{{ page.paginator.count }} baris</p>{% endif %}
+{% elif page.paginator.count %}<p class="table-foot">{{ page.paginator.count }} baris</p>{% endif %}

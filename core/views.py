@@ -11,6 +11,8 @@ from .branch_context import SESSION_KEY, allowed_branches
 from .capabilities import Cap
 from .models import Notifikasi
 from .notifications import mark_read
+from .permissions import perms_for_caps, require_perm
+from .search import global_search
 
 
 @login_required
@@ -61,3 +63,16 @@ def notifikasi_baca(request, pk):
 def notifikasi_baca_semua(request):
     Notifikasi.objects.filter(user=request.user, branch=request.branch, read_at__isnull=True).update(read_at=timezone.now())
     return redirect("core:notifikasi")
+
+
+@login_required
+def search(request):
+    """Hasil pencarian global (potongan HTMX di bawah kotak cari topbar)."""
+    result = global_search(request.branch, perms_for_caps(request.caps), request.GET.get("q", ""))
+    return render(request, "core/_search_results.html", result)
+
+
+@require_perm("settings.manage")
+def ui_kit(request):
+    """Contoh hidup design system (komponen, status, fondasi visual Keuangan) - acuan untuk modul berikutnya."""
+    return render(request, "core/ui_kit.html", {"crumbs": [("Admin", None), ("UI Kit", None)]})

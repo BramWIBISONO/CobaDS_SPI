@@ -1,53 +1,89 @@
 {% load ui spi %}
-<form method="post" action="{% url 'students:bulk' %}" x-data="{ picked: 0 }" @change="picked = $el.querySelectorAll('input[name=std]:checked').length">
+<form method="post" action="{% url 'students:bulk' %}" class="table-wrap menu-safe overflow-x-auto" x-data="{ picked: 0, panel: false }"
+      @change="picked = $el.querySelectorAll('input[name=std]:checked').length; if (!picked) panel = false">
   {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
-  <div class="mb-2 flex flex-wrap items-center justify-between gap-2 text-sm">
-    <p class="text-slate-600"><strong>{{ found }}</strong> dari {{ total }} murid</p>
-    {% if perm.followup_manage %}
-    <details class="relative" x-show="picked > 0" x-cloak>
-      <summary class="btn btn-secondary cursor-pointer list-none"><i class="ti ti-checklist" aria-hidden="true"></i>Aksi untuk <span x-text="picked"></span> murid</summary>
-      <div class="absolute right-0 z-10 mt-2 w-[min(22rem,90vw)] space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-lg">
-        <p class="text-sm font-bold text-slate-800">Buat follow-up untuk murid terpilih</p>
-        <div><label class="field-label" for="b-jenis">Jenis</label>
-          <select id="b-jenis" name="jenis" class="field" required>{% for j in "SPP OFF Cuti Akademik Kehadiran Lainnya"|split %}<option>{{ j }}</option>{% endfor %}</select></div>
-        <div><label class="field-label" for="b-aksi">Tindak lanjut</label><input id="b-aksi" name="aksi" class="field" placeholder="mis. Kirim pengingat SPP"></div>
-        <div><label class="field-label" for="b-due">Jatuh tempo</label><input id="b-due" type="date" name="jatuh_tempo" class="field"></div>
-        <input type="hidden" name="prioritas" value="NORMAL">
-        <button class="btn btn-primary w-full">Buat follow-up</button>
-        {% if perm.report_export %}<button formmethod="get" formaction="{% url 'students:export' %}" class="btn btn-secondary w-full"><i class="ti ti-download" aria-hidden="true"></i>Ekspor CSV terpilih</button>{% endif %}
-      </div>
-    </details>
-    {% endif %}
+  <div class="table-toolbar md:min-w-[44rem]">
+    <p class="text-[0.8125rem] text-muted" x-show="!picked"><span class="font-semibold text-ink tabular-nums">{{ found }}</span> dari <span class="tabular-nums">{{ total }}</span> murid{% if found != total %} cocok dengan saringan{% endif %}</p>
+    <div class="flex flex-wrap items-center gap-2" x-show="picked" x-cloak>
+      <span class="text-[0.8125rem] font-semibold text-brand-700"><span x-text="picked"></span> murid dipilih</span>
+      {% if perm.followup_manage %}<button type="button" class="btn btn-secondary btn-sm" @click="panel = !panel" :aria-expanded="panel.toString()"><i class="ti ti-phone-plus" aria-hidden="true"></i>Buat follow-up</button>{% endif %}
+      {% if perm.report_export %}<button formmethod="get" formaction="{% url 'students:export' %}" class="btn btn-secondary btn-sm"><i class="ti ti-download" aria-hidden="true"></i>Ekspor terpilih</button>{% endif %}
+    </div>
+    <p class="hidden text-xs text-faint sm:block" x-show="!picked">Centang murid untuk aksi massal</p>
   </div>
+  {% if perm.followup_manage %}
+  <div x-show="panel" x-cloak x-transition.opacity class="grid gap-3 border-b md:min-w-[44rem] border-line bg-brand-25 px-5 py-4 sm:grid-cols-[1fr_1.5fr_1fr_auto] sm:items-end">
+    <div><label class="field-label" for="b-jenis">Jenis follow-up</label>
+      <select id="b-jenis" name="jenis" class="field" required>{% for j in "SPP OFF Cuti Akademik Kehadiran Lainnya"|split %}<option>{{ j }}</option>{% endfor %}</select></div>
+    <div><label class="field-label" for="b-aksi">Tindak lanjut</label><input id="b-aksi" name="aksi" class="field" placeholder="mis. Kirim pengingat SPP"></div>
+    <div><label class="field-label" for="b-due">Jatuh tempo</label><input id="b-due" type="date" name="jatuh_tempo" class="field"></div>
+    <input type="hidden" name="prioritas" value="NORMAL">
+    <button class="btn btn-primary"><i class="ti ti-check" aria-hidden="true"></i>Buat untuk <span x-text="picked"></span> murid</button>
+  </div>
+  {% endif %}
   {% if page.object_list %}
-  <div class="table-wrap overflow-x-auto">
-    <table class="data-table">
+    {# Ponsel: kartu bertumpuk (nama, status, kelas, guru) - tabel lengkap mulai layar tablet #}
+    <ul class="divide-y divide-line md:hidden">
+      {% for r in page.object_list %}
+        <li class="flex items-center gap-3 px-4 py-3">
+          <input type="checkbox" name="std" value="{{ r.std }}" aria-label="Pilih {{ r.nama }}" class="check shrink-0">
+          <a href="{% url 'students:detail' r.std %}" class="flex min-w-0 flex-1 items-center gap-3">
+            <span class="avatar avatar-sm {{ r.nama|avatar_tone }}" aria-hidden="true">{{ r.nama|initials }}</span>
+            <span class="min-w-0 flex-1">
+              <span class="block truncate text-sm font-medium text-ink">{{ r.nama|default:"(tanpa nama)" }}</span>
+              <span class="block truncate text-xs text-muted">{{ r.kode|default:"tanpa kelas" }} · {{ r.guru|default:"guru —" }} · {{ r.level|default:r.program|default:"—" }}</span>
+            </span>
+            {% include "components/status_badge.html" with status=r.status %}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+    <table class="data-table hidden md:table">
       <thead><tr>
-        <th class="w-8"><span class="sr-only">Pilih</span></th>
-        {% sort_th request "nama" "Nama" %}{% sort_th request "std" "Student ID" %}{% sort_th request "status" "Status" %}
+        <th class="w-10"><span class="sr-only">Pilih</span></th>
+        {% sort_th request "nama" "Murid" %}{% sort_th request "status" "Status" %}
         {% sort_th request "program" "Program / level" %}{% sort_th request "kelas" "Kelas" %}{% sort_th request "guru" "Guru" %}
-        <th>Mode</th>{% sort_th request "join" "Mulai" %}
+        <th>Mode</th>{% sort_th request "join" "Mulai" %}<th class="w-12"><span class="sr-only">Aksi</span></th>
       </tr></thead>
       <tbody>
         {% for r in page.object_list %}
           <tr>
-            <td><input type="checkbox" name="std" value="{{ r.std }}" aria-label="Pilih {{ r.nama }}" class="h-4 w-4 rounded border-slate-300"></td>
-            <td class="font-semibold"><a href="{% url 'students:detail' r.std %}" class="text-slate-900 hover:text-brand-700 hover:underline">{{ r.nama|default:"(tanpa nama)" }}</a></td>
-            <td class="tabular-nums text-slate-500">{{ r.std }}</td>
+            <td><input type="checkbox" name="std" value="{{ r.std }}" aria-label="Pilih {{ r.nama }}" class="check"></td>
+            <td class="primary">
+              <a href="{% url 'students:detail' r.std %}" class="flex items-center gap-3">
+                <span class="avatar avatar-sm {{ r.nama|avatar_tone }}" aria-hidden="true">{{ r.nama|initials }}</span>
+                <span class="min-w-0"><span class="row-link block max-w-[16rem] truncate">{{ r.nama|default:"(tanpa nama)" }}</span>
+                  <span class="cell-sub tabular-nums">{{ r.std }}</span></span></a>
+            </td>
             <td>{% include "components/status_badge.html" with status=r.status %}</td>
-            <td>{{ r.level|default:r.program|default:"—" }}</td>
-            <td>{{ r.kode|default:"—" }}</td>
+            <td>{{ r.level|default:r.program|default:"—" }}{% if r.level and r.program and r.program|lower not in r.level|lower %}<span class="cell-sub">{{ r.program }}</span>{% endif %}</td>
+            <td>{% if r.kode %}<span class="font-medium text-ink">{{ r.kode }}</span>{% else %}<span class="text-faint">—</span>{% endif %}</td>
             <td>{{ r.guru|default:"—" }}</td>
             <td>{{ r.mode|default:"—" }}</td>
             <td class="tabular-nums">{{ r.join|date:"d M Y"|default:"—" }}</td>
+            <td class="text-right">
+              <details class="relative inline-block text-left" data-menu>
+                <summary class="btn btn-ghost btn-sm btn-icon cursor-pointer" aria-label="Aksi untuk {{ r.nama }}"><i class="ti ti-dots" aria-hidden="true"></i></summary>
+                <div class="menu right-0 mt-1 min-w-48">
+                  <a href="{% url 'students:detail' r.std %}" class="menu-item"><i class="ti ti-id-badge-2" aria-hidden="true"></i>Buka profil</a>
+                  {% if perm.student_edit %}<a href="{% url 'students:edit' r.std %}" class="menu-item"><i class="ti ti-edit" aria-hidden="true"></i>Ubah data</a>{% endif %}
+                  {% if perm.student_status %}<a href="{% url 'students:status' r.std %}" class="menu-item"><i class="ti ti-activity" aria-hidden="true"></i>Ubah status</a>{% endif %}
+                  {% if perm.followup_manage %}<a href="{% url 'students:followup_create' %}?std={{ r.std }}" class="menu-item"><i class="ti ti-phone-plus" aria-hidden="true"></i>Follow-up</a>{% endif %}
+                </div>
+              </details>
+            </td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
-  </div>
-  {% include "components/pagination.html" %}
+    {% include "components/pagination.html" %}
   {% else %}
     {% if perm.student_create %}{% url 'students:create' as add_url %}{% endif %}
-    {% include "components/empty_state.html" with icon="user-search" title="Tidak ada murid yang cocok" text="Ubah kata kunci atau saringan, atau tambahkan murid baru." action_url=add_url action_label="Tambah murid" action_icon="user-plus" %}
+    <div class="empty">
+      <span class="empty-icon"><i class="ti ti-user-search" aria-hidden="true"></i></span>
+      <p class="empty-title">Tidak ada murid yang cocok</p>
+      <p class="empty-text">Ubah kata kunci atau saringan, atau tambahkan murid baru.</p>
+      {% if add_url %}<a href="{{ add_url }}" class="btn btn-primary mt-3"><i class="ti ti-user-plus" aria-hidden="true"></i>Tambah murid</a>{% endif %}
+    </div>
   {% endif %}
 </form>
