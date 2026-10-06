@@ -1,33 +1,40 @@
-﻿services:
-
+# Render Blueprint: Dashboard Render -> New -> Blueprint -> pilih repo ini. Deploy ulang otomatis setiap push ke main.
+services:
   - type: web
     name: cobads-spi
     runtime: python
     plan: free
-
-    buildCommand: "bash build.sh"
-
-    startCommand: "python -m gunicorn spi_web.wsgi:application -k uvicorn.workers.UvicornWorker"
-
+    region: singapore
+    branch: main
+    buildCommand: bash build.sh
+    startCommand: gunicorn spi_web.wsgi:application --workers 2 --timeout 120
     envVars:
-
+      - key: PYTHON_VERSION
+        value: 3.12.10
       - key: DATABASE_URL
         fromDatabase:
           name: cobads-spi-db
           property: connectionString
-
       - key: SECRET_KEY
         generateValue: true
-
       - key: DEBUG
         value: "False"
-
-      - key: WEB_CONCURRENCY
-        value: "2"
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://*.onrender.com
+      - key: STATICFILES_BACKEND
+        value: whitenoise.storage.CompressedStaticFilesStorage
+      - key: DJANGO_SUPERUSER_EMAIL
+        sync: false
+      - key: DJANGO_SUPERUSER_PASSWORD
+        sync: false
+      - key: DJANGO_SUPERUSER_FULL_NAME
+        value: Super Admin SPI
 
 databases:
-
   - name: cobads-spi-db
     plan: free
+    region: singapore
     databaseName: cobads_spi
     user: cobads_spi
