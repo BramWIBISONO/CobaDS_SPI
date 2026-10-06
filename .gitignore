@@ -9,3 +9,9 @@ node_modules/
 .pytest_cache/
 .claude/
 .verify/
+.env.*
+!.env.example
+*.pyc
+db.sqlite3
+db.sqlite3-journal
+*.backup

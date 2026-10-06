@@ -1,3 +1,6 @@
+﻿import os
+import dj_database_url
+
 from pathlib import Path
 
 import environ
@@ -117,3 +120,56 @@ SPI_EXCEL_DIR = Path(env("SPI_EXCEL_DIR", default=str(BASE_DIR.parent / "APP")))
 ENV_FILE = BASE_DIR / ".env"
 DEMO_ACCOUNTS = env.bool("DEMO_ACCOUNTS", default=False)     # akun demo per peran - hanya untuk dicoba di laptop (DEBUG)
 DEMO_PASSWORD = env("DEMO_PASSWORD", default="")
+
+# ============================================================
+# RENDER PRODUCTION CONFIGURATION
+# ============================================================
+
+# SECRET KEY
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",
+    SECRET_KEY
+)
+
+# DEBUG
+DEBUG = os.environ.get(
+    "DEBUG",
+    "True"
+).lower() == "true"
+
+# ALLOWED HOSTS
+RENDER_EXTERNAL_HOSTNAME = os.environ.get(
+    "RENDER_EXTERNAL_HOSTNAME"
+)
+
+if RENDER_EXTERNAL_HOSTNAME:
+    if RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+if "localhost" not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append("localhost")
+
+if "127.0.0.1" not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append("127.0.0.1")
+
+# DATABASE
+DATABASES = {
+    "default": dj_database_url.config(
+        default="sqlite:///" + str(BASE_DIR / "db.sqlite3"),
+        conn_max_age=600,
+    )
+}
+
+# STATIC FILES
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# CSRF
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.onrender.com",
+]
+
+# ============================================================
+# END RENDER CONFIGURATION
+# ============================================================
+
