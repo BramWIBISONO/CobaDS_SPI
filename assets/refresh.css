@@ -127,3 +127,73 @@
   .app-main { padding-left: calc(var(--sidebar-w) + 0.75rem); }
   .sb-collapsed .app-main { padding-left: calc(var(--sidebar-w-collapsed) + 0.75rem); }
 }
+
+/* ==========================================================================================================
+   Visual refresh v3: kedalaman & aksen - header halaman bergradien, kartu dengan garis aksen saat hover, tabel lebih hidup,
+   badge berbingkai lembut, tombol utama bergradien, latar bertitik halus. Hanya CSS (tidak mengubah markup/logika).
+   ========================================================================================================== */
+@layer refresh {
+  body {
+    background-image:
+      radial-gradient(rgb(23 109 248 / 0.07) 1px, transparent 1px),
+      radial-gradient(60rem 36rem at 100% -10%, rgb(109 93 242 / 0.12), transparent 60%),
+      radial-gradient(48rem 32rem at -10% 110%, rgb(23 109 248 / 0.10), transparent 60%);
+    background-size: 22px 22px, auto, auto;
+  }
+
+  /* judul halaman: teks bergradien navy → biru, ikon dalam kotak bergradien */
+  .t-page, .page-header h1 { background: linear-gradient(90deg, #0b1f5c 0%, #176df8 120%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .page-header .page-icon, .page-header > div > span:first-child:has(> .ti) { background: linear-gradient(135deg, #176df8, #6d5df2); color: #fff; box-shadow: var(--shadow-brand); border: 0; }
+
+  /* kartu: bingkai gradien tipis + angkat saat hover */
+  .card { position: relative; background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%); }
+  .card-link:hover::before, a.card:hover::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; pointer-events: none;
+    background: linear-gradient(135deg, #176df8, #6d5df2); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude; }
+  .card-header { background: linear-gradient(180deg, rgb(238 244 255 / 0.55), transparent); border-top-left-radius: inherit; border-top-right-radius: inherit; }
+  .card-title { letter-spacing: -0.01em; }
+
+  /* tabel: kepala berwarna lembut, baris hover biru muda, angka tegas */
+  .data-table thead th { background: linear-gradient(180deg, #f3f6fe, #eef2fb); color: #44507a; letter-spacing: 0.02em; }
+  .data-table tbody tr { transition: background-color 0.15s; }
+  .data-table tbody tr:hover > td { background: #f4f8ff; }
+  .data-table td.num, .data-table .num { font-variant-numeric: tabular-nums; }
+
+  /* badge status: bingkai lembut sewarna */
+  .status-badge { box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 18%, transparent); }
+
+  /* tombol utama bergradien + kilau saat hover */
+  .btn-primary { background: linear-gradient(135deg, #1f78ff 0%, #176df8 45%, #4f5ff0 100%); }
+  .btn-primary:hover { background: linear-gradient(135deg, #176df8 0%, #1260e0 50%, #4a4fe0 100%); transform: translateY(-1px); }
+  .btn-secondary:hover { border-color: #c9d6f5; box-shadow: var(--shadow-sm); }
+  .btn { transition: transform 0.15s var(--ease-out), box-shadow 0.15s, background-color 0.15s, border-color 0.15s; }
+
+  /* KPI & tile: angka lebih besar, ikon berpendar */
+  .kpi-value, .tile-value { background: linear-gradient(90deg, #0b1f5c, #2a4fb8); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .tile-icon, .kpi-icon { box-shadow: 0 6px 14px -8px currentColor; }
+
+  /* segmented & tab aktif dengan garis bawah gradien */
+  .tab-active { border-image: linear-gradient(90deg, #176df8, #6d5df2) 1; }
+  .segmented > .is-active, .segmented > [aria-current="page"], .segmented > [aria-pressed="true"], .segmented > label:has(:checked) {
+    color: var(--color-brand-700); box-shadow: 0 1px 2px rgb(28 52 120 / 0.08), 0 0 0 1px rgb(23 109 248 / 0.18); }
+
+  /* progres bergradien */
+  .progress > span { background: linear-gradient(90deg, #176df8, #6d5df2); }
+  .progress.is-warning > span { background: linear-gradient(90deg, #f0a400, #e8590c); }
+
+  /* sidebar: label grup dengan titik aksen, hover geser halus */
+  .sb-group-label, .app-sidebar nav p { letter-spacing: 0.1em; }
+  .sb-link:not(.is-active):hover { transform: translateX(2px); }
+  .sb-link { transition: transform 0.15s var(--ease-out), background-color 0.15s, color 0.15s; }
+
+  /* fokus keyboard tetap jelas di atas gradien */
+  :focus-visible { outline: 2px solid #176df8; outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-primary:hover, .sb-link:not(.is-active):hover { transform: none; }
+  }
+}
+@media print {
+  body { background: #fff !important; }
+  .t-page, .page-header h1, .kpi-value, .tile-value { color: #0b1f5c !important; background: none !important; }
+}
